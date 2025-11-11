@@ -10,6 +10,7 @@ import { loginSchema } from "@/constants/schemas";
 import { authClient } from "@/lib/auth-client";
 import { LoginFormData } from "@/types/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Link } from "expo-router";
 import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { StyleSheet } from "react-native";
@@ -92,7 +93,7 @@ const LoginScreen = () => {
     <Box className="flex-1 items-center justify-center p-4 bg-background-100">
       <FormControl className="p-4 border border-outline-200 rounded-lg w-full bg-background-50">
         <VStack space="lg">
-          <Text className="text-2xl font-bold text-center">
+          <Text className="text-2xl font-bold text-center mb-8">
             Secure Authentication
           </Text>
           <Controller
@@ -132,6 +133,13 @@ const LoginScreen = () => {
               </Input>
             )}
           />
+          <Box className="flex-row items-center justify-end">
+            <Link href="/auth/forgot-password" withAnchor>
+              <Text className="text-sm text-primary-500">
+                Forgot Password {"\u2192"}
+              </Text>
+            </Link>
+          </Box>
           <Button onPress={form.handleSubmit(onSubmit)}>
             <ButtonText size="lg" className="text-background-100">
               Login

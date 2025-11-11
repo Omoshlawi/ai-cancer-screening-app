@@ -33,10 +33,12 @@ const ListTile: FC<ListTileProps> = ({
     >
       {leading && leading}
       <VStack space="xs" className="flex-1">
-        <Heading size="xs">{title}</Heading>
-        <Text size="sm" className="text-wrap text-typography-500">
-          {description}
-        </Text>
+        {title && <Heading size="xs">{title}</Heading>}
+        {description && (
+          <Text size="sm" className="text-wrap text-typography-500">
+            {description}
+          </Text>
+        )}
       </VStack>
       {trailing && trailing}
     </TouchableOpacity>
