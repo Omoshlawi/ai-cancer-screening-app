@@ -1,6 +1,6 @@
 import Toaster from "@/components/toaster";
 import { Box } from "@/components/ui/box";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonText } from "@/components/ui/button";
 import { FormControl } from "@/components/ui/form-control";
 import { Input, InputField } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
@@ -35,6 +35,7 @@ const LoginScreen = () => {
         {
           onError(context) {
             toast.show({
+              placement: "top",
               render: ({ id }) => {
                 const uniqueToastId = "toast-" + id;
                 return (
@@ -51,6 +52,7 @@ const LoginScreen = () => {
           },
           onSuccess(context) {
             toast.show({
+              placement: "top",
               render: ({ id }) => {
                 const uniqueToastId = "toast-" + id;
                 return (
@@ -70,6 +72,7 @@ const LoginScreen = () => {
     } catch (error: any) {
       console.error(error);
       toast.show({
+        placement: "top",
         render: ({ id }) => {
           const uniqueToastId = "toast-" + id;
           return (
@@ -130,9 +133,9 @@ const LoginScreen = () => {
             )}
           />
           <Button onPress={form.handleSubmit(onSubmit)}>
-            <Text size="lg" className="text-background-100">
+            <ButtonText size="lg" className="text-background-100">
               Login
-            </Text>
+            </ButtonText>
           </Button>
         </VStack>
       </FormControl>

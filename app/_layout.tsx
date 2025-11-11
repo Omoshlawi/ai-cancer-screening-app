@@ -56,6 +56,11 @@ export default function RootLayout() {
         <Stack>
           <Stack.Protected guard={isLoggedIn}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="settings" options={{ headerShown: true }} />
+            <Stack.Screen
+              name="notifications"
+              options={{ headerShown: true }}
+            />
           </Stack.Protected>
           <Stack.Protected guard={!isLoggedIn}>
             <Stack.Screen name="auth/login" options={{ headerShown: false }} />
