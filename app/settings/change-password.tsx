@@ -6,33 +6,34 @@ import { Input, InputField } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
-import { loginSchema } from "@/constants/schemas";
+import { changePasswordSchema } from "@/constants/schemas";
 import { authClient } from "@/lib/auth-client";
-import { LoginFormData } from "@/types/auth";
+import { ChangePasswordFormData } from "@/types/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { StyleSheet } from "react-native";
-const LoginScreen = () => {
-  const form = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+
+const ChangePasswordScreen = () => {
+  const form = useForm<ChangePasswordFormData>({
+    resolver: zodResolver(changePasswordSchema),
     defaultValues: {
-      username: "",
-      password: "",
+      newPassword: "",
+      currentPassword: "",
+      confirmPassword: "",
+      revokeOtherSessions: true,
     },
   });
+  const router = useRouter();
   const toast = useToast();
-  const { data } = authClient.useSession();
-  const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
+  const onSubmit: SubmitHandler<ChangePasswordFormData> = async ({
+    currentPassword,
+    newPassword,
+    revokeOtherSessions,
+  }) => {
     try {
-      await authClient.signIn.username(
-        {
-          username: data.username,
-          password: data.password,
-          callbackURL: "",
-          rememberMe: true,
-        },
+      await authClient.changePassword(
+        { currentPassword, newPassword, revokeOtherSessions },
         {
           onError(context) {
             toast.show({
@@ -43,7 +44,7 @@ const LoginScreen = () => {
                   <Toaster
                     uniqueToastId={uniqueToastId}
                     variant="outline"
-                    title="Login failed"
+                    title="Error"
                     description={context.error.message}
                     action="error"
                   />
@@ -60,8 +61,8 @@ const LoginScreen = () => {
                   <Toaster
                     uniqueToastId={uniqueToastId}
                     variant="outline"
-                    title="Login successful"
-                    description="You are now logged in"
+                    title="Success"
+                    description="Password changed successfully"
                     action="success"
                   />
                 );
@@ -70,8 +71,8 @@ const LoginScreen = () => {
           },
         }
       );
+      router.back();
     } catch (error: any) {
-      console.error(error);
       toast.show({
         placement: "top",
         render: ({ id }) => {
@@ -80,8 +81,8 @@ const LoginScreen = () => {
             <Toaster
               uniqueToastId={uniqueToastId}
               variant="outline"
-              title="Login failed"
-              description={error?.message || "An unknown error occurred"}
+              title="Error"
+              description={error.message}
               action="error"
             />
           );
@@ -94,11 +95,11 @@ const LoginScreen = () => {
       <FormControl className="p-4 border border-outline-200 rounded-lg w-full bg-background-50">
         <VStack space="lg">
           <Text className="text-2xl font-bold text-center mb-8">
-            Secure Authentication
+            Change Password
           </Text>
           <Controller
             control={form.control}
-            name="username"
+            name="currentPassword"
             render={({ field, fieldState }) => (
               <Input
                 variant="outline"
@@ -106,25 +107,7 @@ const LoginScreen = () => {
                 isInvalid={!!fieldState?.error?.message}
               >
                 <InputField
-                  placeholder="Enter Username..."
-                  {...field}
-                  onChangeText={field.onChange}
-                  autoCapitalize="none"
-                />
-              </Input>
-            )}
-          />
-          <Controller
-            control={form.control}
-            name="password"
-            render={({ field, fieldState }) => (
-              <Input
-                variant="outline"
-                size="lg"
-                isInvalid={!!fieldState?.error?.message}
-              >
-                <InputField
-                  placeholder="Enter Password..."
+                  placeholder="Enter Current Password..."
                   {...field}
                   onChangeText={field.onChange}
                   secureTextEntry
@@ -133,19 +116,50 @@ const LoginScreen = () => {
               </Input>
             )}
           />
-          <Box className="flex-row items-center justify-end">
-            <Link href="/auth/forgot-password" withAnchor>
-              <Text className="text-sm text-primary-500">
-                Forgot Password {"\u2192"}
-              </Text>
-            </Link>
-          </Box>
+          <Controller
+            control={form.control}
+            name="newPassword"
+            render={({ field, fieldState }) => (
+              <Input
+                variant="outline"
+                size="lg"
+                isInvalid={!!fieldState?.error?.message}
+              >
+                <InputField
+                  placeholder="Enter New Password..."
+                  {...field}
+                  onChangeText={field.onChange}
+                  secureTextEntry
+                  autoCapitalize="none"
+                />
+              </Input>
+            )}
+          />
+          <Controller
+            control={form.control}
+            name="confirmPassword"
+            render={({ field, fieldState }) => (
+              <Input
+                variant="outline"
+                size="lg"
+                isInvalid={!!fieldState?.error?.message}
+              >
+                <InputField
+                  placeholder="Confirm New Password..."
+                  {...field}
+                  onChangeText={field.onChange}
+                  secureTextEntry
+                  autoCapitalize="none"
+                />
+              </Input>
+            )}
+          />
           <Button
             onPress={form.handleSubmit(onSubmit)}
             disabled={form.formState.isSubmitting}
           >
-            <ButtonText size="lg" className="text-background-100" >
-              Login
+            <ButtonText size="lg" className="text-background-100">
+              Change Password
             </ButtonText>
           </Button>
         </VStack>
@@ -154,6 +168,4 @@ const LoginScreen = () => {
   );
 };
 
-export default LoginScreen;
-
-const styles = StyleSheet.create({});
+export default ChangePasswordScreen;

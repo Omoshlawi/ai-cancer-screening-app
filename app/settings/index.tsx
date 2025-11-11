@@ -19,12 +19,14 @@ import { useColorScheme } from "@/hooks/use-color-scheme";
 import { authClient } from "@/lib/auth-client";
 import { getInitials } from "@/lib/helpers";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React from "react";
 import { ScrollView, TouchableOpacity } from "react-native";
 
 const SettingsScreen = () => {
   const { data: userSession } = authClient.useSession();
   const colorScheme = useColorScheme();
+  const router = useRouter();
   return (
     <ScrollView>
       <VStack className="flex-1 bg-background-100 p-4" space="xl">
@@ -76,6 +78,7 @@ const SettingsScreen = () => {
                 }
                 title="Change Password"
                 description="Change your password to secure your account."
+                onPress={() => router.push("/settings/change-password")}
                 trailing={
                   <MaterialCommunityIcons
                     name="chevron-right"
