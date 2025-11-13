@@ -1,9 +1,9 @@
-import { useColorScheme } from "@/hooks/use-color-scheme";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Link } from "expo-router";
+import { Bell, UserCircle } from "lucide-react-native";
 import React, { FC } from "react";
 import { Box } from "../ui/box";
 import { HStack } from "../ui/hstack";
+import { Icon } from "../ui/icon";
 import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 
@@ -13,7 +13,6 @@ type CHPLandingScreenLayoutProps = {
 const CHPLandingScreenLayout: FC<CHPLandingScreenLayoutProps> = ({
   children,
 }) => {
-  const colorScheme = useColorScheme();
   return (
     <VStack className="flex-1 bg-background-50">
       {/* APP bar */}
@@ -21,18 +20,10 @@ const CHPLandingScreenLayout: FC<CHPLandingScreenLayoutProps> = ({
         <Text className="text-2xl font-bold ">LOGO</Text>
         <HStack space="xl" className="items-center">
           <Link href="/notifications" asChild>
-            <MaterialCommunityIcons
-              name="bell-outline"
-              size={24}
-              color={colorScheme === "dark" ? "white" : "black"}
-            />
+            <Icon as={Bell} size={"xl"} />
           </Link>
           <Link href="/settings" asChild>
-            <MaterialCommunityIcons
-              name="account-circle-outline"
-              size={26}
-              color={colorScheme === "dark" ? "white" : "black"}
-            />
+            <Icon as={UserCircle} size={"xl"} />
           </Link>
         </HStack>
       </HStack>

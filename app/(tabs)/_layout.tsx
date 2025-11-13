@@ -4,10 +4,9 @@ import React from "react";
 import { HapticTab } from "@/components/haptic-tab";
 import { Box } from "@/components/ui/box";
 import { Icon } from "@/components/ui/icon";
-import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Text } from "@/components/ui/text";
 import { cn } from "@gluestack-ui/utils/nativewind-utils";
-import { Home } from "lucide-react-native";
+import { Home, Hospital } from "lucide-react-native";
 
 export default function TabLayout() {
   return (
@@ -16,12 +15,12 @@ export default function TabLayout() {
         headerShown: false,
         tabBarActiveTintColor: "teal",
         tabBarButton: HapticTab,
-        tabBarLabel: ({ focused }) => (
+        tabBarLabel: ({ focused, children }) => (
           <Text
             className={cn(focused ? "text-teal-700" : "text-typography-500")}
             size="sm"
           >
-            Home
+            {children}
           </Text>
         ),
         tabBarBackground: () => (
@@ -46,8 +45,12 @@ export default function TabLayout() {
         name="facilities"
         options={{
           title: "Facilities",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
+          tabBarIcon: ({ focused, size }) => (
+            <Icon
+              as={Hospital}
+              size={"xl"}
+              className={cn(focused ? "text-teal-700" : "text-typography-500")}
+            />
           ),
         }}
       />

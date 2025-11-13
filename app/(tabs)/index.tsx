@@ -6,7 +6,7 @@ import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { authClient } from "@/lib/auth-client";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Wifi } from "lucide-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
@@ -19,9 +19,9 @@ export default function HomeScreen() {
           <Card
             size="lg"
             variant="elevated"
-            className="rounded-none bg-background-0 p-4 gap-2"
+            className="rounded-none bg-teal-800 p-4 gap-2"
           >
-            <Heading size="md" className="mb-1">
+            <Heading size="md" className="mb-1 text-white">
               {new Date().getHours() < 12
                 ? "Good Morning"
                 : new Date().getHours() < 18
@@ -29,25 +29,16 @@ export default function HomeScreen() {
                 : "Good Evening"}
               , {userSession?.user?.name}
             </Heading>
-            <Text size="sm" className="text-typography-500">
+            <Text size="sm" className="text-teal-200">
               {new Date().toLocaleString()}
             </Text>
             <Badge
               size="lg"
               variant="solid"
               action="success"
-              className="rounded-full w-[100px] gap-2"
+              className="rounded-full w-[100px] gap-2 bg-teal-200"
             >
-              <BadgeIcon
-                as={() => (
-                  <MaterialCommunityIcons
-                    name="wifi"
-                    size={12}
-                    color={colorScheme === "dark" ? "white" : "black"}
-                  />
-                )}
-                className="ml-2"
-              />
+              <BadgeIcon as={Wifi} className="ml-2" />
               <BadgeText className="w-fit">Online</BadgeText>
             </Badge>
           </Card>
