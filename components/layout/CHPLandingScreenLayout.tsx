@@ -15,7 +15,7 @@ const CHPLandingScreenLayout: FC<CHPLandingScreenLayoutProps> = ({
 }) => {
   const colorScheme = useColorScheme();
   return (
-    <VStack className="flex-1 bg-background-100">
+    <VStack className="flex-1 bg-background-50">
       {/* APP bar */}
       <HStack className="justify-between items-center p-4 bg-background-0">
         <Text className="text-2xl font-bold ">LOGO</Text>

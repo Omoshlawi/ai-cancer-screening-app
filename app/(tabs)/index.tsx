@@ -4,12 +4,14 @@ import { Box } from "@/components/ui/box";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 import { authClient } from "@/lib/auth-client";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const { data: userSession } = authClient.useSession();
+  const colorScheme = useColorScheme();
   return (
     <SafeAreaView className="flex-1 bg-background-0">
       <CHPLandingScreenLayout>
@@ -38,11 +40,15 @@ export default function HomeScreen() {
             >
               <BadgeIcon
                 as={() => (
-                  <MaterialCommunityIcons name="wifi" size={12} color="white" />
+                  <MaterialCommunityIcons
+                    name="wifi"
+                    size={12}
+                    color={colorScheme === "dark" ? "white" : "black"}
+                  />
                 )}
                 className="ml-2"
               />
-              <BadgeText className="w-fit">Verified</BadgeText>
+              <BadgeText className="w-fit">Online</BadgeText>
             </Badge>
           </Card>
         </Box>

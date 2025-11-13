@@ -1,33 +1,54 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Tabs } from "expo-router";
+import React from "react";
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { HapticTab } from "@/components/haptic-tab";
+import { Box } from "@/components/ui/box";
+import { Icon } from "@/components/ui/icon";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { Text } from "@/components/ui/text";
+import { cn } from "@gluestack-ui/utils/nativewind-utils";
+import { Home } from "lucide-react-native";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
+        tabBarActiveTintColor: "teal",
         tabBarButton: HapticTab,
-      }}>
+        tabBarLabel: ({ focused }) => (
+          <Text
+            className={cn(focused ? "text-teal-700" : "text-typography-500")}
+            size="sm"
+          >
+            Home
+          </Text>
+        ),
+        tabBarBackground: () => (
+          <Box className="bg-background-0 w-full h-full" />
+        ),
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: "Home",
+          tabBarIcon: ({ focused, size }) => (
+            <Icon
+              as={Home}
+              size={"xl"}
+              className={cn(focused ? "text-teal-700" : "text-typography-500")}
+            />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="facilities"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: "Facilities",
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="paperplane.fill" color={color} />
+          ),
         }}
       />
     </Tabs>

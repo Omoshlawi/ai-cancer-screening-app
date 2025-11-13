@@ -18,6 +18,7 @@ import { VStack } from "@/components/ui/vstack";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { authClient } from "@/lib/auth-client";
 import { getInitials } from "@/lib/helpers";
+import { Theme, useThemeStore } from "@/store/theme";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
@@ -26,10 +27,11 @@ import { ScrollView, TouchableOpacity } from "react-native";
 const SettingsScreen = () => {
   const { data: userSession } = authClient.useSession();
   const colorScheme = useColorScheme();
+  const setTheme = useThemeStore((state) => state.setTheme);
   const router = useRouter();
   return (
     <ScrollView>
-      <VStack className="flex-1 bg-background-100 p-4" space="xl">
+      <VStack className="flex-1 bg-background-50 p-4" space="xl">
         <Card
           size="lg"
           variant="filled"
@@ -230,6 +232,7 @@ const SettingsScreen = () => {
                   <TouchableOpacity
                     onPress={() => {
                       close();
+                      setTheme(item.value as Theme);
                     }}
                   >
                     <Card

@@ -1,12 +1,13 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { Box } from "@/components/ui/box";
+import { Text } from "@/components/ui/text";
+import React from "react";
 
 const Nortifications = () => {
   return (
-    <View>
-      <Text>Nortifications</Text>
-    </View>
-  )
-}
+    <Box className="flex-1 bg-background-50 p-4">
+      <Text>Notifications</Text>
+    </Box>
+  );
+};
 
-export default Nortifications
+export default Nortifications;

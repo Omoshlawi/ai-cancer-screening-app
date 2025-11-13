@@ -1,8 +1,3 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
@@ -10,7 +5,9 @@ import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 
 import Toaster from "@/components/toaster";
+import { Box } from "@/components/ui/box";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
+import { Heading } from "@/components/ui/heading";
 import { useToast } from "@/components/ui/toast";
 import "@/global.css";
 import { authClient } from "@/lib/auth-client";
@@ -24,7 +21,8 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const theme = useColorScheme();
+
   const { data, isPending, error } = authClient.useSession();
   const isLoggedIn = !!data?.user?.id;
   const toast = useToast();
@@ -51,27 +49,41 @@ export default function RootLayout() {
   }, [isPending, error, toast]);
 
   return (
-    <GluestackUIProvider mode="system">
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Protected guard={isLoggedIn}>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="settings" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="notifications"
-              options={{ headerShown: true, title: "Notifications" }}
-            />
-          </Stack.Protected>
-          <Stack.Protected guard={!isLoggedIn}>
-            <Stack.Screen name="auth" options={{ headerShown: false }} />
-          </Stack.Protected>
+    <GluestackUIProvider mode={theme}>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          title: "Home",
+          headerBackground: () => (
+            <Box className="bg-background-0 w-full h-full" />
+          ),
+          headerTitle: ({ children }) => (
+            <Heading className={"text-typography-500"} size="xl">
+              {children}
+            </Heading>
+          ),
+        }}
+      >
+        <Stack.Protected guard={isLoggedIn}>
           <Stack.Screen
-            name="modal"
-            options={{ presentation: "modal", title: "Modal" }}
+            name="(tabs)"
+            options={{ headerShown: false, title: "Home" }}
           />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
+          <Stack.Screen name="settings" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="notifications"
+            options={{ headerShown: true, title: "Notifications" }}
+          />
+        </Stack.Protected>
+        <Stack.Protected guard={!isLoggedIn}>
+          <Stack.Screen name="auth" options={{ headerShown: false }} />
+        </Stack.Protected>
+        <Stack.Screen
+          name="modal"
+          options={{ presentation: "modal", title: "Modal" }}
+        />
+      </Stack>
+      <StatusBar style="auto" />
     </GluestackUIProvider>
   );
 }
