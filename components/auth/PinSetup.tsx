@@ -1,11 +1,16 @@
 import { Box } from "@/components/ui/box";
 import { Button, ButtonText } from "@/components/ui/button";
 import { FormControl } from "@/components/ui/form-control";
-import { Input, InputField } from "@/components/ui/input";
+import PinInputComponent from "@/components/ui/pin-input";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { setupPin, setBiometricEnabled, checkBiometricAvailability } from "@/lib/local-auth";
-import { useState, useEffect } from "react";
+import { PIN_LENGTH, PIN_MIN_LENGTH } from "@/constants/schemas";
+import {
+  checkBiometricAvailability,
+  setBiometricEnabled,
+  setupPin,
+} from "@/lib/local-auth";
+import { useEffect, useState } from "react";
 import { Alert } from "react-native";
 
 interface PinSetupProps {
@@ -30,8 +35,11 @@ export default function PinSetup({ onComplete, onSkip }: PinSetupProps) {
   };
 
   const handlePinSubmit = () => {
-    if (pin.length < 4) {
-      Alert.alert("Invalid PIN", "PIN must be at least 4 digits");
+    if (pin.length < PIN_MIN_LENGTH) {
+      Alert.alert(
+        "Invalid PIN",
+        `PIN must be at least ${PIN_MIN_LENGTH} digits`
+      );
       return;
     }
     setStep("confirm");
@@ -79,7 +87,7 @@ export default function PinSetup({ onComplete, onSkip }: PinSetupProps) {
       } else {
         Alert.alert("Error", "Failed to set up PIN. Please try again.");
       }
-    } catch (error) {
+    } catch {
       Alert.alert("Error", "An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
@@ -95,34 +103,37 @@ export default function PinSetup({ onComplete, onSkip }: PinSetupProps) {
           </Text>
           <Text className="text-sm text-center text-typography-500 mb-4">
             {step === "pin"
-              ? "Create a 4-digit PIN for secure access"
+              ? `Create a ${PIN_MIN_LENGTH}-${PIN_LENGTH} digit PIN for secure access`
               : "Re-enter your PIN to confirm"}
           </Text>
-          <Input variant="outline" size="lg">
-            <InputField
-              placeholder={step === "pin" ? "Enter PIN" : "Confirm PIN"}
+          <Box className="items-center justify-center w-full px-2">
+            <PinInputComponent
               value={step === "pin" ? pin : confirmPin}
               onChangeText={step === "pin" ? setPin : setConfirmPin}
-              keyboardType="numeric"
-              secureTextEntry
-              maxLength={6}
+              length={PIN_LENGTH}
+              obscureText={true}
+              size="md"
+              variant="outline"
+              autoFocus={true}
+              spacing="sm"
             />
-          </Input>
+          </Box>
           <VStack space="sm">
             <Button
               onPress={step === "pin" ? handlePinSubmit : handleConfirmPin}
-              disabled={isLoading || (step === "pin" ? pin.length < 4 : confirmPin.length < 4)}
+              disabled={
+                isLoading ||
+                (step === "pin"
+                  ? pin.length < PIN_MIN_LENGTH
+                  : confirmPin.length < PIN_MIN_LENGTH || pin !== confirmPin)
+              }
             >
               <ButtonText size="lg" className="text-background-100">
                 {step === "pin" ? "Continue" : "Confirm"}
               </ButtonText>
             </Button>
             {onSkip && step === "pin" && (
-              <Button
-                variant="outline"
-                onPress={onSkip}
-                disabled={isLoading}
-              >
+              <Button variant="outline" onPress={onSkip} disabled={isLoading}>
                 <ButtonText size="lg">Skip</ButtonText>
               </Button>
             )}
@@ -132,4 +143,3 @@ export default function PinSetup({ onComplete, onSkip }: PinSetupProps) {
     </Box>
   );
 }
-

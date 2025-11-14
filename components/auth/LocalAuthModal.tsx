@@ -1,135 +1,125 @@
-import PinEntry from "@/components/auth/PinEntry";
 import { useLocalAuth } from "@/hooks/use-local-auth";
-import { authenticateWithBiometrics } from "@/lib/local-auth";
-import { useState, useEffect, useCallback } from "react";
-import { Modal, ActivityIndicator } from "react-native";
-import { Box } from "@/components/ui/box";
-import { Text } from "@/components/ui/text";
+import { useEffect, useState } from "react";
+import { Modal } from "react-native";
+import BottomSheet from "./bottom-sheet/BottomSheet";
+import BottomSheetBackdrop from "./bottom-sheet/BottomSheetBackdrop";
+import PinEntry from "./PinEntry";
 
 interface LocalAuthModalProps {
+  /** Whether the modal is visible */
   visible: boolean;
+  /** Callback when authentication succeeds */
   onSuccess: () => void;
 }
 
+/**
+ * LocalAuthModal Component
+ *
+ * Main modal component for local authentication when app regains focus.
+ * Displays PIN entry interface in a bottom sheet format.
+ *
+ * Responsibilities:
+ * - Manages modal visibility and lifecycle
+ * - Checks local auth status and setup
+ * - Displays PIN entry interface when PIN is configured
+ * - Handles authentication success
+ *
+ * Flow:
+ * 1. Modal becomes visible (triggered by app state change)
+ * 2. Refresh local auth status
+ * 3. If PIN is set up, show PIN entry
+ * 4. If no PIN, allow access (local auth not configured)
+ *
+ * @example
+ * ```tsx
+ * <LocalAuthModal
+ *   visible={showModal}
+ *   onSuccess={() => setShowModal(false)}
+ * />
+ * ```
+ */
 export default function LocalAuthModal({
   visible,
   onSuccess,
 }: LocalAuthModalProps) {
-  const { status, isLoading } = useLocalAuth();
+  // Local auth status and loading state
+  const { status, isLoading, refresh } = useLocalAuth();
+  // Whether to show PIN entry interface
   const [showPinEntry, setShowPinEntry] = useState(false);
-  const [isAuthenticating, setIsAuthenticating] = useState(false);
 
-  const attemptBiometricAuth = useCallback(async () => {
-    console.log("Attempting biometric auth, status:", status);
-    
-    if (!status?.isBiometricEnabled) {
-      // If biometrics not enabled but PIN exists, show PIN entry
-      if (status?.hasPin) {
-        console.log("Biometrics not enabled, showing PIN entry");
-        setShowPinEntry(true);
-      } else {
-        // No local auth set up, just close
-        console.log("No PIN set up, allowing access");
-        onSuccess();
-      }
-      return;
-    }
-
-    setIsAuthenticating(true);
-    try {
-      console.log("Attempting biometric authentication...");
-      const success = await authenticateWithBiometrics();
-      console.log("Biometric auth result:", success);
-      if (success) {
-        onSuccess();
-      } else {
-        // Biometric failed, show PIN entry
-        console.log("Biometric failed, showing PIN entry");
-        if (status.hasPin) {
-          setShowPinEntry(true);
-        } else {
-          onSuccess(); // If no PIN, just allow access
-        }
-      }
-    } catch (error) {
-      console.error("Biometric auth error:", error);
-      if (status.hasPin) {
-        setShowPinEntry(true);
-      } else {
-        onSuccess();
-      }
-    } finally {
-      setIsAuthenticating(false);
-    }
-  }, [status, onSuccess]);
-
+  /**
+   * Refresh local auth status when modal becomes visible
+   * Ensures we have the latest status before showing PIN entry
+   */
   useEffect(() => {
     if (!visible) {
-      // Reset states when modal is hidden
       setShowPinEntry(false);
-      setIsAuthenticating(false);
       return;
     }
 
-    // Wait for status to load before attempting auth
-    if (visible && !isLoading && status !== null) {
-      setShowPinEntry(false); // Reset PIN entry state
-      // Small delay to ensure modal is rendered
-      const timer = setTimeout(() => {
-        attemptBiometricAuth();
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [visible, isLoading, status, attemptBiometricAuth]);
+    // Refresh status when modal becomes visible
+    refresh();
+  }, [visible, refresh]);
 
+  /**
+   * Handle status changes and determine what to show
+   * Shows PIN entry if PIN is configured, otherwise allows access
+   */
+  useEffect(() => {
+    if (!visible) return;
+
+    // Wait for status to load
+    if (!isLoading && status !== null) {
+      if (status.hasPin) {
+        // PIN is configured - show PIN entry interface
+        console.log("Local auth has PIN, showing PIN entry");
+        setShowPinEntry(true);
+      } else {
+        // No PIN configured - allow access (local auth not set up)
+        console.log("Local auth not set up, allowing access");
+        setShowPinEntry(false);
+        onSuccess();
+      }
+    }
+  }, [visible, isLoading, status, onSuccess]);
+
+  /**
+   * Handle successful PIN authentication
+   * Reset state and call success callback
+   */
   const handlePinSuccess = () => {
+    setShowPinEntry(false);
     onSuccess();
   };
 
-  const handlePinCancel = () => {
-    // Don't allow cancel - user must authenticate
-    // Could show error or retry
-  };
-
+  // Don't render if modal is not visible
   if (!visible) return null;
 
-  if (isLoading || isAuthenticating) {
-    return (
-      <Modal
-        visible={visible}
-        transparent
-        animationType="fade"
-        statusBarTranslucent
-      >
-        <Box className="flex-1 items-center justify-center bg-black/80">
-          <Box className="bg-background-50 p-6 rounded-lg">
-            <ActivityIndicator size="large" />
-            <Text className="mt-4 text-typography-500 text-center">
-              Authenticating...
-            </Text>
-          </Box>
-        </Box>
-      </Modal>
-    );
+  // Don't render if still loading or no PIN entry needed
+  if (!showPinEntry) {
+    return null;
   }
 
-  if (showPinEntry) {
-    return (
-      <Modal
-        visible={visible}
-        transparent
-        animationType="fade"
-        statusBarTranslucent
-      >
-        <Box className="flex-1 items-center justify-center bg-black/80">
-          <Box className="w-full max-w-md">
-            <PinEntry onSuccess={handlePinSuccess} />
-          </Box>
-        </Box>
-      </Modal>
-    );
-  }
+  return (
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      statusBarTranslucent
+      onRequestClose={() => {
+        // Prevent closing - user must authenticate for security
+      }}
+    >
+      {/* Backdrop overlay - prevents interaction with background */}
+      <BottomSheetBackdrop />
 
-  return null;
+      {/* Bottom sheet container with PIN entry */}
+      <BottomSheet>
+        <PinEntry
+          onSuccess={handlePinSuccess}
+          showBiometricButton={status?.isBiometricEnabled || false}
+        />
+      </BottomSheet>
+    </Modal>
+  );
 }
-

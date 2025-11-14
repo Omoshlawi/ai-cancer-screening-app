@@ -1,52 +1,105 @@
-import { Box } from "@/components/ui/box";
-import { Button, ButtonText } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { FormControl } from "@/components/ui/form-control";
-import { Input, InputField } from "@/components/ui/input";
-import { Text } from "@/components/ui/text";
-import { VStack } from "@/components/ui/vstack";
 import {
   authenticateWithBiometrics,
-  setupPin,
-  setBiometricEnabled,
   checkBiometricAvailability,
+  setBiometricEnabled,
+  setupPin,
 } from "@/lib/local-auth";
-import { useState, useEffect } from "react";
-import { Alert, ActivityIndicator } from "react-native";
+import { useEffect, useState } from "react";
+import { Alert, Keyboard } from "react-native";
+import BottomSheet from "./bottom-sheet/BottomSheet";
+import BiometricPrompt from "./setup/BiometricPrompt";
+import PinConfirmStep from "./setup/PinConfirmStep";
+import PinSetupStep from "./setup/PinSetupStep";
 
 interface LocalAuthSetupProps {
+  /** Callback when setup is complete */
   onComplete: () => void;
+  /** Callback when setup is cancelled */
   onCancel: () => void;
 }
 
+/**
+ * LocalAuthSetup Component
+ *
+ * Main orchestrator for local authentication setup flow.
+ * Manages multi-step setup process: biometric → PIN → confirm.
+ *
+ * Flow:
+ * 1. Biometric prompt (if available) - optional step
+ * 2. PIN setup - create new PIN
+ * 3. PIN confirmation - verify PIN matches
+ *
+ * Responsibilities:
+ * - Manages setup flow state and navigation
+ * - Handles biometric authentication
+ * - Validates PIN creation and confirmation
+ * - Stores PIN securely after successful setup
+ *
+ * @example
+ * ```tsx
+ * <LocalAuthSetup
+ *   onComplete={() => console.log("Setup complete")}
+ *   onCancel={() => console.log("Setup cancelled")}
+ * />
+ * ```
+ */
 export default function LocalAuthSetup({
   onComplete,
   onCancel,
 }: LocalAuthSetupProps) {
-  const [step, setStep] = useState<"biometric" | "pin" | "confirm">("biometric");
+  // Current step in the setup flow
+  const [step, setStep] = useState<"biometric" | "pin" | "confirm">(
+    "biometric"
+  );
+  // PIN value during setup
   const [pin, setPin] = useState("");
+  // Confirmation PIN value
   const [confirmPin, setConfirmPin] = useState("");
+  // Loading state for async operations
   const [isLoading, setIsLoading] = useState(false);
+  // Whether biometric authentication is available on device
   const [biometricAvailable, setBiometricAvailable] = useState(false);
+  // Whether we're still checking biometric availability
+  const [isCheckingBiometric, setIsCheckingBiometric] = useState(true);
 
+  /**
+   * Check biometric availability on mount
+   * Dismiss native keyboard to force virtual keyboard usage
+   */
   useEffect(() => {
     checkBiometric();
+    Keyboard.dismiss();
   }, []);
 
+  /**
+   * Checks if biometric authentication is available on the device
+   * Skips biometric step if not available
+   */
   const checkBiometric = async () => {
-    const status = await checkBiometricAvailability();
-    setBiometricAvailable(status.hasBiometrics);
-    if (!status.hasBiometrics) {
+    setIsCheckingBiometric(true);
+    try {
+      const status = await checkBiometricAvailability();
+      setBiometricAvailable(status.hasBiometrics);
+
       // Skip biometric step if not available
-      setStep("pin");
+      if (!status.hasBiometrics) {
+        setStep("pin");
+      }
+    } finally {
+      setIsCheckingBiometric(false);
     }
   };
 
+  /**
+   * Handles biometric authentication during setup
+   * Enables biometric auth if successful, proceeds to PIN setup
+   */
   const handleBiometricAuth = async () => {
     setIsLoading(true);
     try {
       const success = await authenticateWithBiometrics();
       if (success) {
+        // Enable biometric authentication and proceed to PIN setup
         await setBiometricEnabled(true);
         setStep("pin");
       } else {
@@ -55,8 +108,8 @@ export default function LocalAuthSetup({
           "Please try again or continue with PIN setup."
         );
       }
-    } catch (error) {
-      console.error("Biometric auth error:", error);
+    } catch (err) {
+      console.error("Biometric auth error:", err);
       Alert.alert(
         "Error",
         "Biometric authentication failed. You can continue with PIN setup."
@@ -67,15 +120,22 @@ export default function LocalAuthSetup({
     }
   };
 
+  /**
+   * Handles PIN setup completion
+   * Validates PIN length and proceeds to confirmation step
+   */
   const handlePinSubmit = () => {
-    if (pin.length < 4) {
-      Alert.alert("Invalid PIN", "PIN must be at least 4 digits");
-      return;
-    }
+    // Validation is handled by PinSetupStep component
+    // This is called when PIN reaches full length
     setStep("confirm");
   };
 
+  /**
+   * Handles PIN confirmation and final setup
+   * Validates PINs match and stores PIN securely
+   */
   const handleConfirmPin = async () => {
+    // Validate PINs match
     if (pin !== confirmPin) {
       Alert.alert("PIN Mismatch", "PINs do not match. Please try again.");
       setPin("");
@@ -86,146 +146,78 @@ export default function LocalAuthSetup({
 
     setIsLoading(true);
     try {
+      // Store PIN securely
       const pinSuccess = await setupPin(pin);
       if (pinSuccess) {
+        // Setup complete - call completion callback
         onComplete();
       } else {
         Alert.alert("Error", "Failed to set up PIN. Please try again.");
       }
-    } catch (error) {
+    } catch {
       Alert.alert("Error", "An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Show loading state while checking biometric availability
+  if (isCheckingBiometric) {
+    return (
+      <BottomSheet>
+        <BiometricPrompt
+          isLoading={true}
+          onAuthenticate={() => {}}
+          onSkip={() => {}}
+          onCancel={onCancel}
+        />
+      </BottomSheet>
+    );
+  }
+
+  // Render biometric prompt step
   if (step === "biometric" && biometricAvailable) {
     return (
-      <Box className="flex-1 items-center justify-center p-4 bg-background-100">
-        <Card className="p-6 w-full max-w-md">
-          <VStack space="lg">
-            <Text className="text-2xl font-bold text-center">
-              Enable Biometric Authentication
-            </Text>
-            <Text className="text-sm text-center text-typography-500">
-              Use your fingerprint or face ID to secure your account. You'll
-              also need to set up a PIN as backup.
-            </Text>
-            {isLoading ? (
-              <ActivityIndicator size="large" />
-            ) : (
-              <VStack space="sm">
-                <Button onPress={handleBiometricAuth} disabled={isLoading}>
-                  <ButtonText size="lg" className="text-background-100">
-                    Authenticate with Biometrics
-                  </ButtonText>
-                </Button>
-                <Button
-                  variant="outline"
-                  onPress={() => setStep("pin")}
-                  disabled={isLoading}
-                >
-                  <ButtonText size="lg">Skip Biometrics</ButtonText>
-                </Button>
-                <Button
-                  variant="outline"
-                  onPress={onCancel}
-                  disabled={isLoading}
-                >
-                  <ButtonText size="lg">Cancel</ButtonText>
-                </Button>
-              </VStack>
-            )}
-          </VStack>
-        </Card>
-      </Box>
+      <BottomSheet>
+        <BiometricPrompt
+          isLoading={isLoading}
+          onAuthenticate={handleBiometricAuth}
+          onSkip={() => setStep("pin")}
+          onCancel={onCancel}
+        />
+      </BottomSheet>
     );
   }
 
+  // Render PIN setup step
   if (step === "pin") {
     return (
-      <Box className="flex-1 items-center justify-center p-4 bg-background-100">
-        <FormControl className="p-4 border border-outline-200 rounded-lg w-full bg-background-50">
-          <VStack space="lg">
-            <Text className="text-2xl font-bold text-center mb-2">
-              Set Up PIN
-            </Text>
-            <Text className="text-sm text-center text-typography-500 mb-4">
-              Create a 4-digit PIN for secure access
-            </Text>
-            <Input variant="outline" size="lg">
-              <InputField
-                placeholder="Enter PIN"
-                value={pin}
-                onChangeText={setPin}
-                keyboardType="numeric"
-                secureTextEntry
-                maxLength={6}
-              />
-            </Input>
-            <VStack space="sm">
-              <Button
-                onPress={handlePinSubmit}
-                disabled={isLoading || pin.length < 4}
-              >
-                <ButtonText size="lg" className="text-background-100">
-                  Continue
-                </ButtonText>
-              </Button>
-              <Button variant="outline" onPress={onCancel} disabled={isLoading}>
-                <ButtonText size="lg">Cancel</ButtonText>
-              </Button>
-            </VStack>
-          </VStack>
-        </FormControl>
-      </Box>
+      <BottomSheet>
+        <PinSetupStep
+          pin={pin}
+          onPinChange={setPin}
+          onComplete={handlePinSubmit}
+          onCancel={onCancel}
+          isLoading={isLoading}
+        />
+      </BottomSheet>
     );
   }
 
-  // Confirm PIN step
+  // Render PIN confirmation step
   return (
-    <Box className="flex-1 items-center justify-center p-4 bg-background-100">
-      <FormControl className="p-4 border border-outline-200 rounded-lg w-full bg-background-50">
-        <VStack space="lg">
-          <Text className="text-2xl font-bold text-center mb-2">
-            Confirm PIN
-          </Text>
-          <Text className="text-sm text-center text-typography-500 mb-4">
-            Re-enter your PIN to confirm
-          </Text>
-          <Input variant="outline" size="lg">
-            <InputField
-              placeholder="Confirm PIN"
-              value={confirmPin}
-              onChangeText={setConfirmPin}
-              keyboardType="numeric"
-              secureTextEntry
-              maxLength={6}
-            />
-          </Input>
-          <VStack space="sm">
-            <Button
-              onPress={handleConfirmPin}
-              disabled={isLoading || confirmPin.length < 4}
-            >
-              <ButtonText size="lg" className="text-background-100">
-                Confirm
-              </ButtonText>
-            </Button>
-            <Button
-              variant="outline"
-              onPress={() => {
-                setStep("pin");
-                setConfirmPin("");
-              }}
-              disabled={isLoading}
-            >
-              <ButtonText size="lg">Back</ButtonText>
-            </Button>
-          </VStack>
-        </VStack>
-      </FormControl>
-    </Box>
+    <BottomSheet>
+      <PinConfirmStep
+        originalPin={pin}
+        confirmPin={confirmPin}
+        onConfirmPinChange={setConfirmPin}
+        onComplete={handleConfirmPin}
+        onBack={() => {
+          setStep("pin");
+          setConfirmPin("");
+        }}
+        isLoading={isLoading}
+      />
+    </BottomSheet>
   );
 }
-

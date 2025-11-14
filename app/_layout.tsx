@@ -87,12 +87,15 @@ export default function RootLayout() {
           nextAppState === "active"
         ) {
           console.log("App came to foreground, checking local auth");
-          // App has come to the foreground after being in background
-          const enabled = await isLocalAuthEnabled();
-          console.log("Local auth enabled:", enabled);
-          if (enabled) {
-            setShowLocalAuth(true);
-          }
+          // Small delay to ensure app is fully active
+          setTimeout(async () => {
+            const enabled = await isLocalAuthEnabled();
+            console.log("Local auth enabled:", enabled);
+            if (enabled) {
+              console.log("Showing local auth modal");
+              setShowLocalAuth(true);
+            }
+          }, 100);
           // Reset the flag after checking
           hasGoneToBackground.current = false;
         }
@@ -114,10 +117,7 @@ export default function RootLayout() {
         }}
       >
         <Stack.Protected guard={isLoggedIn}>
-          <Stack.Screen
-            name="(tabs)"
-            options={{ headerShown: false }}
-          />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="settings" options={{ headerShown: false }} />
           <Stack.Screen
             name="notifications"

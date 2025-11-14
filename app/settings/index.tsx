@@ -21,15 +21,25 @@ import { useColorScheme } from "@/hooks/use-color-scheme";
 import { authClient } from "@/lib/auth-client";
 import { getInitials } from "@/lib/helpers";
 import {
+  clearPin,
   isLocalAuthEnabled,
   isLocalAuthSetup,
+  setBiometricEnabled,
   setLocalAuthEnabled,
 } from "@/lib/local-auth";
 import { Theme, useThemeStore } from "@/store/theme";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Alert, Modal, ScrollView, TouchableOpacity } from "react-native";
+import {
+  Alert,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 const SettingsScreen = () => {
   const { data: userSession } = authClient.useSession();
@@ -72,7 +82,7 @@ const SettingsScreen = () => {
       // Disable local auth
       Alert.alert(
         "Disable Local Authentication?",
-        "This will disable biometric and PIN authentication when the app comes to foreground.",
+        "This will disable biometric and PIN authentication. Your PIN will be cleared and you'll need to set it up again if you re-enable this feature.",
         [
           {
             text: "Cancel",
@@ -82,6 +92,9 @@ const SettingsScreen = () => {
             text: "Disable",
             style: "destructive",
             onPress: async () => {
+              // Clear PIN and disable biometrics when disabling local auth
+              await clearPin();
+              await setBiometricEnabled(false);
               await setLocalAuthEnabled(false);
               setLocalAuthEnabledState(false);
             },
@@ -401,13 +414,28 @@ const SettingsScreen = () => {
           transparent
           animationType="slide"
           statusBarTranslucent
+          onRequestClose={handleSetupCancel}
         >
-          <Box className="flex-1 bg-black/80">
-            <LocalAuthSetup
-              onComplete={handleSetupComplete}
-              onCancel={handleSetupCancel}
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={handleSetupCancel}
+          >
+            <View
+              style={[
+                StyleSheet.absoluteFill,
+                {
+                  backgroundColor:
+                    colorScheme === "dark"
+                      ? "rgba(0, 0, 0, 0.6)"
+                      : "rgba(0, 0, 0, 0.5)",
+                },
+              ]}
             />
-          </Box>
+          </Pressable>
+          <LocalAuthSetup
+            onComplete={handleSetupComplete}
+            onCancel={handleSetupCancel}
+          />
         </Modal>
       </ScrollView>
     </SafeAreaView>

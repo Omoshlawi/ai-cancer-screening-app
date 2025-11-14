@@ -129,6 +129,19 @@ export async function getStoredCredentials(): Promise<{
 }
 
 /**
+ * Clear PIN only
+ */
+export async function clearPin(): Promise<boolean> {
+  try {
+    await SecureStore.deleteItemAsync(PIN_KEY);
+    return true;
+  } catch (error) {
+    console.error("Clear PIN error:", error);
+    return false;
+  }
+}
+
+/**
  * Clear all local authentication data
  */
 export async function clearLocalAuth(): Promise<void> {

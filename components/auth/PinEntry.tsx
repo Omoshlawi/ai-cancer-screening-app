@@ -1,45 +1,101 @@
-import { Box } from "@/components/ui/box";
-import { Button, ButtonText } from "@/components/ui/button";
-import { FormControl } from "@/components/ui/form-control";
-import { Input, InputField } from "@/components/ui/input";
-import { Text } from "@/components/ui/text";
-import { VStack } from "@/components/ui/vstack";
-import { authenticateWithPin } from "@/lib/local-auth";
-import { useState } from "react";
-import { Alert } from "react-native";
+import { PIN_MIN_LENGTH } from "@/constants/schemas";
+import {
+  authenticateWithBiometrics,
+  authenticateWithPin,
+} from "@/lib/local-auth";
+import { useEffect, useState } from "react";
+import { Alert, Keyboard } from "react-native";
+import PinEntryContent from "./pin/PinEntryContent";
 
 interface PinEntryProps {
+  /** Callback when authentication succeeds */
   onSuccess: () => void;
+  /** Callback when user cancels (optional) */
   onCancel?: () => void;
+  /** Maximum number of authentication attempts before locking out */
   maxAttempts?: number;
+  /** Whether to show biometric authentication button */
+  showBiometricButton?: boolean;
 }
 
+/**
+ * PinEntry Component
+ *
+ * Main component for PIN-based authentication during local auth flow.
+ * Handles PIN entry, validation, and authentication logic.
+ *
+ * Responsibilities:
+ * - Manages PIN state and authentication attempts
+ * - Handles PIN validation and authentication
+ * - Manages biometric authentication fallback
+ * - Tracks failed attempts and enforces limits
+ *
+ * @example
+ * ```tsx
+ * <PinEntry
+ *   onSuccess={() => console.log("Authenticated")}
+ *   showBiometricButton={true}
+ *   maxAttempts={5}
+ * />
+ * ```
+ */
 export default function PinEntry({
   onSuccess,
   onCancel,
   maxAttempts = 5,
+  showBiometricButton = false,
 }: PinEntryProps) {
+  // PIN input state
   const [pin, setPin] = useState("");
+  // Track failed authentication attempts
   const [attempts, setAttempts] = useState(0);
+  // Loading state for PIN authentication
   const [isLoading, setIsLoading] = useState(false);
+  // Loading state for biometric authentication
+  const [isBiometricLoading, setIsBiometricLoading] = useState(false);
 
-  const handleSubmit = async () => {
-    if (pin.length < 4) {
-      Alert.alert("Invalid PIN", "PIN must be at least 4 digits");
+  /**
+   * Dismiss native keyboard when component mounts
+   * Forces use of virtual keyboard
+   */
+  useEffect(() => {
+    Keyboard.dismiss();
+  }, []);
+
+  /**
+   * Handles PIN submission and authentication
+   * Validates PIN length and authenticates against stored PIN
+   */
+  const handleSubmit = async (pinValue?: string) => {
+    const pinToCheck = pinValue || pin;
+
+    // Validate minimum PIN length
+    if (pinToCheck.length < PIN_MIN_LENGTH) {
+      Alert.alert(
+        "Invalid PIN",
+        `PIN must be at least ${PIN_MIN_LENGTH} digits`
+      );
       return;
     }
 
     setIsLoading(true);
     try {
-      const success = await authenticateWithPin(pin);
+      // Attempt authentication with provided PIN
+      const success = await authenticateWithPin(pinToCheck);
+
       if (success) {
+        // Authentication successful - reset state and call success callback
         setAttempts(0);
+        setPin("");
         onSuccess();
       } else {
+        // Authentication failed - increment attempts and handle lockout
         const newAttempts = attempts + 1;
         setAttempts(newAttempts);
         setPin("");
+
         if (newAttempts >= maxAttempts) {
+          // Maximum attempts reached - lock out user
           Alert.alert(
             "Too Many Attempts",
             "You have exceeded the maximum number of attempts. Please try again later."
@@ -48,60 +104,70 @@ export default function PinEntry({
             onCancel();
           }
         } else {
+          // Show remaining attempts
           Alert.alert(
             "Incorrect PIN",
             `Incorrect PIN. ${maxAttempts - newAttempts} attempts remaining.`
           );
         }
       }
-    } catch (error) {
+    } catch {
+      // Handle unexpected errors
       Alert.alert("Error", "An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
+  /**
+   * Handles biometric authentication
+   * Falls back to PIN entry if biometric fails
+   */
+  const handleBiometricAuth = async () => {
+    setIsBiometricLoading(true);
+    try {
+      const success = await authenticateWithBiometrics();
+      if (success) {
+        // Biometric authentication successful
+        onSuccess();
+      } else {
+        // Biometric failed - user can continue with PIN
+        Alert.alert(
+          "Biometric Authentication Failed",
+          "Please use your PIN to continue."
+        );
+      }
+    } catch (error) {
+      console.error("Biometric auth error:", error);
+      Alert.alert(
+        "Error",
+        "Biometric authentication failed. Please use your PIN."
+      );
+    } finally {
+      setIsBiometricLoading(false);
+    }
+  };
+
+  /**
+   * Handles PIN completion from PinEntryContent
+   * Auto-submits when PIN reaches minimum length
+   */
+  const handlePinComplete = async (pinValue: string) => {
+    await handleSubmit(pinValue);
+  };
+
   return (
-    <Box className="flex-1 items-center justify-center p-4 bg-background-100">
-      <FormControl className="p-4 border border-outline-200 rounded-lg w-full bg-background-50">
-        <VStack space="lg">
-          <Text className="text-2xl font-bold text-center mb-2">
-            Enter PIN
-          </Text>
-          <Text className="text-sm text-center text-typography-500 mb-4">
-            Enter your PIN to continue
-          </Text>
-          <Input variant="outline" size="lg">
-            <InputField
-              placeholder="Enter PIN"
-              value={pin}
-              onChangeText={setPin}
-              keyboardType="numeric"
-              secureTextEntry
-              maxLength={6}
-              autoFocus
-            />
-          </Input>
-          {attempts > 0 && (
-            <Text className="text-sm text-center text-error-500">
-              {maxAttempts - attempts} attempts remaining
-            </Text>
-          )}
-          <VStack space="sm">
-            <Button onPress={handleSubmit} disabled={isLoading || pin.length < 4}>
-              <ButtonText size="lg" className="text-background-100">
-                Verify
-              </ButtonText>
-            </Button>
-            {onCancel && (
-              <Button variant="outline" onPress={onCancel} disabled={isLoading}>
-                <ButtonText size="lg">Cancel</ButtonText>
-              </Button>
-            )}
-          </VStack>
-        </VStack>
-      </FormControl>
-    </Box>
+    <PinEntryContent
+      pin={pin}
+      onPinChange={setPin}
+      onSuccess={handlePinComplete}
+      onCancel={onCancel}
+      attempts={attempts}
+      maxAttempts={maxAttempts}
+      isLoading={isLoading}
+      isBiometricLoading={isBiometricLoading}
+      showBiometricButton={showBiometricButton}
+      onBiometricPress={showBiometricButton ? handleBiometricAuth : undefined}
+    />
   );
 }
-

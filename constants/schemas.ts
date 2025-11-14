@@ -1,5 +1,9 @@
 import z from "zod";
 
+// Local Authentication Constants
+export const PIN_LENGTH = 4;
+export const PIN_MIN_LENGTH = 4;
+
 export const loginSchema = z.object({
   username: z.string().min(3),
   password: z.string().min(8),
