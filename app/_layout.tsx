@@ -4,15 +4,16 @@ import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/use-color-scheme";
 
+import LocalAuthModal from "@/components/auth/LocalAuthModal";
 import Toaster from "@/components/toaster";
-import { Box } from "@/components/ui/box";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
-import { Heading } from "@/components/ui/heading";
 import { useToast } from "@/components/ui/toast";
 import "@/global.css";
 import { authClient } from "@/lib/auth-client";
+import { isLocalAuthEnabled } from "@/lib/local-auth";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { AppState, AppStateStatus } from "react-native";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -26,6 +27,10 @@ export default function RootLayout() {
   const { data, isPending, error } = authClient.useSession();
   const isLoggedIn = !!data?.user?.id;
   const toast = useToast();
+  const [showLocalAuth, setShowLocalAuth] = useState(false);
+  const appState = useRef(AppState.currentState);
+  const hasGoneToBackground = useRef(false);
+
   useEffect(() => {
     if (!isPending) {
       SplashScreen.hideAsync();
@@ -48,31 +53,77 @@ export default function RootLayout() {
     }
   }, [isPending, error, toast]);
 
+  // Handle app state changes for local authentication
+  useEffect(() => {
+    if (!isLoggedIn) {
+      // Reset when logged out
+      hasGoneToBackground.current = false;
+      setShowLocalAuth(false);
+      return;
+    }
+
+    const subscription = AppState.addEventListener(
+      "change",
+      async (nextAppState: AppStateStatus) => {
+        console.log("App state changed:", {
+          previous: appState.current,
+          next: nextAppState,
+          hasGoneToBackground: hasGoneToBackground.current,
+        });
+
+        // Track when app goes to background
+        if (
+          appState.current === "active" &&
+          nextAppState.match(/inactive|background/)
+        ) {
+          hasGoneToBackground.current = true;
+          console.log("App went to background");
+        }
+
+        // Show local auth when app comes back to foreground after being in background
+        if (
+          hasGoneToBackground.current &&
+          appState.current.match(/inactive|background/) &&
+          nextAppState === "active"
+        ) {
+          console.log("App came to foreground, checking local auth");
+          // App has come to the foreground after being in background
+          const enabled = await isLocalAuthEnabled();
+          console.log("Local auth enabled:", enabled);
+          if (enabled) {
+            setShowLocalAuth(true);
+          }
+          // Reset the flag after checking
+          hasGoneToBackground.current = false;
+        }
+
+        appState.current = nextAppState;
+      }
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, [isLoggedIn]);
+
   return (
     <GluestackUIProvider mode={theme}>
       <Stack
         screenOptions={{
           headerShown: false,
-          title: "Home",
-          headerBackground: () => (
-            <Box className="bg-background-0 w-full h-full" />
-          ),
-          headerTitle: ({ children }) => (
-            <Heading className={"text-typography-500"} size="xl">
-              {children}
-            </Heading>
-          ),
         }}
       >
         <Stack.Protected guard={isLoggedIn}>
           <Stack.Screen
             name="(tabs)"
-            options={{ headerShown: false, title: "Home" }}
+            options={{ headerShown: false }}
           />
           <Stack.Screen name="settings" options={{ headerShown: false }} />
           <Stack.Screen
             name="notifications"
-            options={{ headerShown: true, title: "Notifications" }}
+            options={{
+              headerShown: false,
+            }}
           />
         </Stack.Protected>
         <Stack.Protected guard={!isLoggedIn}>
@@ -84,6 +135,12 @@ export default function RootLayout() {
         />
       </Stack>
       <StatusBar style="auto" />
+      {isLoggedIn && (
+        <LocalAuthModal
+          visible={showLocalAuth}
+          onSuccess={() => setShowLocalAuth(false)}
+        />
+      )}
     </GluestackUIProvider>
   );
 }

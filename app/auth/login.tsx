@@ -13,7 +13,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "expo-router";
 import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { StyleSheet } from "react-native";
 const LoginScreen = () => {
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -23,7 +22,6 @@ const LoginScreen = () => {
     },
   });
   const toast = useToast();
-  const { data } = authClient.useSession();
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     try {
       await authClient.signIn.username(
@@ -144,7 +142,7 @@ const LoginScreen = () => {
             onPress={form.handleSubmit(onSubmit)}
             disabled={form.formState.isSubmitting}
           >
-            <ButtonText size="lg" className="text-background-100" >
+            <ButtonText size="lg" className="text-background-100">
               Login
             </ButtonText>
           </Button>
@@ -155,5 +153,3 @@ const LoginScreen = () => {
 };
 
 export default LoginScreen;
-
-const styles = StyleSheet.create({});
