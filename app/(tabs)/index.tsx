@@ -9,7 +9,6 @@ import { authClient } from "@/lib/auth-client";
 import { Wifi } from "lucide-react-native";
 import { ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 export default function HomeScreen() {
   const { data: userSession } = authClient.useSession();
   return (
@@ -20,7 +19,7 @@ export default function HomeScreen() {
             <Card
               size="lg"
               variant="elevated"
-              className="rounded-none bg-teal-800 p-4 gap-2"
+              className="rounded-none bg-teal-500 p-4 gap-2"
             >
               <Heading size="md" className="mb-1 text-white">
                 {new Date().getHours() < 12

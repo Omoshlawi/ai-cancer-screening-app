@@ -2,42 +2,122 @@ import { Icon } from "@/components/ui/icon";
 import { BottomTabBarButtonProps } from "@react-navigation/bottom-tabs";
 import { PlatformPressable } from "@react-navigation/elements";
 import * as Haptics from "expo-haptics";
-import { Plus } from "lucide-react-native";
+import { router } from "expo-router";
+import { Plus, Stethoscope, UserPlus } from "lucide-react-native";
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Actionsheet,
+  ActionsheetBackdrop,
+  ActionsheetContent,
+  ActionsheetDragIndicator,
+  ActionsheetDragIndicatorWrapper,
+  ActionsheetItem,
+} from "./ui/actionsheet";
+import { Heading } from "./ui/heading";
+import { HStack } from "./ui/hstack";
+import { Text } from "./ui/text";
+import { VStack } from "./ui/vstack";
 
 export function FloatingTabButton(props: BottomTabBarButtonProps) {
   const [pressed, setPressed] = useState(false);
+  const [showActionsheet, setShowActionsheet] = React.useState(false);
+  const handleClose = () => setShowActionsheet(false);
+  const handleStartScreening = () => {
+    handleClose();
+    router.push("/screen-client");
+  };
+
+  const handleAddClient = () => {
+    handleClose();
+    router.push("/add-client");
+  };
 
   return (
-    <View style={styles.container}>
-      <PlatformPressable
-        {...props}
-        onPress={(e) => {
-          // Prevent navigation - don't call the original onPress handler
-          e.preventDefault();
-          e.stopPropagation();
-          if (process.env.EXPO_OS === "ios") {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-          }
-          // Future: Open bottom sheet here
+    <>
+      <View style={styles.container}>
+        <PlatformPressable
+          {...props}
+          onPress={(e) => {
+            // Prevent navigation - don't call the original onPress handler
+            e.preventDefault();
+            e.stopPropagation();
+            if (process.env.EXPO_OS === "ios") {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            }
+            // Future: Open bottom sheet here
+            setShowActionsheet(true);
+          }}
+          onPressIn={(ev) => {
+            setPressed(true);
+            if (process.env.EXPO_OS === "ios") {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            }
+            props.onPressIn?.(ev);
+          }}
+          onPressOut={(ev) => {
+            setPressed(false);
+            props.onPressOut?.(ev);
+          }}
+          style={[styles.button, pressed && styles.buttonPressed]}
+        >
+          <Icon as={Plus} size="xl" className="text-white" />
+        </PlatformPressable>
+      </View>
+      <Actionsheet
+        isOpen={showActionsheet}
+        onClose={() => {
+          handleClose();
         }}
-        onPressIn={(ev) => {
-          setPressed(true);
-          if (process.env.EXPO_OS === "ios") {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          }
-          props.onPressIn?.(ev);
-        }}
-        onPressOut={(ev) => {
-          setPressed(false);
-          props.onPressOut?.(ev);
-        }}
-        style={[styles.button, pressed && styles.buttonPressed]}
       >
-        <Icon as={Plus} size="xl" className="text-white" />
-      </PlatformPressable>
-    </View>
+        <ActionsheetBackdrop />
+        <ActionsheetContent>
+          <ActionsheetDragIndicatorWrapper>
+            <ActionsheetDragIndicator />
+          </ActionsheetDragIndicatorWrapper>
+          <ActionsheetItem>
+            <Heading
+              size="lg"
+              className="text-typography-700 text-center w-full"
+            >
+              Quick Actions
+            </Heading>
+          </ActionsheetItem>
+          <HStack space="lg" className="w-full items-center">
+            <TouchableOpacity
+              onPress={handleStartScreening}
+              className="flex-1 items-center bg-background-50 p-4 rounded-lg"
+              activeOpacity={0.5}
+            >
+              <VStack space="sm" className="items-center">
+                <Icon
+                  as={Stethoscope}
+                  size="xl"
+                  className="text-typography-500"
+                />
+                <Heading size="md">Start Screening</Heading>
+                <Text size="sm" className="text-typography-500">
+                  Begin new assessment
+                </Text>
+              </VStack>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleAddClient}
+              className="flex-1 items-center bg-background-50 p-4 rounded-lg"
+              activeOpacity={0.5}
+            >
+              <VStack space="sm" className="items-center">
+                <Icon as={UserPlus} size="xl" className="text-typography-500" />
+                <Heading size="md">Add Client</Heading>
+                <Text size="sm" className="text-typography-500">
+                  Register new client
+                </Text>
+              </VStack>
+            </TouchableOpacity>
+          </HStack>
+        </ActionsheetContent>
+      </Actionsheet>
+    </>
   );
 }
 
