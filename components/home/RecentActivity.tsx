@@ -1,4 +1,5 @@
 import { cn } from "@gluestack-ui/utils/nativewind-utils";
+import { router } from "expo-router";
 import { Dot } from "lucide-react-native";
 import React from "react";
 import ListTile from "../list-tile";
@@ -37,7 +38,11 @@ const RecentActivity = () => {
     <Box className="mt-4">
       <HStack className="justify-between items-center">
         <Heading size="xs">Recent Activity</Heading>
-        <Button variant="link" size="sm">
+        <Button
+          variant="link"
+          size="sm"
+          onPress={() => router.push("/activities")}
+        >
           <ButtonText className="text-teal-600">View All</ButtonText>
         </Button>
       </HStack>
