@@ -2,6 +2,7 @@ import { Button, ButtonText } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
+import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { router } from "expo-router";
 import { CheckCircle } from "lucide-react-native";
@@ -16,8 +17,23 @@ const SuccessSubmussion = () => {
         className="text-teal-500 rounded-full p-6 bg-teal-100"
       />
       <Heading size="sm" className="text-typography-500">
-        Contact Information
+        Client Successfully Registered
       </Heading>
+      <Text size="sm" className="text-typography-500">
+        grace Wanjiku has been added to your client list
+      </Text>
+
+      <VStack
+        space="sm"
+        className="w-full bg-background-100 p-4 items-center justify-center "
+      >
+        <Text size="sm" className="text-typography-500">
+          Client ID:
+        </Text>
+        <Heading size="sm" className="text-typography-500">
+          CTNB38ZHA
+        </Heading>
+      </VStack>
       <Button
         action="primary"
         size="sm"
