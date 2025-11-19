@@ -1,4 +1,6 @@
+import dayjs from "dayjs";
 import z from "zod";
+import { PHONE_NUMBER_REGEX } from ".";
 
 // Local Authentication Constants
 export const PIN_LENGTH = 4;
@@ -10,7 +12,7 @@ export const loginSchema = z.object({
 });
 
 export const forgotPasswordSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
 });
 
 export const changePasswordSchema = z
@@ -24,3 +26,23 @@ export const changePasswordSchema = z
     path: ["confirmPassword"],
     message: "Passwords do not match",
   });
+
+export const clientSchema = z.object({
+  firstName: z.string().min(3),
+  lastName: z.string().min(3),
+  dateOfBirth: z.date().refine((date) => dayjs(date).isBefore(dayjs()), {
+    message: "Date of birth must not be a future date",
+  }),
+  phoneNumber: z.string().regex(PHONE_NUMBER_REGEX, {
+    message: "Phone number must be a valid Kenyan phone number",
+  }),
+  address: z.string().min(3),
+  nationalId: z.string().min(6),
+  maritalStatus: z.enum([
+    "single",
+    "married",
+    "divorced",
+    "widowed",
+    "separated",
+  ]),
+});

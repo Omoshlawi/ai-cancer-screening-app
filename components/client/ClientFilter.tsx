@@ -4,7 +4,7 @@ import { Button, ButtonIcon } from "../ui/button";
 import { Card } from "../ui/card";
 import { Divider } from "../ui/divider";
 import { HStack } from "../ui/hstack";
-import { Input, InputField, InputIcon } from "../ui/input";
+import { Input, InputField, InputIcon, InputSlot } from "../ui/input";
 import {
   Select,
   SelectBackdrop,
@@ -65,13 +65,11 @@ const ClientFilter: FC<ClientFilterProps> = ({
           isInvalid={false}
           isReadOnly={false}
         >
-          <InputIcon
-            as={Search}
-            size="sm"
-            className="text-typography-500 ml-2"
-          />
+          <InputSlot className="pl-3">
+            <InputIcon as={Search} />
+          </InputSlot>
           <InputField
-            placeholder="Enter Text here..."
+            placeholder="Search by name, phone or ID..."
             value={search}
             onChangeText={onSearchChange}
           />
