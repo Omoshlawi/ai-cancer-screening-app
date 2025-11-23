@@ -28,7 +28,7 @@ const AddClientScreen = () => {
       phoneNumber: "",
       address: "",
       nationalId: "",
-      maritalStatus: "single",
+      maritalStatus: "SINGLE",
     },
   });
   return (
@@ -41,7 +41,7 @@ const AddClientScreen = () => {
                 as={UserCircle}
                 size="sm"
                 className={
-                  step === 1
+                  step <= 1
                     ? "bg-teal-500 text-white rounded-full p-4"
                     : "bg-gray-200 text-gray-500 p-4 rounded-full"
                 }

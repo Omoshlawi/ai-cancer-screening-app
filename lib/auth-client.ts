@@ -6,9 +6,10 @@ import {
 } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 import * as SecureStore from "expo-secure-store";
+import { BASE_URL } from "./constants";
 
 export const authClient = createAuthClient({
-  baseURL: "http://localhost:600", // Base URL of your Better Auth backend.
+  baseURL: BASE_URL, // Base URL of your Better Auth backend.
   // baseURL: "http://10.76.170.25:600", // Base URL of your Better Auth backend.
   // baseURL: "http://192.168.1.115:600", // Base URL of your Better Auth backend.
   trustedOrigins: ["aicancerscreeningapp://"],

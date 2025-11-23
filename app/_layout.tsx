@@ -9,6 +9,7 @@ import Toaster from "@/components/toaster";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { useToast } from "@/components/ui/toast";
 import "@/global.css";
+import { ApiConfigProvider } from "@/lib/api";
 import { authClient } from "@/lib/auth-client";
 import { isLocalAuthEnabled } from "@/lib/local-auth";
 import * as SplashScreen from "expo-splash-screen";
@@ -110,55 +111,57 @@ export default function RootLayout() {
   }, [isLoggedIn]);
 
   return (
-    <GluestackUIProvider mode={theme}>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Protected guard={isLoggedIn}>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="settings" options={{ headerShown: false }} />
+    <ApiConfigProvider>
+      <GluestackUIProvider mode={theme}>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Protected guard={isLoggedIn}>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="settings" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="notifications"
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="add-client"
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="screen-client"
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="activities"
+              options={{
+                headerShown: false,
+              }}
+            />
+          </Stack.Protected>
+          <Stack.Protected guard={!isLoggedIn}>
+            <Stack.Screen name="auth" options={{ headerShown: false }} />
+          </Stack.Protected>
           <Stack.Screen
-            name="notifications"
-            options={{
-              headerShown: false,
-            }}
+            name="modal"
+            options={{ presentation: "modal", title: "Modal" }}
           />
-          <Stack.Screen
-            name="add-client"
-            options={{
-              headerShown: false,
-            }}
+        </Stack>
+        <StatusBar style="auto" />
+        {isLoggedIn && (
+          <LocalAuthModal
+            visible={showLocalAuth}
+            onSuccess={() => setShowLocalAuth(false)}
           />
-          <Stack.Screen
-            name="screen-client"
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="activities"
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack.Protected>
-        <Stack.Protected guard={!isLoggedIn}>
-          <Stack.Screen name="auth" options={{ headerShown: false }} />
-        </Stack.Protected>
-        <Stack.Screen
-          name="modal"
-          options={{ presentation: "modal", title: "Modal" }}
-        />
-      </Stack>
-      <StatusBar style="auto" />
-      {isLoggedIn && (
-        <LocalAuthModal
-          visible={showLocalAuth}
-          onSuccess={() => setShowLocalAuth(false)}
-        />
-      )}
-    </GluestackUIProvider>
+        )}
+      </GluestackUIProvider>
+    </ApiConfigProvider>
   );
 }

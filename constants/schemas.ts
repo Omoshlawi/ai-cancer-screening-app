@@ -39,10 +39,10 @@ export const clientSchema = z.object({
   address: z.string().min(3),
   nationalId: z.string().min(6),
   maritalStatus: z.enum([
-    "single",
-    "married",
-    "divorced",
-    "widowed",
-    "separated",
+    "SINGLE",
+    "MARRIED",
+    "DIVORCED",
+    "WIDOWED",
+    "SEPARATED",
   ]),
 });

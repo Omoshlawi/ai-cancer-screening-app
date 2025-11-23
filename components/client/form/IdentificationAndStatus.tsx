@@ -43,11 +43,11 @@ const IdentificationAndStatus = ({
     { label: string; value: ClientFormData["maritalStatus"] }[]
   >(
     () => [
-      { label: "Single", value: "single" },
-      { label: "Married", value: "married" },
-      { label: "Divorced", value: "divorced" },
-      { label: "Widowed", value: "widowed" },
-      { label: "Separated", value: "separated" },
+      { label: "Single", value: "SINGLE" },
+      { label: "Married", value: "MARRIED" },
+      { label: "Divorced", value: "DIVORCED" },
+      { label: "Widowed", value: "WIDOWED" },
+      { label: "Separated", value: "SEPARATED" },
     ],
     []
   );
