@@ -39,7 +39,7 @@ const deleteClient = async (id: string) => {
 export const useClient = (id?: string) => {
   const url = id ? constructUrl(`/clients/${id}`) : null;
   const { data, error, isLoading } = useSWR<APIFetchResponse<Client>>(url);
-  return { client: data?.data ?? null, error, isLoading };
+  return { client: data?.data, error, isLoading };
 };
 
 export const useClientApi = () => {

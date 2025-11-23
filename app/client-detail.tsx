@@ -1,66 +1,28 @@
+import {
+  ClientInfo,
+  RiskTratification,
+  ScreeningHistory,
+} from "@/components/client";
 import { ScreenLayout } from "@/components/layout";
 import { ErrorState, When } from "@/components/state-full-widgets";
-import { Box } from "@/components/ui/box";
-import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button, ButtonIcon } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
+import { Menu, MenuItem, MenuItemLabel } from "@/components/ui/menu";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { useClient } from "@/hooks/useClients";
-import Color from "color";
-import dayjs from "dayjs";
 import { useLocalSearchParams } from "expo-router";
-import {
-  CalendarPlus,
-  Edit,
-  IdCard,
-  MoreVertical,
-  Phone,
-  Pin,
-} from "lucide-react-native";
-import React, { useMemo } from "react";
+import { Calendar, MoreVertical, Printer, TagsIcon } from "lucide-react-native";
+import React from "react";
+import { ScrollView } from "react-native";
 
 const ClientDetail = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { client, isLoading, error } = useClient(id);
-  const personalInformation = useMemo(
-    () => [
-      {
-        icon: Phone,
-        label: "Phone Number",
-        value: `${client?.phoneNumber}`,
-        color: "red",
-      },
-      {
-        icon: Pin,
-        label: "Location",
-        value: `${client?.address}`,
-        color: "blue",
-      },
-      {
-        icon: IdCard,
-        label: "ID",
-        value: `${client?.nationalId}`,
-        color: "green",
-      },
-      {
-        icon: CalendarPlus,
-        label: "Date of Birth",
-        value: `${dayjs(client?.dateOfBirth).format("DD/MM/YYYY")}`,
-        color: "purple",
-      },
-      {
-        icon: CalendarPlus,
-        label: "Age",
-        value: `${dayjs().diff(dayjs(client?.dateOfBirth), "years")}`,
-        color: "teal",
-      },
-    ],
-    [client]
-  );
+
   return (
     <ScreenLayout title="Client Detail">
       <When
@@ -68,61 +30,60 @@ const ClientDetail = () => {
         error={(e) => <ErrorState error={e} />}
         loading={() => <Spinner color="primary" />}
         success={(client) => (
-          <VStack space="lg" className="flex-1">
-            <HStack className="justify-between items-center">
-              <VStack>
-                <Heading size="lg">
-                  {client?.firstName} {client?.lastName}
-                </Heading>
-                <Text size="sm" className="text-typography-500">
-                  Client Profile and Screening History
-                </Text>
-              </VStack>
-              <Button
-                className="p-0 bg-background-0"
-                action="secondary"
-                style={{ aspectRatio: 1 }}
-              >
-                <ButtonIcon
-                  as={MoreVertical}
-                  size="md"
-                  className="text-typography-950"
-                />
-              </Button>
-            </HStack>
-            <Card size="sm" variant="elevated" className="p-2">
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <VStack space="lg" className="flex-1">
               <HStack className="justify-between items-center">
-                <Heading size="xs">Patient Information</Heading>
-                <Button action="positive" variant="outline" size="xs">
-                  <ButtonIcon as={Edit} size="xs" />
-                  <ButtonText size="xs">Edit</ButtonText>
-                </Button>
-              </HStack>
-              <Box className="w-full flex flex-row flex-wrap gap-2">
-                {personalInformation.map((item, i) => (
-                  <HStack
-                    className="flex-1 min-w-[48%] rounded-none bg-background-0 w-[48%] p-2 gap-3 items-center"
-                    key={i}
+                <VStack>
+                  <Heading size="lg">
+                    {client?.firstName} {client?.lastName}
+                  </Heading>
+                  <Text size="sm" className="text-typography-500">
+                    Client Profile and Screening History
+                  </Text>
+                </VStack>
+                <Menu
+                  placement="bottom right"
+                  offset={5}
+                  disabledKeys={["Settings"]}
+                  trigger={({ ...triggerProps }) => {
+                    return (
+                      <Button
+                        className="p-0 bg-background-0"
+                        action="secondary"
+                        style={{ aspectRatio: 1 }}
+                        {...triggerProps}
+                      >
+                        <ButtonIcon
+                          as={MoreVertical}
+                          size="md"
+                          className="text-typography-950"
+                        />
+                      </Button>
+                    );
+                  }}
+                >
+                  <MenuItem key="View Referrals" textValue="View Referrals">
+                    <Icon as={TagsIcon} size="sm" className="mr-2" />
+                    <MenuItemLabel size="sm">View Referrals</MenuItemLabel>
+                  </MenuItem>
+                  <MenuItem
+                    key="Schedule Follow Up"
+                    textValue="Schedule Follow Up"
                   >
-                    <Box
-                      className={`p-2 rounded-full`}
-                      style={{
-                        backgroundColor: Color(item.color)
-                          .alpha(0.1)
-                          .toString(),
-                      }}
-                    >
-                      <Icon as={item.icon} size="xs" color={item.color} />
-                    </Box>
-                    <VStack>
-                      <Text size="2xs">{item.label}</Text>
-                      <Text size="2xs">{item.value}</Text>
-                    </VStack>
-                  </HStack>
-                ))}
-              </Box>
-            </Card>
-          </VStack>
+                    <Icon as={Calendar} size="sm" className="mr-2" />
+                    <MenuItemLabel size="sm">Schedule Follow Up</MenuItemLabel>
+                  </MenuItem>
+                  <MenuItem key="Print Summary" textValue="Print Summary">
+                    <Icon as={Printer} size="sm" className="mr-2" />
+                    <MenuItemLabel size="sm">Print Summary</MenuItemLabel>
+                  </MenuItem>
+                </Menu>
+              </HStack>
+              <ClientInfo client={client} />
+              <RiskTratification client={client} />
+              <ScreeningHistory client={client} />
+            </VStack>
+          </ScrollView>
         )}
       />
     </ScreenLayout>
