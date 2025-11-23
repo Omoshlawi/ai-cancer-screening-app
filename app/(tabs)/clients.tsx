@@ -118,6 +118,12 @@ const ClientsScreen = () => {
                                 action="positive"
                                 size="sm"
                                 className="bg-teal-500"
+                                onPress={() =>
+                                  router.push({
+                                    pathname: "/client-detail",
+                                    params: { id: item.id },
+                                  })
+                                }
                               >
                                 <ButtonText>View</ButtonText>
                                 <ButtonIcon as={ArrowRight} size="sm" />

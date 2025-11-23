@@ -5,7 +5,6 @@ import {
   SuccessSubmussion,
 } from "@/components/client/form";
 import { ScreenLayout } from "@/components/layout";
-import { ErrorState, When } from "@/components/state-full-widgets";
 import Toaster from "@/components/toaster";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
@@ -14,15 +13,13 @@ import { Icon } from "@/components/ui/icon";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { clientSchema } from "@/constants/schemas";
-import { useClient, useClientApi } from "@/hooks/useClients";
+import { useClientApi } from "@/hooks/useClients";
 import { handleApiErrors } from "@/lib/api";
 import { Client, ClientFormData } from "@/types/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useLocalSearchParams } from "expo-router";
 import { CheckCircle, IdCard, Phone, UserCircle } from "lucide-react-native";
 import React, { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { ActivityIndicator } from "react-native";
 
 const steps: (keyof ClientFormData)[][] = [
   ["firstName", "lastName", "dateOfBirth"],
@@ -31,31 +28,23 @@ const steps: (keyof ClientFormData)[][] = [
 ];
 
 const AddClientScreen = () => {
-  const { id } = useLocalSearchParams<{ id: string }>();
   const [step, setStep] = useState(1);
   const [cli, setCli] = useState<Client>();
-  const { client, isLoading, error } = useClient(id);
   const toast = useToast();
   const form = useForm<ClientFormData>({
     resolver: zodResolver(clientSchema),
     defaultValues: {
-      firstName: client?.firstName ?? "",
-      lastName: client?.lastName ?? "",
-      dateOfBirth: client?.dateOfBirth
-        ? new Date(client.dateOfBirth)
-        : new Date(),
-      phoneNumber: client?.phoneNumber ?? "",
-      address: client?.address ?? "",
-      nationalId: client?.nationalId ?? "",
-      maritalStatus: client?.maritalStatus ?? "SINGLE",
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      address: "",
+      nationalId: "",
     },
   });
-  const { createClient, updateClient } = useClientApi();
+  const { createClient } = useClientApi();
   const onSubmit: SubmitHandler<ClientFormData> = async (data) => {
     try {
-      const _client = id
-        ? await updateClient(id, data)
-        : await createClient(data);
+      const _client = await createClient(data);
       if (_client) {
         setStep(4);
         setCli(_client);
@@ -145,31 +134,22 @@ const AddClientScreen = () => {
               {step === 4 && "Success"}
             </Heading>
           </Card>
-          <When
-            asyncState={{ isLoading, error, data: client }}
-            loading={() => <ActivityIndicator />}
-            error={(e) => <ErrorState error={e} />}
-            success={() => (
-              <Card size="md" variant="elevated" className="flex-1">
-                {step === 1 && (
-                  <PersonalInformation onNext={() => setStep(2)} />
-                )}
-                {step === 2 && (
-                  <ContactInformation
-                    onNext={() => setStep(3)}
-                    onPrevious={() => setStep(1)}
-                  />
-                )}
-                {step === 3 && (
-                  <IdentificationAndStatus
-                    onNext={form.handleSubmit(onSubmit)}
-                    onPrevious={() => setStep(2)}
-                  />
-                )}
-                {step === 4 && cli && <SuccessSubmussion client={cli} />}
-              </Card>
+          <Card size="md" variant="elevated" className="flex-1">
+            {step === 1 && <PersonalInformation onNext={() => setStep(2)} />}
+            {step === 2 && (
+              <ContactInformation
+                onNext={() => setStep(3)}
+                onPrevious={() => setStep(1)}
+              />
             )}
-          />
+            {step === 3 && (
+              <IdentificationAndStatus
+                onNext={form.handleSubmit(onSubmit)}
+                onPrevious={() => setStep(2)}
+              />
+            )}
+            {step === 4 && cli && <SuccessSubmussion client={cli} />}
+          </Card>
         </VStack>
       </FormProvider>
     </ScreenLayout>
