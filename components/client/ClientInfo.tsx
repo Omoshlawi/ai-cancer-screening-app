@@ -1,9 +1,9 @@
 import { Client } from "@/types/client";
 import Color from "color";
 import dayjs from "dayjs";
+import { router } from "expo-router";
 import { CalendarPlus, Edit, IdCard, Phone, Pin } from "lucide-react-native";
 import React, { FC, useMemo } from "react";
-import { StyleSheet } from "react-native";
 import { Box } from "../ui/box";
 import { Button, ButtonIcon, ButtonText } from "../ui/button";
 import { Card } from "../ui/card";
@@ -56,7 +56,17 @@ const ClientInfo: FC<ClientInfoProps> = ({ client }) => {
     <Card size="sm" variant="elevated" className="p-2">
       <HStack className="justify-between items-center">
         <Heading size="xs">Patient Information</Heading>
-        <Button action="positive" variant="outline" size="xs">
+        <Button
+          action="positive"
+          variant="outline"
+          size="xs"
+          onPress={() =>
+            router.push({
+              pathname: "/edit-client",
+              params: { id: client?.id },
+            })
+          }
+        >
           <ButtonIcon as={Edit} size="xs" />
           <ButtonText size="xs">Edit</ButtonText>
         </Button>
@@ -87,5 +97,3 @@ const ClientInfo: FC<ClientInfoProps> = ({ client }) => {
 };
 
 export default ClientInfo;
-
-const styles = StyleSheet.create({});

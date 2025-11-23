@@ -1,4 +1,4 @@
-import { apiFetch, APIFetchResponse } from "@/lib/api";
+import { apiFetch, APIFetchResponse, mutate } from "@/lib/api";
 import { constructUrl } from "@/lib/api/constructUrl";
 import { Client, ClientFormData } from "@/types/client";
 import useSWR from "swr";
@@ -16,6 +16,7 @@ const createClient = async (data: ClientFormData) => {
     method: "POST",
     data: data,
   });
+  mutate("/clients");
   return response.data;
 };
 
@@ -25,6 +26,7 @@ const updateClient = async (id: string, data: Partial<ClientFormData>) => {
     method: "PUT",
     data: data,
   });
+  mutate("/clients");
   return response.data;
 };
 
@@ -33,6 +35,7 @@ const deleteClient = async (id: string) => {
   const response = await apiFetch<Client>(url, {
     method: "DELETE",
   });
+  mutate("/clients");
   return response.data;
 };
 
