@@ -4,11 +4,16 @@ import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
+import { Client } from "@/types/client";
 import { router } from "expo-router";
 import { CheckCircle } from "lucide-react-native";
 import React from "react";
 
-const SuccessSubmussion = () => {
+type SuccessSubmussionProps = {
+  client: Client;
+};
+
+const SuccessSubmussion = ({ client }: SuccessSubmussionProps) => {
   return (
     <VStack space="md" className="flex-1 items-center">
       <Icon
@@ -20,7 +25,7 @@ const SuccessSubmussion = () => {
         Client Successfully Registered
       </Heading>
       <Text size="sm" className="text-typography-500">
-        grace Wanjiku has been added to your client list
+        {client.firstName} {client.lastName} has been added to your client list
       </Text>
 
       <VStack
@@ -31,7 +36,7 @@ const SuccessSubmussion = () => {
           Client ID:
         </Text>
         <Heading size="sm" className="text-typography-500">
-          CTNB38ZHA
+          {client.id}
         </Heading>
       </VStack>
       <Button

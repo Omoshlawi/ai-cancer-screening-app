@@ -1,4 +1,9 @@
-import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
+import {
+  Button,
+  ButtonIcon,
+  ButtonSpinner,
+  ButtonText,
+} from "@/components/ui/button";
 import {
   FormControl,
   FormControlError,
@@ -30,7 +35,7 @@ import React, { useMemo } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
 type IdentificationAndStatusProps = {
-  onNext: () => void;
+  onNext: () => Promise<void>;
   onPrevious: () => void;
 };
 
@@ -51,6 +56,7 @@ const IdentificationAndStatus = ({
     ],
     []
   );
+
   return (
     <VStack space="md" className="flex-1 items-center">
       <Icon
@@ -170,14 +176,20 @@ const IdentificationAndStatus = ({
           action="primary"
           size="sm"
           className="flex-1 bg-teal-500 justify-between rounded-none"
+          isDisabled={form.formState.isSubmitting}
           onPress={async () => {
             const isValid = await form.trigger(["nationalId", "maritalStatus"]);
             if (isValid) {
-              onNext();
+              await onNext();
             }
           }}
         >
-          <ButtonText>Next</ButtonText>
+          {form.formState.isSubmitting && (
+            <ButtonSpinner color={"white"} size={"small"} />
+          )}
+          <ButtonText>
+            {form.formState.isSubmitting ? "Submitting..." : "Register"}
+          </ButtonText>
           <ButtonIcon as={ArrowRightIcon} />
         </Button>
       </HStack>

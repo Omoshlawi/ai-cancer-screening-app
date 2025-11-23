@@ -10,7 +10,7 @@ interface AsyncState<TData, TError = Error> {
 interface WhenProps<TData, TError = Error> {
   loading?: () => React.ReactElement;
   error?: (error: TError) => React.ReactElement;
-  success?: (data: TData) => React.ReactElement;
+  success?: (data?: TData) => React.ReactElement;
   asyncState: AsyncState<TData, TError>;
 }
 
@@ -35,7 +35,7 @@ const When = <TData, TError = Error>({
   }
 
   // Success state with data
-  if (data && success) {
+  if (success) {
     return <>{success(data)}</>;
   }
 

@@ -48,11 +48,12 @@ const handleApiErrors = <T extends Record<string, unknown>>(
   if (isAxiosError(error)) {
     if (error.response?.status === 400) {
       const errorData = error.response?.data ?? {};
-      return flattenZodErrors(errorData);
+      return flattenZodErrors(errorData?.errors);
     }
     return {
       detail:
         error?.response?.data?.detail ??
+        error?.response?.data?.message ??
         error.message ??
         "Unknown error occurred",
     };

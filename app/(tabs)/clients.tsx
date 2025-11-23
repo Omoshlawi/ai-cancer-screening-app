@@ -9,7 +9,7 @@ import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import useClients from "@/hooks/useClients";
+import { useClients } from "@/hooks/useClients";
 import dayjs from "dayjs";
 import { router } from "expo-router";
 import {
