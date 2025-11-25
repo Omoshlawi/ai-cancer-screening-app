@@ -83,7 +83,7 @@ const ReviewAndSubmit: FC<ReviewAndSubmitProps> = ({
       },
       {
         variable: "Smoking History",
-        value: getSmokingDisplayValue(form.watch("smoke")),
+        value: getSmokingDisplayValue(form.watch("smoking")),
       },
       {
         variable: "Family History",

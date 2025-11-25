@@ -11,14 +11,17 @@ import {
   SmokingHistory,
 } from "@/components/client/screening-form";
 import { ScreenLayout } from "@/components/layout";
+import Toaster from "@/components/toaster";
 import { Card } from "@/components/ui/card";
 import { Progress, ProgressFilledTrack } from "@/components/ui/progress";
 import { Text } from "@/components/ui/text";
+import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { screenClientSchema } from "@/constants/schemas";
 import { useSearchClients } from "@/hooks/useClients";
+import { useScreeningsApi } from "@/hooks/useScreenings";
 import { SCREENING_FORM_STEPS } from "@/lib/constants";
-import { ScreenClientFormData } from "@/types/client";
+import { ScreenClientFormData, Screening } from "@/types/screening";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -38,19 +41,34 @@ const ScreenClientScreen = () => {
       totalBirths: 0,
       everScreenedForCervicalCancer: "NOT_SURE",
       usedOralContraceptivesForMoreThan5Years: "NOT_SURE",
-      smoke: "NEVER",
+      smoking: "NEVER",
       familyMemberDiagnosedWithCervicalCancer: "NO",
     },
   });
-
+  const { createScreening } = useScreeningsApi();
   const seachClientAsync = useSearchClients();
+  const toast = useToast();
+  const [screening, setScreening] = useState<Screening>();
 
   const onSubmit: SubmitHandler<ScreenClientFormData> = async (data) => {
-    try {
-      // await screenClient(data);
-    } catch (error) {
-      console.error(error);
-    }
+    const screening = await createScreening(data);
+    toast.show({
+      placement: "top",
+      render: ({ id }) => {
+        const uniqueToastId = "toast-" + id;
+        return (
+          <Toaster
+            uniqueToastId={uniqueToastId}
+            variant="outline"
+            title="Success"
+            description="Screening successfully created"
+            action="success"
+          />
+        );
+      },
+    });
+    setStep(10);
+    setScreening(screening);
   };
   return (
     <ScreenLayout title="Screen Client">
@@ -126,7 +144,9 @@ const ScreenClientScreen = () => {
               />
             )}
 
-            {step === 10 /*&& cli*/ && <ScreeningResults />}
+            {step === 10 && screening && (
+              <ScreeningResults screening={screening} />
+            )}
           </Card>
         </VStack>
       </FormProvider>

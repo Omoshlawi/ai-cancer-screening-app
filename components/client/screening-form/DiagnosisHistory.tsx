@@ -28,7 +28,7 @@ import {
   SCREENING_FORM_BOOLEAN_OPTIONS,
   SCREENING_FORM_STEPS,
 } from "@/lib/constants";
-import { ScreenClientFormData } from "@/types/client";
+import { ScreenClientFormData } from "@/types/screening";
 import { AlertCircleIcon, UserSearch } from "lucide-react-native";
 import React, { FC } from "react";
 import { Controller, useFormContext } from "react-hook-form";

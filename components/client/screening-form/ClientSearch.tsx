@@ -17,7 +17,7 @@ import { Input, InputField } from "@/components/ui/input";
 import { VStack } from "@/components/ui/vstack";
 import { useSearchClients } from "@/hooks/useClients";
 import { SCREENING_FORM_STEPS } from "@/lib/constants";
-import { ScreenClientFormData } from "@/types/client";
+import { ScreenClientFormData } from "@/types/screening";
 import dayjs from "dayjs";
 import { router } from "expo-router";
 import {

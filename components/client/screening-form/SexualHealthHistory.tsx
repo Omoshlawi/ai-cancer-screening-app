@@ -15,7 +15,7 @@ import { HStack } from "@/components/ui/hstack";
 import { AlertCircleIcon, Icon } from "@/components/ui/icon";
 import { VStack } from "@/components/ui/vstack";
 import { SCREENING_FORM_STEPS } from "@/lib/constants";
-import { ScreenClientFormData } from "@/types/client";
+import { ScreenClientFormData } from "@/types/screening";
 import { ArrowLeftIcon, ArrowRightIcon, UserSearch } from "lucide-react-native";
 import React, { FC } from "react";
 import { Controller, useFormContext } from "react-hook-form";

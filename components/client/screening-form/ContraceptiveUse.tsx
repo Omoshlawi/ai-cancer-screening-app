@@ -23,7 +23,7 @@ import {
   SCREENING_FORM_BOOLEAN_OPTIONS,
   SCREENING_FORM_STEPS,
 } from "@/lib/constants";
-import { ScreenClientFormData } from "@/types/client";
+import { ScreenClientFormData } from "@/types/screening";
 import {
   AlertCircleIcon,
   ArrowLeftIcon,

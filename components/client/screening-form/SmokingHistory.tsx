@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/radio";
 import { VStack } from "@/components/ui/vstack";
 import { SCREENING_FORM_STEPS, SMOKING_OPTIONS } from "@/lib/constants";
-import { ScreenClientFormData } from "@/types/client";
+import { ScreenClientFormData } from "@/types/screening";
 import {
   AlertCircleIcon,
   ArrowLeftIcon,
@@ -51,7 +51,7 @@ const SmokingHistory: FC<SmokingHistoryProps> = ({ onNext, onPrevious }) => {
 
       <Controller
         control={form.control}
-        name="smoke"
+        name="smoking"
         render={({ field, fieldState: { invalid, error } }) => (
           <FormControl
             isInvalid={invalid}
@@ -63,7 +63,7 @@ const SmokingHistory: FC<SmokingHistoryProps> = ({ onNext, onPrevious }) => {
           >
             <FormControlLabel>
               <FormControlLabelText>
-                Do you currently smoke or have you ever smoked?
+                Do you currently smoking or have you ever smoked?
               </FormControlLabelText>
             </FormControlLabel>
             <RadioGroup value={field.value} onChange={field.onChange}>
@@ -109,7 +109,7 @@ const SmokingHistory: FC<SmokingHistoryProps> = ({ onNext, onPrevious }) => {
           size="sm"
           className="flex-1 bg-teal-500 justify-between rounded-none"
           onPress={async () => {
-            const isValid = await form.trigger(["smoke"]);
+            const isValid = await form.trigger(["smoking"]);
             if (isValid) {
               onNext();
             }

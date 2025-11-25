@@ -59,6 +59,6 @@ export const screenClientSchema = z.object({
   totalBirths: z.coerce.number(),
   everScreenedForCervicalCancer: screenBoolean,
   usedOralContraceptivesForMoreThan5Years: screenBoolean,
-  smoke: z.enum(["CURRENTLY", "NEVER", "PAST"]),
+  smoking: z.enum(["CURRENTLY", "NEVER", "PAST"]),
   familyMemberDiagnosedWithCervicalCancer: screenBoolean,
 });

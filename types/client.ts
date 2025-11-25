@@ -1,4 +1,4 @@
-import { clientSchema, screenClientSchema } from "@/constants/schemas";
+import { clientSchema } from "@/constants/schemas";
 import z from "zod";
 
 export type ClientFormData = z.infer<typeof clientSchema>;
@@ -15,4 +15,3 @@ export interface Client {
   level?: "low" | "medium" | "high";
 }
 
-export type ScreenClientFormData = z.infer<typeof screenClientSchema>;
