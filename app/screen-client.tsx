@@ -90,38 +90,38 @@ const ScreenClientScreen = () => {
             )}
             {step === 4 && (
               <ObstetricHostory
-                onNext={() => setStep(4)}
-                onPrevious={() => setStep(2)}
+                onNext={() => setStep(5)}
+                onPrevious={() => setStep(3)}
               />
             )}
             {step === 5 && (
               <ScreeningHistory
-                onNext={() => setStep(4)}
-                onPrevious={() => setStep(2)}
+                onNext={() => setStep(6)}
+                onPrevious={() => setStep(4)}
               />
             )}
             {step === 6 && (
               <ContraceptiveUse
-                onNext={() => setStep(4)}
-                onPrevious={() => setStep(2)}
+                onNext={() => setStep(7)}
+                onPrevious={() => setStep(5)}
               />
             )}
             {step === 7 && (
               <SmokingHistory
-                onNext={() => setStep(4)}
-                onPrevious={() => setStep(2)}
+                onNext={() => setStep(8)}
+                onPrevious={() => setStep(6)}
               />
             )}
             {step === 8 && (
               <FamilyHistory
-                onNext={() => setStep(4)}
-                onPrevious={() => setStep(2)}
+                onNext={() => setStep(9)}
+                onPrevious={() => setStep(7)}
               />
             )}
             {step === 9 && (
               <ReviewAndSubmit
                 onNext={form.handleSubmit(onSubmit)}
-                onPrevious={() => setStep(2)}
+                onPrevious={() => setStep(8)}
               />
             )}
 

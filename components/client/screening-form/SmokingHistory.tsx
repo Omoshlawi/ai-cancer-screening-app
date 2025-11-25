@@ -1,14 +1,34 @@
 import { Box } from "@/components/ui/box";
 import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
+import {
+  FormControl,
+  FormControlError,
+  FormControlErrorIcon,
+  FormControlErrorText,
+  FormControlLabel,
+  FormControlLabelText,
+} from "@/components/ui/form-control";
 import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
-import { Icon } from "@/components/ui/icon";
+import { CircleIcon, Icon } from "@/components/ui/icon";
+import {
+  Radio,
+  RadioGroup,
+  RadioIcon,
+  RadioIndicator,
+  RadioLabel,
+} from "@/components/ui/radio";
 import { VStack } from "@/components/ui/vstack";
 import { SCREENING_FORM_STEPS } from "@/lib/constants";
 import { ScreenClientFormData } from "@/types/client";
-import { ArrowLeftIcon, ArrowRightIcon, UserSearch } from "lucide-react-native";
+import {
+  AlertCircleIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  UserSearch,
+} from "lucide-react-native";
 import React, { FC } from "react";
-import { useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 
 type SmokingHistoryProps = {
   onNext: () => void;
@@ -17,6 +37,11 @@ type SmokingHistoryProps = {
 
 const SmokingHistory: FC<SmokingHistoryProps> = ({ onNext, onPrevious }) => {
   const form = useFormContext<ScreenClientFormData>();
+  const smokingOptions = [
+    { label: "Yes, Currently", value: "CURRENTLY" },
+    { label: "No, Never", value: "NEVER" },
+    { label: "Yes, in the Past", value: "PAST" },
+  ];
   return (
     <VStack space="md" className="flex-1 items-center">
       <Box className="bg-teal-100 rounded-full p-6 w-fit ">
@@ -26,9 +51,52 @@ const SmokingHistory: FC<SmokingHistoryProps> = ({ onNext, onPrevious }) => {
           className="text-teal-500 rounded-full p-6 bg-teal-100"
         />
       </Box>
-      <Heading size="sm" className="text-typography-500">
-        {SCREENING_FORM_STEPS[6]}
-      </Heading>
+      <Heading size="sm">{SCREENING_FORM_STEPS[6]}</Heading>
+
+      <Controller
+        control={form.control}
+        name="smoke"
+        render={({ field, fieldState: { invalid, error } }) => (
+          <FormControl
+            isInvalid={invalid}
+            size="md"
+            isDisabled={false}
+            isReadOnly={false}
+            isRequired={false}
+            className="w-full"
+          >
+            <FormControlLabel>
+              <FormControlLabelText>
+                Do you currently smoke or have you ever smoked?
+              </FormControlLabelText>
+            </FormControlLabel>
+            <RadioGroup value={field.value} onChange={field.onChange}>
+              <VStack space="sm">
+                {smokingOptions.map((option) => (
+                  <Radio key={option.value} value={option.value}>
+                    <RadioIndicator>
+                      <RadioIcon as={CircleIcon} />
+                    </RadioIndicator>
+                    <RadioLabel>{option.label}</RadioLabel>
+                  </Radio>
+                ))}
+              </VStack>
+            </RadioGroup>
+
+            {error && (
+              <FormControlError>
+                <FormControlErrorIcon
+                  as={AlertCircleIcon}
+                  className="text-red-500"
+                />
+                <FormControlErrorText className="text-red-500">
+                  {error.message}
+                </FormControlErrorText>
+              </FormControlError>
+            )}
+          </FormControl>
+        )}
+      />
 
       <HStack space="sm" className="w-full">
         <Button
