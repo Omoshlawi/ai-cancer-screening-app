@@ -1,7 +1,9 @@
 import { apiFetch, APIFetchResponse, mutate } from "@/lib/api";
 import { constructUrl } from "@/lib/api/constructUrl";
 import { Client, ClientFormData } from "@/types/client";
+import { useState } from "react";
 import useSWR from "swr";
+import { useDebouncedValue } from "./useDebouncedValue";
 
 export const useClients = () => {
   const url = constructUrl("/clients");
@@ -50,5 +52,21 @@ export const useClientApi = () => {
     createClient,
     updateClient,
     deleteClient,
+  };
+};
+
+export const useSearchClients = () => {
+  const [search, setSearch] = useState<string>("");
+  const [debounced] = useDebouncedValue(search, 500);
+  const url = constructUrl("/clients", { search: debounced });
+  const { data, error, isLoading } = useSWR<
+    APIFetchResponse<{ results: Client[] }>
+  >(debounced ? url : undefined);
+  return {
+    clients: data?.data?.results ?? [],
+    isLoading,
+    error,
+    onSearchChange: setSearch,
+    searchValue: search,
   };
 };

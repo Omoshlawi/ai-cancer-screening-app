@@ -1,3 +1,4 @@
+import { SearchIcon } from "lucide-react-native";
 import React, { useCallback } from "react";
 import { ListRenderItem } from "react-native";
 import {
@@ -10,6 +11,8 @@ import {
   ActionsheetItem,
   ActionsheetItemText,
 } from "./ui/actionsheet";
+import { Input, InputField, InputIcon, InputSlot } from "./ui/input";
+import { Spinner } from "./ui/spinner";
 
 interface RenderTriggerProps<T> {
   onPress: () => void;
@@ -20,6 +23,12 @@ type ActionSheetWrapperProps<T> = {
   data: T[];
   renderItem?: (args: { item: T; close: () => void }) => React.ReactNode;
   valueExtractor?: (item: T) => string;
+  searchable?: boolean;
+  renderEmptyState?: () => React.ReactNode;
+  renderErrorState?: () => React.ReactNode;
+  searchText?: string;
+  onSearchTextChange?: (text: string) => void;
+  loading?: boolean;
 };
 
 const ActionSheetWrapper = <T,>({
@@ -27,6 +36,11 @@ const ActionSheetWrapper = <T,>({
   data,
   renderItem,
   valueExtractor,
+  searchable = false,
+  renderEmptyState,
+  searchText,
+  onSearchTextChange,
+  loading = false,
 }: ActionSheetWrapperProps<T>) => {
   const [showActionsheet, setShowActionsheet] = React.useState(false);
   const handleOpen = () => setShowActionsheet(true);
@@ -47,19 +61,16 @@ const ActionSheetWrapper = <T,>({
     [valueExtractor]
   );
 
-  const fallbackLabelExtractor = React.useCallback(
-    (item: any) => {
-      // fallback to item.title or item.label or toString
-      if ("title" in item) {
-        return String((item as any).title);
-      }
-      if ("label" in item) {
-        return String((item as any).label);
-      }
-      return String(item);
-    },
-    []
-  );
+  const fallbackLabelExtractor = React.useCallback((item: any) => {
+    // fallback to item.title or item.label or toString
+    if ("title" in item) {
+      return String((item as any).title);
+    }
+    if ("label" in item) {
+      return String((item as any).label);
+    }
+    return String(item);
+  }, []);
 
   const DefaultItem = React.useCallback(
     ({ item }: { item: T }) => (
@@ -96,12 +107,30 @@ const ActionSheetWrapper = <T,>({
           <ActionsheetDragIndicatorWrapper>
             <ActionsheetDragIndicator />
           </ActionsheetDragIndicatorWrapper>
+          {searchable && (
+            <Input className="my-4">
+              <InputSlot className="pl-3">
+                <InputIcon as={SearchIcon} />
+              </InputSlot>
+              <InputField
+                placeholder="Search..."
+                value={searchText}
+                onChangeText={onSearchTextChange}
+              />
+              {loading && (
+                <InputSlot className="pr-3">
+                  <Spinner />
+                </InputSlot>
+              )}
+            </Input>
+          )}
           <ActionsheetFlatList
             data={data}
             renderItem={_renderItem as ListRenderItem<unknown>}
             keyExtractor={
               _keyExtractor as (item: unknown, index: number) => string
             }
+            ListEmptyComponent={renderEmptyState}
           />
         </ActionsheetContent>
       </Actionsheet>

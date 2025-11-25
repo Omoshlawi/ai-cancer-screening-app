@@ -1,3 +1,4 @@
+import { Box } from "@/components/ui/box";
 import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
 import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
@@ -8,7 +9,7 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
   Heading,
-  Phone,
+  UserSearch,
 } from "lucide-react-native";
 import React, { FC } from "react";
 import { useFormContext } from "react-hook-form";
@@ -25,11 +26,13 @@ const SexualHealthHistory: FC<SexualHealthHistoryProps> = ({
   const form = useFormContext<ScreenClientFormData>();
   return (
     <VStack space="md" className="flex-1 items-center">
-      <Icon
-        as={Phone}
-        size="sm"
-        className="text-teal-500 rounded-full p-6 bg-teal-100"
-      />
+      <Box className="bg-teal-100 rounded-full p-6 w-fit ">
+        <Icon
+          as={UserSearch}
+          size="sm"
+          className="text-teal-500 rounded-full p-6 bg-teal-100"
+        />
+      </Box>
       <Heading size="sm" className="text-typography-500">
         {SCREENING_FORM_STEPS[1]}
       </Heading>

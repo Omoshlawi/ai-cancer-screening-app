@@ -16,6 +16,7 @@ import { Progress, ProgressFilledTrack } from "@/components/ui/progress";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { screenClientSchema } from "@/constants/schemas";
+import { useSearchClients } from "@/hooks/useClients";
 import { SCREENING_FORM_STEPS } from "@/lib/constants";
 import { ScreenClientFormData } from "@/types/client";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -42,6 +43,8 @@ const ScreenClientScreen = () => {
     },
   });
 
+  const seachClientAsync = useSearchClients();
+
   const onSubmit: SubmitHandler<ScreenClientFormData> = async (data) => {
     try {
       // await screenClient(data);
@@ -67,7 +70,12 @@ const ScreenClientScreen = () => {
             </VStack>
           </Card>
           <Card size="md" variant="elevated" className="flex-1">
-            {step === 1 && <ClientSearch onNext={() => setStep(2)} />}
+            {step === 1 && (
+              <ClientSearch
+                onNext={() => setStep(2)}
+                searchClientAsync={seachClientAsync}
+              />
+            )}
             {step === 2 && (
               <SexualHealthHistory
                 onNext={() => setStep(3)}
