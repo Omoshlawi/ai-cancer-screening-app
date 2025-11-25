@@ -48,6 +48,21 @@ const AddClientScreen = () => {
       if (_client) {
         setStep(4);
         setCli(_client);
+        toast.show({
+          placement: "top",
+          render: ({ id }) => {
+            const uniqueToastId = "toast-" + id;
+            return (
+              <Toaster
+                uniqueToastId={uniqueToastId}
+                variant="outline"
+                title="Success"
+                description="Client successfully registered"
+                action="success"
+              />
+            );
+          },
+        });
       }
     } catch (error) {
       const errors = handleApiErrors<ClientFormData>(error);

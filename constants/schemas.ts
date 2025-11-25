@@ -46,3 +46,19 @@ export const clientSchema = z.object({
     "SEPARATED",
   ]),
 });
+
+const screenBoolean = z.enum(["YES", "NO", "NOT_SURE"]);
+
+export const screenClientSchema = z.object({
+  clientId: z.string(),
+  lifeTimePatners: z.coerce.number(),
+  firstIntercourseAge: z.coerce.number(),
+  everDiagnosedWithHIV: screenBoolean,
+  everDiagnosedWithHPV: screenBoolean,
+  everDiagnosedWithSTI: screenBoolean,
+  totalBirths: z.coerce.number(),
+  everScreenedForCervicalCancer: screenBoolean,
+  usedOralContraceptivesForMoreThan5Years: screenBoolean,
+  smoke: z.enum(["CURRENTLY", "NO", "PAST"]),
+  familyMemberDiagnosedWithCervicalCancer: screenBoolean,
+});

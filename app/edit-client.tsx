@@ -1,6 +1,7 @@
 import DateTimePickerInput from "@/components/date-time-picker";
 import { ScreenLayout } from "@/components/layout";
 import { ErrorState, When } from "@/components/state-full-widgets";
+import Toaster from "@/components/toaster";
 import { Box } from "@/components/ui/box";
 import {
   Button,
@@ -34,6 +35,7 @@ import {
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
+import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { clientSchema } from "@/constants/schemas";
 import { useClient, useClientApi } from "@/hooks/useClients";
@@ -83,7 +85,7 @@ const Form = ({ client }: { client: Client }) => {
       maritalStatus: client?.maritalStatus,
     },
   });
-
+  const toast = useToast();
   const { updateClient } = useClientApi();
   const maritalStatuses = useMemo<
     { label: string; value: ClientFormData["maritalStatus"] }[]
@@ -100,6 +102,21 @@ const Form = ({ client }: { client: Client }) => {
   const onSubmit: SubmitHandler<ClientFormData> = async (data) => {
     try {
       await updateClient(client.id, data);
+      toast.show({
+        placement: "top",
+        render: ({ id }) => {
+          const uniqueToastId = "toast-" + id;
+          return (
+            <Toaster
+              uniqueToastId={uniqueToastId}
+              variant="outline"
+              title="Success"
+              description="Client successfully updated"
+              action="success"
+            />
+          );
+        },
+      });
       router.back();
     } catch (error) {
       console.error(error);
