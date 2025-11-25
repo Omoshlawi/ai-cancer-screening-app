@@ -17,3 +17,9 @@ export const SCREENING_FORM_BOOLEAN_OPTIONS = [
   { label: "No", value: "NO" },
   { label: "Not Sure", value: "NOT_SURE" },
 ];
+
+export const SMOKING_OPTIONS = [
+  { label: "Yes, Currently", value: "CURRENTLY" },
+  { label: "No, Never", value: "NEVER" },
+  { label: "Yes, in the Past", value: "PAST" },
+];

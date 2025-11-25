@@ -38,7 +38,7 @@ const ScreenClientScreen = () => {
       totalBirths: 0,
       everScreenedForCervicalCancer: "NOT_SURE",
       usedOralContraceptivesForMoreThan5Years: "NOT_SURE",
-      smoke: "NO",
+      smoke: "NEVER",
       familyMemberDiagnosedWithCervicalCancer: "NO",
     },
   });
@@ -122,6 +122,7 @@ const ScreenClientScreen = () => {
               <ReviewAndSubmit
                 onNext={form.handleSubmit(onSubmit)}
                 onPrevious={() => setStep(8)}
+                clients={seachClientAsync.clients}
               />
             )}
 

@@ -19,7 +19,7 @@ import {
   RadioLabel,
 } from "@/components/ui/radio";
 import { VStack } from "@/components/ui/vstack";
-import { SCREENING_FORM_STEPS } from "@/lib/constants";
+import { SCREENING_FORM_STEPS, SMOKING_OPTIONS } from "@/lib/constants";
 import { ScreenClientFormData } from "@/types/client";
 import {
   AlertCircleIcon,
@@ -37,11 +37,7 @@ type SmokingHistoryProps = {
 
 const SmokingHistory: FC<SmokingHistoryProps> = ({ onNext, onPrevious }) => {
   const form = useFormContext<ScreenClientFormData>();
-  const smokingOptions = [
-    { label: "Yes, Currently", value: "CURRENTLY" },
-    { label: "No, Never", value: "NEVER" },
-    { label: "Yes, in the Past", value: "PAST" },
-  ];
+
   return (
     <VStack space="md" className="flex-1 items-center">
       <Box className="bg-teal-100 rounded-full p-6 w-fit ">
@@ -72,7 +68,7 @@ const SmokingHistory: FC<SmokingHistoryProps> = ({ onNext, onPrevious }) => {
             </FormControlLabel>
             <RadioGroup value={field.value} onChange={field.onChange}>
               <VStack space="sm">
-                {smokingOptions.map((option) => (
+                {SMOKING_OPTIONS.map((option) => (
                   <Radio key={option.value} value={option.value}>
                     <RadioIndicator>
                       <RadioIcon as={CircleIcon} />
