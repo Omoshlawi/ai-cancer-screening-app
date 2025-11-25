@@ -11,3 +11,9 @@ export const SCREENING_FORM_STEPS = [
   "Family History",
   "Review And Submit",
 ];
+
+export const SCREENING_FORM_BOOLEAN_OPTIONS = [
+  { label: "Yes", value: "YES" },
+  { label: "No", value: "NO" },
+  { label: "Not Sure", value: "NOT_SURE" },
+];

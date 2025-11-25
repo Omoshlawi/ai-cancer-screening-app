@@ -1,18 +1,24 @@
 import { Box } from "@/components/ui/box";
 import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
+import {
+  FormControl,
+  FormControlError,
+  FormControlErrorIcon,
+  FormControlErrorText,
+  FormControlLabel,
+  FormControlLabelText,
+} from "@/components/ui/form-control";
+import { Input, InputField } from "@/components/ui/input";
+
+import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
-import { Icon } from "@/components/ui/icon";
+import { AlertCircleIcon, Icon } from "@/components/ui/icon";
 import { VStack } from "@/components/ui/vstack";
 import { SCREENING_FORM_STEPS } from "@/lib/constants";
 import { ScreenClientFormData } from "@/types/client";
-import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  Heading,
-  UserSearch,
-} from "lucide-react-native";
+import { ArrowLeftIcon, ArrowRightIcon, UserSearch } from "lucide-react-native";
 import React, { FC } from "react";
-import { useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 
 type SexualHealthHistoryProps = {
   onNext: () => void;
@@ -33,9 +39,78 @@ const SexualHealthHistory: FC<SexualHealthHistoryProps> = ({
           className="text-teal-500 rounded-full p-6 bg-teal-100"
         />
       </Box>
-      <Heading size="sm" className="text-typography-500">
-        {SCREENING_FORM_STEPS[1]}
-      </Heading>
+      <Heading size="sm">{SCREENING_FORM_STEPS[1]}</Heading>
+
+      <Controller
+        control={form.control}
+        name="lifeTimePatners"
+        render={({ field, fieldState: { invalid, error } }) => (
+          <FormControl isInvalid={invalid} size="md" className="w-full" >
+            <FormControlLabel>
+              <FormControlLabelText>
+                How many lifetime patners have you had (Optional)
+              </FormControlLabelText>
+            </FormControlLabel>
+            <Input className="my-1" size="md">
+              <InputField
+                placeholder="Total Patners"
+                {...field}
+                value={field.value.toString()}
+                onChangeText={field.onChange}
+                keyboardType="numeric"
+                type="text"
+              />
+            </Input>
+
+            {error && (
+              <FormControlError>
+                <FormControlErrorIcon
+                  as={AlertCircleIcon}
+                  className="text-red-500"
+                />
+                <FormControlErrorText className="text-red-500">
+                  {error.message}
+                </FormControlErrorText>
+              </FormControlError>
+            )}
+          </FormControl>
+        )}
+      />
+      <Controller
+        control={form.control}
+        name="firstIntercourseAge"
+        render={({ field, fieldState: { invalid, error } }) => (
+          <FormControl isInvalid={invalid} size="md" className="w-full" >
+            <FormControlLabel>
+              <FormControlLabelText>
+                At what age did you have your first intercourse (Optional)
+              </FormControlLabelText>
+            </FormControlLabel>
+            <Input className="my-1" size="md">
+              <InputField
+                placeholder="Total Patners"
+                {...field}
+                value={field.value.toString()}
+                onChangeText={field.onChange}
+                keyboardType="numeric"
+                type="text"
+              />
+            </Input>
+
+            {error && (
+              <FormControlError>
+                <FormControlErrorIcon
+                  as={AlertCircleIcon}
+                  className="text-red-500"
+                />
+                <FormControlErrorText className="text-red-500">
+                  {error.message}
+                </FormControlErrorText>
+              </FormControlError>
+            )}
+          </FormControl>
+        )}
+      />
 
       <HStack space="sm" className="w-full">
         <Button

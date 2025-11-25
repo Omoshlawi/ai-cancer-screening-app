@@ -24,7 +24,6 @@ import {
   AlertCircleIcon,
   ArrowRightIcon,
   ChevronRight,
-  Phone,
   UserCircle,
   UserPlus,
   UserSearch,
@@ -51,9 +50,7 @@ const ClientSearch: FC<ClientSearchProps> = ({ onNext, searchClientAsync }) => {
           className="text-teal-500 rounded-full p-6 bg-teal-100"
         />
       </Box>
-      <Heading size="sm" >
-        {SCREENING_FORM_STEPS[0]}
-      </Heading>
+      <Heading size="sm">{SCREENING_FORM_STEPS[0]}</Heading>
 
       <Controller
         control={form.control}
