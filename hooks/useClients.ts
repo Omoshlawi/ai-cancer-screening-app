@@ -55,8 +55,8 @@ export const useClientApi = () => {
   };
 };
 
-export const useSearchClients = () => {
-  const [search, setSearch] = useState<string>("");
+export const useSearchClients = (defaultSearch: string="") => {
+  const [search, setSearch] = useState<string>(defaultSearch);
   const [debounced] = useDebouncedValue(search, 500);
   const url = constructUrl("/clients", { search: debounced });
   const { data, error, isLoading } = useSWR<

@@ -25,16 +25,21 @@ import { useScreeningsApi } from "@/hooks/useScreenings";
 import { SCREENING_FORM_STEPS } from "@/lib/constants";
 import { ScreenClientFormData, Screening } from "@/types/screening";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { ActivityIndicator } from "react-native";
 
 const ScreenClientScreen = () => {
   const [step, setStep] = useState(1);
+  const { client, search } = useLocalSearchParams<{
+    client: string;
+    search: string;
+  }>();
   const form = useForm<ScreenClientFormData>({
     resolver: zodResolver(screenClientSchema) as any,
     defaultValues: {
-      clientId: "",
+      clientId: client ?? "",
       lifeTimePatners: 0,
       firstIntercourseAge: 0,
       everDiagnosedWithHIV: "NOT_SURE",
@@ -49,7 +54,7 @@ const ScreenClientScreen = () => {
     },
   });
   const { createScreening } = useScreeningsApi();
-  const seachClientAsync = useSearchClients();
+  const seachClientAsync = useSearchClients(search);
   const toast = useToast();
   const [screening, setScreening] = useState<Screening>();
   const {

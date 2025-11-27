@@ -14,8 +14,14 @@ import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { useClient } from "@/hooks/useClients";
-import { useLocalSearchParams } from "expo-router";
-import { Calendar, MoreVertical, Printer, TagsIcon } from "lucide-react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import {
+  Calendar,
+  MoreVertical,
+  Printer,
+  TagsIcon,
+  UserPlus,
+} from "lucide-react-native";
 import React from "react";
 import { ScrollView } from "react-native";
 
@@ -62,6 +68,22 @@ const ClientDetail = () => {
                     );
                   }}
                 >
+                  <MenuItem
+                    key="Screen Client"
+                    textValue="Screen Client"
+                    onPress={() =>
+                      router.push({
+                        pathname: "/screen-client",
+                        params: {
+                          client: client?.id,
+                          search: client?.nationalId,
+                        },
+                      })
+                    }
+                  >
+                    <Icon as={UserPlus} size="sm" className="mr-2" />
+                    <MenuItemLabel size="sm">Screen Client</MenuItemLabel>
+                  </MenuItem>
                   <MenuItem key="View Referrals" textValue="View Referrals">
                     <Icon as={TagsIcon} size="sm" className="mr-2" />
                     <MenuItemLabel size="sm">View Referrals</MenuItemLabel>

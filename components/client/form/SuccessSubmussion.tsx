@@ -43,7 +43,15 @@ const SuccessSubmussion = ({ client }: SuccessSubmussionProps) => {
         action="primary"
         size="sm"
         className="w-full bg-teal-500 rounded-none"
-        onPress={() => router.push("/screen-client")}
+        onPress={() =>
+          router.push({
+            pathname: "/screen-client",
+            params: {
+              client: client.id,
+              search: client.nationalId,
+            },
+          })
+        }
       >
         <ButtonText>Start Screening Assessment</ButtonText>
       </Button>
