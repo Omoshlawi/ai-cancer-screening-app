@@ -10,6 +10,7 @@ export const SCREENING_FORM_STEPS = [
   "Smoking History",
   "Family History",
   "Review And Submit",
+  "Screening Results",
 ];
 
 export const SCREENING_FORM_BOOLEAN_OPTIONS = [
