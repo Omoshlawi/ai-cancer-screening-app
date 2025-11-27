@@ -30,7 +30,7 @@ const ScreenClientScreen = () => {
   const [step, setStep] = useState(1);
 
   const form = useForm<ScreenClientFormData>({
-    resolver: zodResolver(screenClientSchema),
+    resolver: zodResolver(screenClientSchema) as any,
     defaultValues: {
       clientId: "",
       lifeTimePatners: 0,
@@ -51,24 +51,40 @@ const ScreenClientScreen = () => {
   const [screening, setScreening] = useState<Screening>();
 
   const onSubmit: SubmitHandler<ScreenClientFormData> = async (data) => {
-    const screening = await createScreening(data);
-    toast.show({
-      placement: "top",
-      render: ({ id }) => {
-        const uniqueToastId = "toast-" + id;
-        return (
-          <Toaster
-            uniqueToastId={uniqueToastId}
-            variant="outline"
-            title="Success"
-            description="Screening successfully created"
-            action="success"
-          />
-        );
-      },
-    });
-    setStep(10);
-    setScreening(screening);
+    try {
+      const screening = await createScreening(data);
+      toast.show({
+        placement: "top",
+        render: ({ id }) => {
+          const uniqueToastId = "toast-" + id;
+          return (
+            <Toaster
+              uniqueToastId={uniqueToastId}
+              variant="outline"
+              title="Success"
+              description="Screening successfully created"
+              action="success"
+            />
+          );
+        },
+      });
+      setStep(10);
+      setScreening(screening);
+    } catch (errors) {
+      console.info("Error registering client:", errors);
+
+      // for (let i = 1; i <= steps.length; i++) {
+      //   for (const stepField of steps[i]) {
+      //     if (stepField in (errors ?? {})) {
+      //       setStep(i);
+      //       return;
+      //     }
+      //   }
+      // }
+      Object.entries(errors ?? {}).forEach(([field, error]) => {
+        form.setError(field as any, { message: error as string });
+      });
+    }
   };
   return (
     <ScreenLayout title="Screen Client">

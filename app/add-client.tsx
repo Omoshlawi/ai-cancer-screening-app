@@ -96,6 +96,7 @@ const AddClientScreen = () => {
         Object.entries(errors ?? {}).forEach(([field, error]) => {
           form.setError(field as keyof ClientFormData, { message: error });
         });
+         
       }
     }
   };

@@ -61,4 +61,8 @@ export const screenClientSchema = z.object({
   usedOralContraceptivesForMoreThan5Years: screenBoolean,
   smoking: z.enum(["CURRENTLY", "NEVER", "PAST"]),
   familyMemberDiagnosedWithCervicalCancer: screenBoolean,
+  coordinates: z.object({
+    latitude: z.coerce.number(),
+    longitude: z.coerce.number(),
+  }),
 });
