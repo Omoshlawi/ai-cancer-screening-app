@@ -19,40 +19,27 @@ import {
 } from "../ui/select";
 import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
-
-type Level = "all" | "low" | "medium" | "high";
-
-type ClientFilterProps = {
+type FacilityFilterProps = {
   search?: string;
   onSearchChange?: (search: string) => void;
-  level?: Level;
-  onLevelChange?: (level: Level) => void;
+  facilityType?: string;
+  onFacilityTypeChange?: (facilityType: string) => void;
 };
 
-const ClientFilter: FC<ClientFilterProps> = ({
+const FacilityFilter: FC<FacilityFilterProps> = ({
   search,
   onSearchChange,
-  level,
-  onLevelChange,
+  facilityType,
+  onFacilityTypeChange,
 }) => {
-  const levels = useMemo<{ label: string; value: Level }[]>(() => {
+  const facilityTypes = useMemo(() => {
     return [
-      {
-        label: "All Risk Levels",
-        value: "all",
-      },
-      {
-        label: "Low Risks",
-        value: "low",
-      },
-      {
-        label: "Medium Risks",
-        value: "medium",
-      },
-      {
-        label: "High Risks",
-        value: "high",
-      },
+      { label: "All", id: "all" },
+      { label: "Hospital", id: "hospital" },
+      { label: "Clinic", id: "clinic" },
+      { label: "Pharmacy", id: "pharmacy" },
+      { label: "Dispensary", id: "dispensary" },
+      { label: "Health Center", id: "health_center" },
     ];
   }, []);
   return (
@@ -69,7 +56,7 @@ const ClientFilter: FC<ClientFilterProps> = ({
             <InputIcon as={Search} />
           </InputSlot>
           <InputField
-            placeholder="Search by name, phone or ID..."
+            placeholder="Search facility..."
             value={search}
             onChangeText={onSearchChange}
           />
@@ -78,8 +65,8 @@ const ClientFilter: FC<ClientFilterProps> = ({
           <Icon as={FilterIcon} size="md" className="text-typography-500" />
           <Select
             className="flex-1"
-            selectedValue={level}
-            onValueChange={(value) => onLevelChange?.(value as Level)}
+            selectedValue={facilityType}
+            onValueChange={(value) => onFacilityTypeChange?.(value)}
           >
             <SelectTrigger variant="outline" size="md">
               <SelectInput placeholder="Select option" className="flex-1" />
@@ -91,11 +78,11 @@ const ClientFilter: FC<ClientFilterProps> = ({
                 <SelectDragIndicatorWrapper>
                   <SelectDragIndicator />
                 </SelectDragIndicatorWrapper>
-                {levels.map((level, i) => (
+                {facilityTypes.map((facilityType) => (
                   <SelectItem
-                    label={level.label}
-                    value={level.value}
-                    key={level.value}
+                    label={facilityType.label}
+                    value={facilityType.id}
+                    key={facilityType.id}
                   />
                 ))}
               </SelectContent>
@@ -103,10 +90,10 @@ const ClientFilter: FC<ClientFilterProps> = ({
           </Select>
         </HStack>
         <Divider />
-        <Text size="2xs">12 Found Clients</Text>
+        <Text size="2xs">12 Found Facilities</Text>
       </VStack>
     </Card>
   );
 };
 
-export default ClientFilter;
+export default FacilityFilter;
