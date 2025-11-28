@@ -4,12 +4,14 @@ import { Client } from "@/types/client";
 import Color from "color";
 import dayjs from "dayjs";
 import { router } from "expo-router";
-import { Calendar } from "lucide-react-native";
+import { Calendar, PlusIcon } from "lucide-react-native";
 import React, { FC } from "react";
 import ListTile from "../list-tile";
 import { ErrorState } from "../state-full-widgets";
+import { Button, ButtonText } from "../ui/button";
 import { Card } from "../ui/card";
 import { Heading } from "../ui/heading";
+import { HStack } from "../ui/hstack";
 import { Icon } from "../ui/icon";
 import { Spinner } from "../ui/spinner";
 import { Text } from "../ui/text";
@@ -32,7 +34,23 @@ const ScreeningHistory: FC<ScreeningHistoryProps> = ({ client }) => {
   }
   return (
     <Card size="sm" variant="elevated" className="p-2 gap-3">
-      <Heading size="xs">Screening History</Heading>
+      <HStack className="justify-between items-center">
+        <Heading size="xs">Screening History</Heading>
+        <Button
+          action="secondary"
+          variant="outline"
+          size="xs"
+          onPress={() =>
+            router.push({
+              pathname: "/screen-client",
+              params: { client: client?.id, search: client?.nationalId },
+            })
+          }
+        >
+          <Icon as={PlusIcon} size="xs" />
+          <ButtonText size="xs">Add Screening</ButtonText>
+        </Button>
+      </HStack>
       {screenings.length > 0 ? (
         <VStack space="xs" className="bg-background-50 p-2 rounded-md">
           {screenings.map((screening) => (
