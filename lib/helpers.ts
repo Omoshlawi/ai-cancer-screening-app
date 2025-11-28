@@ -49,7 +49,7 @@ export const getRiskColor = (interpretation?: RiskInterpretation) => {
     case RiskInterpretation.LOW_RISK:
       return "blue";
     case RiskInterpretation.MODERATE_RISK:
-      return "yellow";
+      return "orange";
     case RiskInterpretation.HIGH_RISK:
       return "red";
     case RiskInterpretation.VERY_HIGH_RISK:
