@@ -23,18 +23,12 @@ export const getSmokingDisplayValue = (value: string | number) => {
 
 export const getRiskInterpretation = (interpretation?: RiskInterpretation) => {
   switch (interpretation) {
-    case RiskInterpretation.NO_RISK:
-      return "No Risk";
-    case RiskInterpretation.VERY_LOW_RISK:
-      return "Very Low Risk";
     case RiskInterpretation.LOW_RISK:
       return "Low Risk";
-    case RiskInterpretation.MODERATE_RISK:
+    case RiskInterpretation.MEDIUM_RISK:
       return "Moderate Risk";
     case RiskInterpretation.HIGH_RISK:
       return "High Risk";
-    case RiskInterpretation.VERY_HIGH_RISK:
-      return "Very High Risk";
     default:
       return "N/A";
   }
@@ -42,17 +36,11 @@ export const getRiskInterpretation = (interpretation?: RiskInterpretation) => {
 
 export const getRiskColor = (interpretation?: RiskInterpretation) => {
   switch (interpretation) {
-    case RiskInterpretation.NO_RISK:
-      return "green";
-    case RiskInterpretation.VERY_LOW_RISK:
-      return "blue";
     case RiskInterpretation.LOW_RISK:
       return "blue";
-    case RiskInterpretation.MODERATE_RISK:
+    case RiskInterpretation.MEDIUM_RISK:
       return "orange";
     case RiskInterpretation.HIGH_RISK:
-      return "red";
-    case RiskInterpretation.VERY_HIGH_RISK:
       return "red";
     default:
       return "gray";
