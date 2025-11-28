@@ -10,7 +10,7 @@ import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 
 type RiskTratificationProps = {
-  client?: Client;
+  client: Client;
 };
 
 const RiskTratification: FC<RiskTratificationProps> = ({ client }) => {

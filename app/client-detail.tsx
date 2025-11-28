@@ -101,9 +101,9 @@ const ClientDetail = () => {
                   </MenuItem>
                 </Menu>
               </HStack>
-              <ClientInfo client={client} />
-              <RiskTratification client={client} />
-              <ScreeningHistory client={client} />
+              <ClientInfo client={client!} />
+              <RiskTratification client={client!} />
+              <ScreeningHistory client={client!} />
             </VStack>
           </ScrollView>
         )}

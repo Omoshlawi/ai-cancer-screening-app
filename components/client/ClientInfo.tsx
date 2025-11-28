@@ -14,7 +14,7 @@ import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 
 type ClientInfoProps = {
-  client?: Client;
+  client: Client;
 };
 const ClientInfo: FC<ClientInfoProps> = ({ client }) => {
   const personalInformation = useMemo(

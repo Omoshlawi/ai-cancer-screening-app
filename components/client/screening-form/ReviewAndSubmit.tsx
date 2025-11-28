@@ -1,4 +1,3 @@
-import { Box } from "@/components/ui/box";
 import {
   Button,
   ButtonIcon,
@@ -7,15 +6,16 @@ import {
 } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
-import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { getBooleanDisplayValue, getSmokingDisplayValue } from "@/lib/helpers";
+import { Client } from "@/types/client";
 
-import { Client, ScreenClientFormData } from "@/types/client";
+import { ScreenClientFormData } from "@/types/screening";
 import dayjs from "dayjs";
 import { ArrowLeftIcon } from "lucide-react-native";
 import React, { FC, useMemo } from "react";
 import { useFormContext } from "react-hook-form";
+import VariableValue from "../VariableValue";
 
 type ReviewAndSubmitProps = {
   onNext: () => Promise<void>;
@@ -145,18 +145,3 @@ const ReviewAndSubmit: FC<ReviewAndSubmitProps> = ({
 };
 
 export default ReviewAndSubmit;
-
-export const VariableValue = ({
-  value,
-  variable,
-}: {
-  value: string | number;
-  variable: string;
-}) => {
-  return (
-    <Box className="w-full flex flex-row  gap-2">
-      <Text className="text-sm font-bold flex-1">{variable}:</Text>
-      <Text className="text-sm pr-4">{value}</Text>
-    </Box>
-  );
-};
