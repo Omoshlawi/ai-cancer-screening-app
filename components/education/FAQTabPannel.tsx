@@ -1,10 +1,15 @@
 import {
+  useFaqTopics,
+  useFrequentlyAskedQuestions,
+} from "@/hooks/useFrequentlyAskedQuestions";
+import {
   ChevronDownIcon,
   ChevronUpIcon,
   SearchIcon,
 } from "lucide-react-native";
 import React, { useState } from "react";
 import { ScrollView } from "react-native";
+import { ErrorState } from "../state-full-widgets";
 import {
   Accordion,
   AccordionContent,
@@ -20,55 +25,27 @@ import { Button, ButtonText } from "../ui/button";
 import { Divider } from "../ui/divider";
 import { Heading } from "../ui/heading";
 import { Input, InputField, InputIcon, InputSlot } from "../ui/input";
+import { Spinner } from "../ui/spinner";
 import { VStack } from "../ui/vstack";
 
 const FAQTabPannel = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const questions = [
-    {
-      id: 1,
-      question: "What is CHP Training?",
-      answer: "CHP Training is a training program for CHP workers.",
-    },
-    {
-      id: 2,
-      question: "What is CHP Training?",
-      answer: "CHP Training is a training program for CHP workers.",
-    },
-    {
-      id: 3,
-      question: "What is CHP Training?",
-      answer: "CHP Training is a training program for CHP workers.",
-    },
-    {
-      id: 4,
-      question: "What is CHP Training?",
-      answer: "CHP Training is a training program for CHP workers.",
-    },
-    {
-      id: 5,
-      question: "What is CHP Training?",
-      answer: "CHP Training is a training program for CHP workers.",
-    },
-  ];
-  const categories = [
-    {
-      label: "All Topics",
-      value: "all",
-    },
-    {
-      label: "CHP Training",
-      value: "training",
-    },
-    {
-      label: "Screening Process",
-      value: "screening",
-    },
-    {
-      label: "Cervical Cancer",
-      value: "cancer",
-    },
-  ];
+  const { questions, error, isLoading } =
+    useFrequentlyAskedQuestions(selectedCategory);
+  const {
+    topics,
+    error: topicsError,
+    isLoading: topicsLoading,
+  } = useFaqTopics(true);
+
+  if (isLoading || topicsLoading) {
+    return <Spinner />;
+  }
+
+  if (error || topicsError) {
+    return <ErrorState error={error || topicsError} />;
+  }
+
   return (
     <VStack space="md" className="flex-1">
       <Input>
@@ -83,26 +60,26 @@ const FAQTabPannel = () => {
         showsHorizontalScrollIndicator={false}
         className="flex-row w-full grow-0"
       >
-        {categories.map((category) => (
+        {topics.map((category) => (
           <Button
-            key={category.value}
+            key={category.id}
             size="xs"
             className={`${
-              selectedCategory === category.value
+              selectedCategory === category.id
                 ? "bg-teal-500"
                 : "bg-teal-100 text-teal-500"
             } mr-2`}
-            onPress={() => setSelectedCategory(category.value)}
+            onPress={() => setSelectedCategory(category.id)}
           >
             <ButtonText
               size="xs"
               className={
-                selectedCategory === category.value
+                selectedCategory === category.id
                   ? "text-white"
                   : "text-teal-500"
               }
             >
-              {category.label}
+              {category.name}
             </ButtonText>
           </Button>
         ))}
