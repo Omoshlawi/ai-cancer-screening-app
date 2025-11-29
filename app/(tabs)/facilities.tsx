@@ -14,7 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function FacilitiesScreen() {
   const [activeView, setActiveView] =
-    useState<FacilitiesViewTabsProps["activeView"]>("map");
+    useState<FacilitiesViewTabsProps["activeView"]>("list");
   const [search, setSearch] = useState("");
   const [facilityType, setFacilityType] = useState("");
   return (

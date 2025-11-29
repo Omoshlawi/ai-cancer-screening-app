@@ -39,7 +39,7 @@ const FacilityListView = () => {
                 }}
                 alt="Logo"
                 size="lg"
-                className="aspect-1 rounded rounded-sm"
+                className="aspect-1 rounded-sm"
               />
               <VStack space="md" className="flex-1">
                 <HStack className="items-center justify-between" space="sm">
