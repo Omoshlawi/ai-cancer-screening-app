@@ -1,3 +1,4 @@
+import { useHealthFacilityTypes } from "@/hooks/useHealthFacilityTypes";
 import { ChevronDownIcon, FilterIcon, Search } from "lucide-react-native";
 import React, { FC, useMemo } from "react";
 import { Card } from "../ui/card";
@@ -17,6 +18,7 @@ import {
   SelectPortal,
   SelectTrigger,
 } from "../ui/select";
+import { Spinner } from "../ui/spinner";
 import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 type FacilityFilterProps = {
@@ -24,6 +26,7 @@ type FacilityFilterProps = {
   onSearchChange?: (search: string) => void;
   facilityType?: string;
   onFacilityTypeChange?: (facilityType: string) => void;
+  totalCount?: number;
 };
 
 const FacilityFilter: FC<FacilityFilterProps> = ({
@@ -31,17 +34,22 @@ const FacilityFilter: FC<FacilityFilterProps> = ({
   onSearchChange,
   facilityType,
   onFacilityTypeChange,
+  totalCount = 0,
 }) => {
+  const { facilityTypes: backendTypes, isLoading } = useHealthFacilityTypes();
+
   const facilityTypes = useMemo(() => {
-    return [
-      { label: "All", id: "all" },
-      { label: "Hospital", id: "hospital" },
-      { label: "Clinic", id: "clinic" },
-      { label: "Pharmacy", id: "pharmacy" },
-      { label: "Dispensary", id: "dispensary" },
-      { label: "Health Center", id: "health_center" },
-    ];
-  }, []);
+    // Add "All" option at the beginning
+    const allOption = { label: "All", id: "all" };
+    
+    // Map backend types to the format needed by the select
+    const typesFromBackend = backendTypes.map((type) => ({
+      label: type.name,
+      id: type.id,
+    }));
+
+    return [allOption, ...typesFromBackend];
+  }, [backendTypes]);
   return (
     <Card size="md" variant="elevated">
       <VStack space="md">
@@ -63,34 +71,40 @@ const FacilityFilter: FC<FacilityFilterProps> = ({
         </Input>
         <HStack space="sm" className="w-full justify-between items-center">
           <Icon as={FilterIcon} size="md" className="text-typography-500" />
-          <Select
-            className="flex-1"
-            selectedValue={facilityType}
-            onValueChange={(value) => onFacilityTypeChange?.(value)}
-          >
-            <SelectTrigger variant="outline" size="md">
-              <SelectInput placeholder="Select option" className="flex-1" />
-              <SelectIcon className="mr-3" as={ChevronDownIcon} />
-            </SelectTrigger>
-            <SelectPortal>
-              <SelectBackdrop />
-              <SelectContent>
-                <SelectDragIndicatorWrapper>
-                  <SelectDragIndicator />
-                </SelectDragIndicatorWrapper>
-                {facilityTypes.map((facilityType) => (
-                  <SelectItem
-                    label={facilityType.label}
-                    value={facilityType.id}
-                    key={facilityType.id}
-                  />
-                ))}
-              </SelectContent>
-            </SelectPortal>
-          </Select>
+          {isLoading ? (
+            <Spinner size="small" />
+          ) : (
+            <Select
+              className="flex-1"
+              selectedValue={facilityType}
+              onValueChange={(value) => onFacilityTypeChange?.(value)}
+            >
+              <SelectTrigger variant="outline" size="md">
+                <SelectInput placeholder="Select option" className="flex-1" />
+                <SelectIcon className="mr-3" as={ChevronDownIcon} />
+              </SelectTrigger>
+              <SelectPortal>
+                <SelectBackdrop />
+                <SelectContent>
+                  <SelectDragIndicatorWrapper>
+                    <SelectDragIndicator />
+                  </SelectDragIndicatorWrapper>
+                  {facilityTypes.map((facilityTypeOption) => (
+                    <SelectItem
+                      label={facilityTypeOption.label}
+                      value={facilityTypeOption.id}
+                      key={facilityTypeOption.id}
+                    />
+                  ))}
+                </SelectContent>
+              </SelectPortal>
+            </Select>
+          )}
         </HStack>
         <Divider />
-        <Text size="2xs">12 Found Facilities</Text>
+        <Text size="2xs">
+          {totalCount} {totalCount === 1 ? "Facility" : "Facilities"} Found
+        </Text>
       </VStack>
     </Card>
   );

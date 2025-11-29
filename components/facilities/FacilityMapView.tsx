@@ -1,15 +1,24 @@
 import { useHealthFacilities } from "@/hooks/useHealthFacilities";
 import { useLocation } from "@/hooks/useLocation";
 import React, { useMemo } from "react";
-import { StyleSheet, Alert, Platform } from "react-native";
+import { Alert, Platform, StyleSheet } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 import { EmptyState, ErrorState } from "../state-full-widgets";
 import { Box } from "../ui/box";
 import { Spinner } from "../ui/spinner";
 
-const FacilityMapView = () => {
-  const { healthFacilities, error, isLoading } = useHealthFacilities();
-  const { coordinates: userLocation, isLoading: isLocationLoading } = useLocation();
+type FacilityMapViewProps = {
+  search?: string;
+  typeId?: string;
+};
+
+const FacilityMapView = ({ search, typeId }: FacilityMapViewProps) => {
+  const { healthFacilities, error, isLoading } = useHealthFacilities({
+    search: search || "",
+    typeId: typeId || "",
+  });
+  const { coordinates: userLocation, isLoading: isLocationLoading } =
+    useLocation();
 
   // Calculate initial region based on facilities or user location
   const initialRegion = useMemo<Region | undefined>(() => {
@@ -60,7 +69,7 @@ const FacilityMapView = () => {
     return <ErrorState error={error} />;
   }
 
-  const handleMarkerPress = (facility: typeof healthFacilities[0]) => {
+  const handleMarkerPress = (facility: (typeof healthFacilities)[0]) => {
     Alert.alert(
       facility.name,
       `${facility.address}\n${facility.phoneNumber}\n${facility.email}`,

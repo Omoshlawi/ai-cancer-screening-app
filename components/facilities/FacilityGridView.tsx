@@ -19,8 +19,16 @@ const GAP = 8; // Gap between cards
 const NUM_COLUMNS = 2;
 const CARD_WIDTH = (SCREEN_WIDTH - CARD_PADDING * 2 - GAP) / NUM_COLUMNS;
 
-const FacilityGridView = () => {
-  const { healthFacilities, error, isLoading } = useHealthFacilities();
+type FacilityGridViewProps = {
+  search?: string;
+  typeId?: string;
+};
+
+const FacilityGridView = ({ search, typeId }: FacilityGridViewProps) => {
+  const { healthFacilities, error, isLoading } = useHealthFacilities({
+    search: search || "",
+    typeId: typeId || "",
+  });
 
   if (isLoading) {
     return <Spinner />;

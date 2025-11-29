@@ -13,8 +13,16 @@ import { Spinner } from "../ui/spinner";
 import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 
-const FacilityListView = () => {
-  const { healthFacilities, error, isLoading } = useHealthFacilities();
+type FacilityListViewProps = {
+  search?: string;
+  typeId?: string;
+};
+
+const FacilityListView = ({ search, typeId }: FacilityListViewProps) => {
+  const { healthFacilities, error, isLoading } = useHealthFacilities({
+    search: search || "",
+    typeId: typeId || "",
+  });
 
   if (isLoading) {
     return <Spinner />;
