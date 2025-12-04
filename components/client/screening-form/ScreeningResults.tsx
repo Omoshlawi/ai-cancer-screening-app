@@ -1,3 +1,4 @@
+import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Divider } from "@/components/ui/divider";
 import { Heading } from "@/components/ui/heading";
@@ -12,10 +13,11 @@ import {
   getRiskInterpretation,
   getSmokingDisplayValue,
 } from "@/lib/helpers";
-import { RiskFactor, Screening } from "@/types/screening";
+import { RiskFactor, RiskInterpretation, Screening } from "@/types/screening";
 import Color from "color";
 import dayjs from "dayjs";
-import { Info } from "lucide-react-native";
+import { router } from "expo-router";
+import { ArrowRightIcon, Info } from "lucide-react-native";
 import React, { FC, useMemo } from "react";
 import VariableValue from "../VariableValue";
 
@@ -158,6 +160,29 @@ const ScreeningResults: FC<ScreeningResultsProps> = ({ screening }) => {
             {getRiskInterpretation(screening.scoringResult?.interpretation)}
           </Text>
         </Card>
+        {screening.scoringResult?.interpretation ===
+          RiskInterpretation.HIGH_RISK && (
+          <Button
+            action="primary"
+            size="sm"
+            className="w-full bg-teal-500 justify-between rounded-none"
+            onPress={() => {
+              router.push({
+                pathname: "/add-referral",
+                params: {
+                  client: screening.client?.id,
+                  facility: "",
+                  facilitySearch: "",
+                  screening: screening.id,
+                  search: screening.client?.nationalId,
+                },
+              });
+            }}
+          >
+            <ButtonText>Refer Client</ButtonText>
+            <ButtonIcon as={ArrowRightIcon} />
+          </Button>
+        )}
       </VStack>
     </VStack>
   );

@@ -1,6 +1,7 @@
 import { apiFetch, APIFetchResponse, mutate } from "@/lib/api";
 import { constructUrl } from "@/lib/api/constructUrl";
 import { Client, ClientFormData } from "@/types/client";
+import { Referral, ReferralFormData } from "@/types/screening";
 import { useState } from "react";
 import useSWR from "swr";
 import { useDebouncedValue } from "./useDebouncedValue";
@@ -47,15 +48,25 @@ export const useClient = (id?: string) => {
   return { client: data?.data, error, isLoading };
 };
 
+export const referClient = async (data: ReferralFormData) => {
+  const url = constructUrl("/referrals");
+  const response = await apiFetch<Referral>(url, {
+    method: "POST",
+    data: data,
+  });
+  return response.data;
+};
+
 export const useClientApi = () => {
   return {
     createClient,
     updateClient,
     deleteClient,
+    referClient,
   };
 };
 
-export const useSearchClients = (defaultSearch: string="") => {
+export const useSearchClients = (defaultSearch: string = "") => {
   const [search, setSearch] = useState<string>(defaultSearch);
   const [debounced] = useDebouncedValue(search, 500);
   const url = constructUrl("/clients", { search: debounced });

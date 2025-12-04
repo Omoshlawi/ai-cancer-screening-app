@@ -1,0 +1,146 @@
+import ActionSheetWrapper from "@/components/actions-sheet-wrapper";
+import { EmptyState, ErrorState } from "@/components/state-full-widgets";
+import { Card } from "@/components/ui/card";
+import {
+  FormControl,
+  FormControlError,
+  FormControlErrorIcon,
+  FormControlErrorText,
+  FormControlLabel,
+  FormControlLabelText,
+} from "@/components/ui/form-control";
+import { Heading } from "@/components/ui/heading";
+import { HStack } from "@/components/ui/hstack";
+import { AlertCircleIcon, Icon } from "@/components/ui/icon";
+import { Image } from "@/components/ui/image";
+import { Input, InputField } from "@/components/ui/input";
+import { Text } from "@/components/ui/text";
+import { VStack } from "@/components/ui/vstack";
+import { useSearchHealthFacility } from "@/hooks/useHealthFacilities";
+import { ReferralFormData } from "@/types/screening";
+import { MapPin, Phone } from "lucide-react-native";
+import React, { FC } from "react";
+import { Controller, useFormContext } from "react-hook-form";
+import { TouchableOpacity } from "react-native";
+
+type ReferralFacilityProps = {
+  facilitySearchAsync: ReturnType<typeof useSearchHealthFacility>;
+};
+
+const ReferralFacility: FC<ReferralFacilityProps> = ({
+  facilitySearchAsync,
+}) => {
+  const form = useFormContext<ReferralFormData>();
+  const { healthFacilities, error, isLoading, onSearchChange, searchValue } =
+    facilitySearchAsync;
+  return (
+    <Controller
+      control={form.control}
+      name="healthFacilityId"
+      render={({ field, fieldState: { invalid, error } }) => (
+        <ActionSheetWrapper
+          loading={isLoading}
+          renderTrigger={({ onPress }) => (
+            <FormControl
+              isInvalid={invalid}
+              size="md"
+              isReadOnly
+              className="w-full"
+            >
+              <FormControlLabel>
+                <FormControlLabelText>Referral Facility</FormControlLabelText>
+              </FormControlLabel>
+              <Input className="my-1" size="md">
+                <InputField
+                  placeholder="Referral Facility"
+                  {...field}
+                  value={
+                    field.value
+                      ? healthFacilities.find(
+                          (client) => client.id === field.value
+                        )?.name
+                      : ""
+                  }
+                  onChangeText={field.onChange}
+                  onPress={onPress}
+                />
+              </Input>
+
+              {error && (
+                <FormControlError>
+                  <FormControlErrorIcon
+                    as={AlertCircleIcon}
+                    className="text-red-500"
+                  />
+                  <FormControlErrorText className="text-red-500">
+                    {error.message}
+                  </FormControlErrorText>
+                </FormControlError>
+              )}
+            </FormControl>
+          )}
+          data={healthFacilities}
+          renderItem={({ item, close }) => (
+            <TouchableOpacity
+              onPress={() => {
+                close();
+                field.onChange(item.id);
+              }}
+            >
+              <Card size="md" variant="elevated">
+                <HStack className="items-center" space="sm">
+                  <Image
+                    source={{
+                      uri: item.logo,
+                    }}
+                    alt="Logo"
+                    size="lg"
+                    className="aspect-1 rounded-sm"
+                  />
+                  <VStack space="md" className="flex-1">
+                    <HStack className="items-center justify-between" space="sm">
+                      <Heading size="xs">{item.name}</Heading>
+                      <Text
+                        size="2xs"
+                        className="bg-teal-100 px-2 py-1 rounded-full text-teal-500"
+                      >
+                        {item.type.name}
+                      </Text>
+                    </HStack>
+                    <HStack className="items-center" space="sm">
+                      <Icon
+                        as={MapPin}
+                        size="sm"
+                        className="text-typography-500"
+                      />
+                      <Text size="xs">{item.address}</Text>
+                    </HStack>
+                    <HStack className="items-center" space="sm">
+                      <Icon
+                        as={Phone}
+                        size="sm"
+                        className="text-typography-500"
+                      />
+                      <Text size="xs">{`${item.phoneNumber} | ${item.email}`}</Text>
+                    </HStack>
+                  </VStack>
+                </HStack>
+              </Card>
+            </TouchableOpacity>
+          )}
+          renderEmptyState={() => {
+            if (error) {
+              return <ErrorState error={error as any} />;
+            }
+            return <EmptyState message="No facilitiesonyo found" />;
+          }}
+          searchable
+          searchText={searchValue}
+          onSearchTextChange={onSearchChange}
+        />
+      )}
+    />
+  );
+};
+
+export default ReferralFacility;

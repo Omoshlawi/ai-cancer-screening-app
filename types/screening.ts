@@ -1,4 +1,4 @@
-import { screenClientSchema } from "@/constants/schemas";
+import { referralSchema, screenClientSchema } from "@/constants/schemas";
 import z from "zod";
 import { Client } from "./client";
 
@@ -22,7 +22,7 @@ export type Screening = {
 };
 
 export type ScreenClientFormData = z.infer<typeof screenClientSchema>;
-
+export type ReferralFormData = z.infer<typeof referralSchema>;
 export enum RiskFactor {
   AGE = "AGE",
   EARLY_SEXUAL_DEBUT = "EARLY_SEXUAL_DEBUT",
@@ -36,9 +36,9 @@ export enum RiskFactor {
 }
 
 export enum RiskInterpretation {
-  LOW_RISK = 'LOW_RISK',
-  MEDIUM_RISK = 'MEDIUM_RISK',
-  HIGH_RISK = 'HIGH_RISK',
+  LOW_RISK = "LOW_RISK",
+  MEDIUM_RISK = "MEDIUM_RISK",
+  HIGH_RISK = "HIGH_RISK",
 }
 
 export interface RiskFactorScore {
@@ -53,4 +53,15 @@ export interface ScoringResult {
   aggregateScore: number;
   interpretation: RiskInterpretation;
   shouldAutoScreen: boolean;
+}
+
+export interface Referral {
+  id: string;
+  clientId: string;
+  screeningId: string;
+  appointmentTime: string;
+  healthFacilityId: string;
+  additionalNotes: string;
+  createdAt: string;
+  updatedAt: string;
 }

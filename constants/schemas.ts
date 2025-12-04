@@ -66,3 +66,11 @@ export const screenClientSchema = z.object({
     longitude: z.coerce.number(),
   }),
 });
+
+export const referralSchema = z.object({
+  clientId: z.string(),
+  screeningId: z.string(),
+  appointmentTime: z.coerce.date(),
+  healthFacilityId: z.string(),
+  additionalNotes: z.string().optional(),
+});

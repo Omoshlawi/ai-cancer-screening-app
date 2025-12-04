@@ -24,7 +24,7 @@ type ScreeningHistoryProps = {
 const ScreeningHistory: FC<ScreeningHistoryProps> = ({ client }) => {
   const { screenings, isLoading, error } = useScreenings({
     clientId: client?.id,
-    limit: "3",
+    limit: "100",
   });
   if (isLoading) {
     return <Spinner color="primary" />;

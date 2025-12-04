@@ -12,6 +12,7 @@ import { VStack } from "@/components/ui/vstack";
 import { useClient } from "@/hooks/useClients";
 import { router, useLocalSearchParams } from "expo-router";
 import {
+  ArrowRightLeft,
   Calendar,
   MoreVertical,
   Printer,
@@ -79,6 +80,22 @@ const ClientDetail = () => {
                   >
                     <Icon as={UserPlus} size="sm" className="mr-2" />
                     <MenuItemLabel size="sm">Screen Client</MenuItemLabel>
+                  </MenuItem>
+                  <MenuItem
+                    key="Refer Client"
+                    textValue="Refer Client"
+                    onPress={() =>
+                      router.push({
+                        pathname: "/add-referral",
+                        params: {
+                          client: client?.id,
+                          search: client?.nationalId,
+                        },
+                      })
+                    }
+                  >
+                    <Icon as={ArrowRightLeft} size="sm" className="mr-2" />
+                    <MenuItemLabel size="sm">Refer Client</MenuItemLabel>
                   </MenuItem>
                   <MenuItem key="View Referrals" textValue="View Referrals">
                     <Icon as={TagsIcon} size="sm" className="mr-2" />

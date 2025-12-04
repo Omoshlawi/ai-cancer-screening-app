@@ -1,7 +1,9 @@
 import { APIFetchResponse, constructUrl } from "@/lib/api";
 import { APIListResponse } from "@/lib/api/types";
 import { HealthFacility } from "@/types/facilities";
+import { useState } from "react";
 import useSWR from "swr";
+import { useDebouncedValue } from "./useDebouncedValue";
 
 export const useHealthFacilities = (params: Record<string, string> = {}) => {
   // Build query params - only include non-empty values
@@ -32,5 +34,21 @@ export const useHealthFacilities = (params: Record<string, string> = {}) => {
     totalCount: data?.data?.totalCount ?? 0,
     error,
     isLoading,
+  };
+};
+
+export const useSearchHealthFacility = (defaultSearch: string = "") => {
+  const [search, setSearch] = useState<string>(defaultSearch);
+  const [debounced] = useDebouncedValue(search, 500);
+  const url = constructUrl("/health-facilities", { search: debounced });
+  const { data, error, isLoading } = useSWR<
+    APIFetchResponse<{ results: HealthFacility[] }>
+  >(debounced ? url : undefined);
+  return {
+    healthFacilities: data?.data?.results ?? [],
+    isLoading,
+    error,
+    onSearchChange: setSearch,
+    searchValue: search,
   };
 };
