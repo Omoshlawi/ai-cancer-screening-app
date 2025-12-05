@@ -1,4 +1,5 @@
 import { ClientInfo, ScreeningHistory } from "@/components/client";
+import ReferralHistory from "@/components/client/ReferralHistory";
 import { ScreenLayout } from "@/components/layout";
 import { ErrorState, When } from "@/components/state-full-widgets";
 import { Button, ButtonIcon } from "@/components/ui/button";
@@ -117,6 +118,7 @@ const ClientDetail = () => {
               <ClientInfo client={client!} />
               {/* <RiskTratification client={client!} /> */}
               <ScreeningHistory client={client!} />
+              <ReferralHistory client={client!} />
             </VStack>
           </ScrollView>
         )}

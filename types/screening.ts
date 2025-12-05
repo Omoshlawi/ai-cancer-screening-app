@@ -1,6 +1,7 @@
 import { referralSchema, screenClientSchema } from "@/constants/schemas";
 import z from "zod";
 import { Client } from "./client";
+import { HealthFacility } from "./facilities";
 
 export type Screening = {
   id: string;
@@ -55,6 +56,12 @@ export interface ScoringResult {
   shouldAutoScreen: boolean;
 }
 
+export enum ReferralStatus {
+  PENDING = "PENDING",
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED",
+}
+
 export interface Referral {
   id: string;
   clientId: string;
@@ -64,4 +71,7 @@ export interface Referral {
   additionalNotes: string;
   createdAt: string;
   updatedAt: string;
+  screening?: Screening;
+  healthFacility?: HealthFacility;
+  status: ReferralStatus;
 }

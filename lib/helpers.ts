@@ -1,4 +1,4 @@
-import { RiskInterpretation } from "@/types/screening";
+import { ReferralStatus, RiskInterpretation } from "@/types/screening";
 import { SCREENING_FORM_BOOLEAN_OPTIONS, SMOKING_OPTIONS } from "./constants";
 
 export const getInitials = (name: string) => {
@@ -44,5 +44,29 @@ export const getRiskColor = (interpretation?: RiskInterpretation) => {
       return "red";
     default:
       return "gray";
+  }
+};
+
+export const getReferralStatusColor = (status?: ReferralStatus) => {
+  switch (status) {
+    case ReferralStatus.PENDING:
+      return "orange";
+    case ReferralStatus.COMPLETED:
+      return "green";
+    case ReferralStatus.CANCELLED:
+      return "red";
+    default:
+      return "gray";
+  }
+};
+
+export const getReferralStatusDisplayValue = (status?: ReferralStatus) => {
+  switch (status) {
+    case ReferralStatus.PENDING:
+      return "Pending";
+    case ReferralStatus.COMPLETED:
+      return "Completed";
+    case ReferralStatus.CANCELLED:
+      return "Cancelled";
   }
 };
