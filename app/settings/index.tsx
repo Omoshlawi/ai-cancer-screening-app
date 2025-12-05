@@ -3,6 +3,8 @@ import AppBar from "@/components/app-bar";
 import LocalAuthSetup from "@/components/auth/LocalAuthSetup";
 import TwoFactorSetup from "@/components/auth/TwoFactorSetup";
 import ListTile from "@/components/list-tile";
+import Toaster from "@/components/toaster";
+import { AlertDialog } from "@/components/ui/alert-dialog";
 import {
   Avatar,
   AvatarBadge,
@@ -18,6 +20,7 @@ import { HStack } from "@/components/ui/hstack";
 import { Input, InputField } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Text } from "@/components/ui/text";
+import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useTwoFactorAuth } from "@/hooks/use-two-factor-auth";
@@ -35,7 +38,6 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
-  Alert,
   Modal,
   Pressable,
   ScrollView,
@@ -49,9 +51,13 @@ const SettingsScreen = () => {
   const colorScheme = useColorScheme();
   const setTheme = useThemeStore((state) => state.setTheme);
   const router = useRouter();
+  const toast = useToast();
   const [localAuthEnabled, setLocalAuthEnabledState] = useState(false);
   const [showSetup, setShowSetup] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+  const [showDisableLocalAuthDialog, setShowDisableLocalAuthDialog] =
+    useState(false);
 
   // 2FA hook handles all 2FA-related state and logic
   const {
@@ -97,29 +103,18 @@ const SettingsScreen = () => {
         setShowSetup(true);
       }
     } else {
-      // Disable local auth
-      Alert.alert(
-        "Disable Local Authentication?",
-        "This will disable biometric and PIN authentication. Your PIN will be cleared and you'll need to set it up again if you re-enable this feature.",
-        [
-          {
-            text: "Cancel",
-            style: "cancel",
-          },
-          {
-            text: "Disable",
-            style: "destructive",
-            onPress: async () => {
-              // Clear PIN and disable biometrics when disabling local auth
-              await clearPin();
-              await setBiometricEnabled(false);
-              await setLocalAuthEnabled(false);
-              setLocalAuthEnabledState(false);
-            },
-          },
-        ]
-      );
+      // Disable local auth - show dialog
+      setShowDisableLocalAuthDialog(true);
     }
+  };
+
+  const handleDisableLocalAuth = async () => {
+    // Clear PIN and disable biometrics when disabling local auth
+    await clearPin();
+    await setBiometricEnabled(false);
+    await setLocalAuthEnabled(false);
+    setLocalAuthEnabledState(false);
+    setShowDisableLocalAuthDialog(false);
   };
 
   const handleSetupComplete = async () => {
@@ -130,6 +125,15 @@ const SettingsScreen = () => {
 
   const handleSetupCancel = () => {
     setShowSetup(false);
+  };
+
+  const handleLogout = () => {
+    setShowLogoutDialog(true);
+  };
+
+  const confirmLogout = () => {
+    authClient.signOut();
+    setShowLogoutDialog(false);
   };
 
   return (
@@ -429,7 +433,7 @@ const SettingsScreen = () => {
               </Box>
             </VStack>
           </Card>
-          <Button action="negative" onPress={() => authClient.signOut()}>
+          <Button action="negative" onPress={handleLogout}>
             <Text className="font-bold">Logout</Text>
           </Button>
         </VStack>
@@ -540,7 +544,44 @@ const SettingsScreen = () => {
                 </Button>
                 <Button
                   action="negative"
-                  onPress={handleDisable2FA}
+                  onPress={async () => {
+                    const result = await handleDisable2FA();
+                    if (!result.success) {
+                      toast.show({
+                        placement: "top",
+                        render: ({ id }) => {
+                          const uniqueToastId = "toast-" + id;
+                          return (
+                            <Toaster
+                              uniqueToastId={uniqueToastId}
+                              variant="outline"
+                              title="Error"
+                              description={
+                                result.error || "Failed to disable 2FA"
+                              }
+                              action="error"
+                            />
+                          );
+                        },
+                      });
+                    } else {
+                      toast.show({
+                        placement: "top",
+                        render: ({ id }) => {
+                          const uniqueToastId = "toast-" + id;
+                          return (
+                            <Toaster
+                              uniqueToastId={uniqueToastId}
+                              variant="outline"
+                              title="Success"
+                              description="Two-factor authentication has been disabled"
+                              action="success"
+                            />
+                          );
+                        },
+                      });
+                    }
+                  }}
                   disabled={!disablePassword}
                   className="flex-1"
                 >
@@ -550,6 +591,28 @@ const SettingsScreen = () => {
             </VStack>
           </Box>
         </Modal>
+        <AlertDialog
+          isOpen={showLogoutDialog}
+          onClose={() => setShowLogoutDialog(false)}
+          title="Logout"
+          message="Are you sure you want to logout?"
+          confirmText="Logout"
+          cancelText="Cancel"
+          onConfirm={confirmLogout}
+          onCancel={() => setShowLogoutDialog(false)}
+          variant="destructive"
+        />
+        <AlertDialog
+          isOpen={showDisableLocalAuthDialog}
+          onClose={() => setShowDisableLocalAuthDialog(false)}
+          title="Disable Local Authentication?"
+          message="This will disable biometric and PIN authentication. Your PIN will be cleared and you'll need to set it up again if you re-enable this feature."
+          confirmText="Disable"
+          cancelText="Cancel"
+          onConfirm={handleDisableLocalAuth}
+          onCancel={() => setShowDisableLocalAuthDialog(false)}
+          variant="destructive"
+        />
       </ScrollView>
     </SafeAreaView>
   );

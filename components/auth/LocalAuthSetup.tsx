@@ -1,3 +1,5 @@
+import Toaster from "@/components/toaster";
+import { useToast } from "@/components/ui/toast";
 import {
   authenticateWithBiometrics,
   checkBiometricAvailability,
@@ -5,7 +7,7 @@ import {
   setupPin,
 } from "@/lib/local-auth";
 import { useEffect, useState } from "react";
-import { Alert, Keyboard } from "react-native";
+import { Keyboard } from "react-native";
 import BottomSheet from "./bottom-sheet/BottomSheet";
 import BiometricPrompt from "./setup/BiometricPrompt";
 import PinConfirmStep from "./setup/PinConfirmStep";
@@ -47,6 +49,7 @@ export default function LocalAuthSetup({
   onComplete,
   onCancel,
 }: LocalAuthSetupProps) {
+  const toast = useToast();
   // Current step in the setup flow
   const [step, setStep] = useState<"biometric" | "pin" | "confirm">(
     "biometric"
@@ -103,17 +106,39 @@ export default function LocalAuthSetup({
         await setBiometricEnabled(true);
         setStep("pin");
       } else {
-        Alert.alert(
-          "Biometric Authentication Failed",
-          "Please try again or continue with PIN setup."
-        );
+        toast.show({
+          placement: "top",
+          render: ({ id }) => {
+            const uniqueToastId = "toast-" + id;
+            return (
+              <Toaster
+                uniqueToastId={uniqueToastId}
+                variant="outline"
+                title="Biometric Authentication Failed"
+                description="Please try again or continue with PIN setup."
+                action="error"
+              />
+            );
+          },
+        });
       }
     } catch (err) {
       console.error("Biometric auth error:", err);
-      Alert.alert(
-        "Error",
-        "Biometric authentication failed. You can continue with PIN setup."
-      );
+      toast.show({
+        placement: "top",
+        render: ({ id }) => {
+          const uniqueToastId = "toast-" + id;
+          return (
+            <Toaster
+              uniqueToastId={uniqueToastId}
+              variant="outline"
+              title="Error"
+              description="Biometric authentication failed. You can continue with PIN setup."
+              action="error"
+            />
+          );
+        },
+      });
       setStep("pin");
     } finally {
       setIsLoading(false);
@@ -137,7 +162,21 @@ export default function LocalAuthSetup({
   const handleConfirmPin = async () => {
     // Validate PINs match
     if (pin !== confirmPin) {
-      Alert.alert("PIN Mismatch", "PINs do not match. Please try again.");
+      toast.show({
+        placement: "top",
+        render: ({ id }) => {
+          const uniqueToastId = "toast-" + id;
+          return (
+            <Toaster
+              uniqueToastId={uniqueToastId}
+              variant="outline"
+              title="PIN Mismatch"
+              description="PINs do not match. Please try again."
+              action="error"
+            />
+          );
+        },
+      });
       setPin("");
       setConfirmPin("");
       setStep("pin");
@@ -152,10 +191,38 @@ export default function LocalAuthSetup({
         // Setup complete - call completion callback
         onComplete();
       } else {
-        Alert.alert("Error", "Failed to set up PIN. Please try again.");
+        toast.show({
+          placement: "top",
+          render: ({ id }) => {
+            const uniqueToastId = "toast-" + id;
+            return (
+              <Toaster
+                uniqueToastId={uniqueToastId}
+                variant="outline"
+                title="Error"
+                description="Failed to set up PIN. Please try again."
+                action="error"
+              />
+            );
+          },
+        });
       }
     } catch {
-      Alert.alert("Error", "An error occurred. Please try again.");
+      toast.show({
+        placement: "top",
+        render: ({ id }) => {
+          const uniqueToastId = "toast-" + id;
+          return (
+            <Toaster
+              uniqueToastId={uniqueToastId}
+              variant="outline"
+              title="Error"
+              description="An error occurred. Please try again."
+              action="error"
+            />
+          );
+        },
+      });
     } finally {
       setIsLoading(false);
     }

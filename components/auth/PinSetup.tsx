@@ -1,8 +1,11 @@
+import Toaster from "@/components/toaster";
+import { AlertDialog } from "@/components/ui/alert-dialog";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonText } from "@/components/ui/button";
 import { FormControl } from "@/components/ui/form-control";
 import PinInputComponent from "@/components/ui/pin-input";
 import { Text } from "@/components/ui/text";
+import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { PIN_LENGTH, PIN_MIN_LENGTH } from "@/constants/schemas";
 import {
@@ -11,7 +14,6 @@ import {
   setupPin,
 } from "@/lib/local-auth";
 import { useEffect, useState } from "react";
-import { Alert } from "react-native";
 
 interface PinSetupProps {
   onComplete: () => void;
@@ -24,6 +26,8 @@ export default function PinSetup({ onComplete, onSkip }: PinSetupProps) {
   const [step, setStep] = useState<"pin" | "confirm">("pin");
   const [biometricAvailable, setBiometricAvailable] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showBiometricDialog, setShowBiometricDialog] = useState(false);
+  const toast = useToast();
 
   useEffect(() => {
     checkBiometric();
@@ -36,10 +40,21 @@ export default function PinSetup({ onComplete, onSkip }: PinSetupProps) {
 
   const handlePinSubmit = () => {
     if (pin.length < PIN_MIN_LENGTH) {
-      Alert.alert(
-        "Invalid PIN",
-        `PIN must be at least ${PIN_MIN_LENGTH} digits`
-      );
+      toast.show({
+        placement: "top",
+        render: ({ id }) => {
+          const uniqueToastId = "toast-" + id;
+          return (
+            <Toaster
+              uniqueToastId={uniqueToastId}
+              variant="outline"
+              title="Invalid PIN"
+              description={`PIN must be at least ${PIN_MIN_LENGTH} digits`}
+              action="error"
+            />
+          );
+        },
+      });
       return;
     }
     setStep("confirm");
@@ -47,7 +62,21 @@ export default function PinSetup({ onComplete, onSkip }: PinSetupProps) {
 
   const handleConfirmPin = async () => {
     if (pin !== confirmPin) {
-      Alert.alert("PIN Mismatch", "PINs do not match. Please try again.");
+      toast.show({
+        placement: "top",
+        render: ({ id }) => {
+          const uniqueToastId = "toast-" + id;
+          return (
+            <Toaster
+              uniqueToastId={uniqueToastId}
+              variant="outline"
+              title="PIN Mismatch"
+              description="PINs do not match. Please try again."
+              action="error"
+            />
+          );
+        },
+      });
       setPin("");
       setConfirmPin("");
       setStep("pin");
@@ -60,38 +89,58 @@ export default function PinSetup({ onComplete, onSkip }: PinSetupProps) {
       if (success) {
         // If biometrics are available, ask if user wants to enable them
         if (biometricAvailable) {
-          Alert.alert(
-            "Enable Biometric Authentication?",
-            "Would you like to use fingerprint or face ID for faster login?",
-            [
-              {
-                text: "Skip",
-                style: "cancel",
-                onPress: async () => {
-                  await setBiometricEnabled(false);
-                  onComplete();
-                },
-              },
-              {
-                text: "Enable",
-                onPress: async () => {
-                  await setBiometricEnabled(true);
-                  onComplete();
-                },
-              },
-            ]
-          );
+          setShowBiometricDialog(true);
         } else {
           onComplete();
         }
       } else {
-        Alert.alert("Error", "Failed to set up PIN. Please try again.");
+        toast.show({
+          placement: "top",
+          render: ({ id }) => {
+            const uniqueToastId = "toast-" + id;
+            return (
+              <Toaster
+                uniqueToastId={uniqueToastId}
+                variant="outline"
+                title="Error"
+                description="Failed to set up PIN. Please try again."
+                action="error"
+              />
+            );
+          },
+        });
       }
     } catch {
-      Alert.alert("Error", "An error occurred. Please try again.");
+      toast.show({
+        placement: "top",
+        render: ({ id }) => {
+          const uniqueToastId = "toast-" + id;
+          return (
+            <Toaster
+              uniqueToastId={uniqueToastId}
+              variant="outline"
+              title="Error"
+              description="An error occurred. Please try again."
+              action="error"
+            />
+          );
+        },
+      });
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleBiometricSkip = async () => {
+    await setBiometricEnabled(false);
+    setShowBiometricDialog(false);
+    onComplete();
+  };
+
+  const handleBiometricEnable = async () => {
+    await setBiometricEnabled(true);
+    setShowBiometricDialog(false);
+    onComplete();
   };
 
   return (
@@ -140,6 +189,16 @@ export default function PinSetup({ onComplete, onSkip }: PinSetupProps) {
           </VStack>
         </VStack>
       </FormControl>
+      <AlertDialog
+        isOpen={showBiometricDialog}
+        onClose={() => setShowBiometricDialog(false)}
+        title="Enable Biometric Authentication?"
+        message="Would you like to use fingerprint or face ID for faster login?"
+        confirmText="Enable"
+        cancelText="Skip"
+        onConfirm={handleBiometricEnable}
+        onCancel={handleBiometricSkip}
+      />
     </Box>
   );
 }

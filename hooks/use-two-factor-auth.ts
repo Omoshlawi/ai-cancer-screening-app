@@ -1,6 +1,5 @@
 import { authClient } from "@/lib/auth-client";
 import { useCallback, useEffect, useState } from "react";
-import { Alert } from "react-native";
 
 interface UseTwoFactorAuthReturn {
   twoFactorEnabled: boolean;
@@ -11,7 +10,7 @@ interface UseTwoFactorAuthReturn {
   setShowDisable2FA: (show: boolean) => void;
   setDisablePassword: (password: string) => void;
   handle2FAToggle: (value: boolean) => void;
-  handleDisable2FA: () => Promise<void>;
+  handleDisable2FA: () => Promise<{ success: boolean; error?: string }>;
   handle2FASetupComplete: () => Promise<void>;
   handle2FASetupCancel: () => void;
   check2FAStatus: () => Promise<void>;
@@ -60,30 +59,33 @@ export function useTwoFactorAuth(): UseTwoFactorAuthReturn {
     }
   }, []);
 
-  const handleDisable2FA = useCallback(async () => {
+  const handleDisable2FA = useCallback(async (): Promise<{
+    success: boolean;
+    error?: string;
+  }> => {
     if (!disablePassword) {
-      Alert.alert("Error", "Password is required");
-      return;
+      return { success: false, error: "Password is required" };
     }
     try {
       const result = await authClient.twoFactor.disable({
         password: disablePassword,
       });
       if (result.error) {
-        Alert.alert("Error", result.error.message || "Failed to disable 2FA");
-        setDisablePassword("");
+        return {
+          success: false,
+          error: result.error.message || "Failed to disable 2FA",
+        };
       } else {
         setTwoFactorEnabled(false);
         setShowDisable2FA(false);
         setDisablePassword("");
-        Alert.alert("Success", "Two-factor authentication has been disabled");
+        return { success: true };
       }
     } catch (error: any) {
-      Alert.alert(
-        "Error",
-        error?.message || "An error occurred. Please try again."
-      );
-      setDisablePassword("");
+      return {
+        success: false,
+        error: error?.message || "An error occurred. Please try again.",
+      };
     }
   }, [disablePassword]);
 

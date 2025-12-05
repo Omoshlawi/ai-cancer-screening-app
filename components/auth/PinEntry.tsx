@@ -1,10 +1,12 @@
+import Toaster from "@/components/toaster";
+import { useToast } from "@/components/ui/toast";
 import { PIN_MIN_LENGTH } from "@/constants/schemas";
 import {
   authenticateWithBiometrics,
   authenticateWithPin,
 } from "@/lib/local-auth";
 import { useEffect, useState } from "react";
-import { Alert, Keyboard } from "react-native";
+import { Keyboard } from "react-native";
 import PinEntryContent from "./pin/PinEntryContent";
 
 interface PinEntryProps {
@@ -53,6 +55,7 @@ export default function PinEntry({
   const [isLoading, setIsLoading] = useState(false);
   // Loading state for biometric authentication
   const [isBiometricLoading, setIsBiometricLoading] = useState(false);
+  const toast = useToast();
 
   /**
    * Dismiss native keyboard when component mounts
@@ -71,10 +74,21 @@ export default function PinEntry({
 
     // Validate minimum PIN length
     if (pinToCheck.length < PIN_MIN_LENGTH) {
-      Alert.alert(
-        "Invalid PIN",
-        `PIN must be at least ${PIN_MIN_LENGTH} digits`
-      );
+      toast.show({
+        placement: "top",
+        render: ({ id }) => {
+          const uniqueToastId = "toast-" + id;
+          return (
+            <Toaster
+              uniqueToastId={uniqueToastId}
+              variant="outline"
+              title="Invalid PIN"
+              description={`PIN must be at least ${PIN_MIN_LENGTH} digits`}
+              action="error"
+            />
+          );
+        },
+      });
       return;
     }
 
@@ -96,24 +110,62 @@ export default function PinEntry({
 
         if (newAttempts >= maxAttempts) {
           // Maximum attempts reached - lock out user
-          Alert.alert(
-            "Too Many Attempts",
-            "You have exceeded the maximum number of attempts. Please try again later."
-          );
+          toast.show({
+            placement: "top",
+            render: ({ id }) => {
+              const uniqueToastId = "toast-" + id;
+              return (
+                <Toaster
+                  uniqueToastId={uniqueToastId}
+                  variant="outline"
+                  title="Too Many Attempts"
+                  description="You have exceeded the maximum number of attempts. Please try again later."
+                  action="error"
+                />
+              );
+            },
+          });
           if (onCancel) {
             onCancel();
           }
         } else {
           // Show remaining attempts
-          Alert.alert(
-            "Incorrect PIN",
-            `Incorrect PIN. ${maxAttempts - newAttempts} attempts remaining.`
-          );
+          toast.show({
+            placement: "top",
+            render: ({ id }) => {
+              const uniqueToastId = "toast-" + id;
+              return (
+                <Toaster
+                  uniqueToastId={uniqueToastId}
+                  variant="outline"
+                  title="Incorrect PIN"
+                  description={`Incorrect PIN. ${
+                    maxAttempts - newAttempts
+                  } attempts remaining.`}
+                  action="error"
+                />
+              );
+            },
+          });
         }
       }
     } catch {
       // Handle unexpected errors
-      Alert.alert("Error", "An error occurred. Please try again.");
+      toast.show({
+        placement: "top",
+        render: ({ id }) => {
+          const uniqueToastId = "toast-" + id;
+          return (
+            <Toaster
+              uniqueToastId={uniqueToastId}
+              variant="outline"
+              title="Error"
+              description="An error occurred. Please try again."
+              action="error"
+            />
+          );
+        },
+      });
     } finally {
       setIsLoading(false);
     }
@@ -132,17 +184,39 @@ export default function PinEntry({
         onSuccess();
       } else {
         // Biometric failed - user can continue with PIN
-        Alert.alert(
-          "Biometric Authentication Failed",
-          "Please use your PIN to continue."
-        );
+        toast.show({
+          placement: "top",
+          render: ({ id }) => {
+            const uniqueToastId = "toast-" + id;
+            return (
+              <Toaster
+                uniqueToastId={uniqueToastId}
+                variant="outline"
+                title="Biometric Authentication Failed"
+                description="Please use your PIN to continue."
+                action="error"
+              />
+            );
+          },
+        });
       }
     } catch (error) {
       console.error("Biometric auth error:", error);
-      Alert.alert(
-        "Error",
-        "Biometric authentication failed. Please use your PIN."
-      );
+      toast.show({
+        placement: "top",
+        render: ({ id }) => {
+          const uniqueToastId = "toast-" + id;
+          return (
+            <Toaster
+              uniqueToastId={uniqueToastId}
+              variant="outline"
+              title="Error"
+              description="Biometric authentication failed. Please use your PIN."
+              action="error"
+            />
+          );
+        },
+      });
     } finally {
       setIsBiometricLoading(false);
     }

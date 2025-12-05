@@ -1,9 +1,10 @@
 import { useHealthFacilities } from "@/hooks/useHealthFacilities";
 import { useLocation } from "@/hooks/useLocation";
-import React, { useMemo } from "react";
-import { Alert, Platform, StyleSheet } from "react-native";
+import React, { useMemo, useState } from "react";
+import { Platform, StyleSheet } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 import { EmptyState, ErrorState } from "../state-full-widgets";
+import { AlertDialog } from "../ui/alert-dialog";
 import { Box } from "../ui/box";
 import { Spinner } from "../ui/spinner";
 
@@ -19,6 +20,10 @@ const FacilityMapView = ({ search, typeId }: FacilityMapViewProps) => {
   });
   const { coordinates: userLocation, isLoading: isLocationLoading } =
     useLocation();
+  const [selectedFacility, setSelectedFacility] = useState<{
+    name: string;
+    details: string;
+  } | null>(null);
 
   // Calculate initial region based on facilities or user location
   const initialRegion = useMemo<Region | undefined>(() => {
@@ -70,11 +75,10 @@ const FacilityMapView = ({ search, typeId }: FacilityMapViewProps) => {
   }
 
   const handleMarkerPress = (facility: (typeof healthFacilities)[0]) => {
-    Alert.alert(
-      facility.name,
-      `${facility.address}\n${facility.phoneNumber}\n${facility.email}`,
-      [{ text: "OK" }]
-    );
+    setSelectedFacility({
+      name: facility.name,
+      details: `${facility.address}\n${facility.phoneNumber}\n${facility.email}`,
+    });
   };
 
   return (
@@ -104,6 +108,16 @@ const FacilityMapView = ({ search, typeId }: FacilityMapViewProps) => {
         </MapView>
       ) : (
         <EmptyState message="Unable to load map" />
+      )}
+      {selectedFacility && (
+        <AlertDialog
+          isOpen={!!selectedFacility}
+          onClose={() => setSelectedFacility(null)}
+          title={selectedFacility.name}
+          message={selectedFacility.details}
+          confirmText="OK"
+          onConfirm={() => setSelectedFacility(null)}
+        />
       )}
     </Box>
   );

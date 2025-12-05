@@ -11,7 +11,6 @@ import { authClient } from "@/lib/auth-client";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
-  Alert,
   Modal,
   Pressable,
   ScrollView,
@@ -42,7 +41,21 @@ export default function TwoFactorSetup({
 
   const handleEnable = async () => {
     if (!password) {
-      Alert.alert("Error", "Please enter your password");
+      toast.show({
+        placement: "top",
+        render: ({ id }) => {
+          const uniqueToastId = "toast-" + id;
+          return (
+            <Toaster
+              uniqueToastId={uniqueToastId}
+              variant="outline"
+              title="Error"
+              description="Please enter your password"
+              action="error"
+            />
+          );
+        },
+      });
       return;
     }
 
@@ -54,11 +67,24 @@ export default function TwoFactorSetup({
       });
 
       if (enableResult.error) {
-        Alert.alert(
-          "Error",
-          enableResult.error.message ||
-            "Failed to enable two-factor authentication"
-        );
+        toast.show({
+          placement: "top",
+          render: ({ id }) => {
+            const uniqueToastId = "toast-" + id;
+            return (
+              <Toaster
+                uniqueToastId={uniqueToastId}
+                variant="outline"
+                title="Error"
+                description={
+                  enableResult.error.message ||
+                  "Failed to enable two-factor authentication"
+                }
+                action="error"
+              />
+            );
+          },
+        });
         setIsLoading(false);
         return;
       }
@@ -67,10 +93,23 @@ export default function TwoFactorSetup({
       setStep("send");
     } catch (error: any) {
       console.error("2FA enable error:", error);
-      Alert.alert(
-        "Error",
-        error?.message || "An error occurred. Please try again."
-      );
+      toast.show({
+        placement: "top",
+        render: ({ id }) => {
+          const uniqueToastId = "toast-" + id;
+          return (
+            <Toaster
+              uniqueToastId={uniqueToastId}
+              variant="outline"
+              title="Error"
+              description={
+                error?.message || "An error occurred. Please try again."
+              }
+              action="error"
+            />
+          );
+        },
+      });
     } finally {
       setIsLoading(false);
     }
@@ -82,10 +121,24 @@ export default function TwoFactorSetup({
       const result = await authClient.twoFactor.sendOtp();
 
       if (result.error) {
-        Alert.alert(
-          "Error",
-          result.error.message || "Failed to send OTP. Please try again."
-        );
+        toast.show({
+          placement: "top",
+          render: ({ id }) => {
+            const uniqueToastId = "toast-" + id;
+            return (
+              <Toaster
+                uniqueToastId={uniqueToastId}
+                variant="outline"
+                title="Error"
+                description={
+                  result.error.message ||
+                  "Failed to send OTP. Please try again."
+                }
+                action="error"
+              />
+            );
+          },
+        });
         setIsSendingOTP(false);
         return;
       }
@@ -110,10 +163,23 @@ export default function TwoFactorSetup({
       setStep("verify");
     } catch (error: any) {
       console.error("Send OTP error:", error);
-      Alert.alert(
-        "Error",
-        error?.message || "An error occurred. Please try again."
-      );
+      toast.show({
+        placement: "top",
+        render: ({ id }) => {
+          const uniqueToastId = "toast-" + id;
+          return (
+            <Toaster
+              uniqueToastId={uniqueToastId}
+              variant="outline"
+              title="Error"
+              description={
+                error?.message || "An error occurred. Please try again."
+              }
+              action="error"
+            />
+          );
+        },
+      });
     } finally {
       setIsSendingOTP(false);
     }
@@ -121,7 +187,21 @@ export default function TwoFactorSetup({
 
   const handleVerify = async () => {
     if (verificationCode.length !== 6) {
-      Alert.alert("Error", "Please enter a 6-digit code");
+      toast.show({
+        placement: "top",
+        render: ({ id }) => {
+          const uniqueToastId = "toast-" + id;
+          return (
+            <Toaster
+              uniqueToastId={uniqueToastId}
+              variant="outline"
+              title="Error"
+              description="Please enter a 6-digit code"
+              action="error"
+            />
+          );
+        },
+      });
       return;
     }
 
@@ -132,10 +212,23 @@ export default function TwoFactorSetup({
       });
 
       if (result.error) {
-        Alert.alert(
-          "Verification Failed",
-          result.error.message || "Invalid code. Please try again."
-        );
+        toast.show({
+          placement: "top",
+          render: ({ id }) => {
+            const uniqueToastId = "toast-" + id;
+            return (
+              <Toaster
+                uniqueToastId={uniqueToastId}
+                variant="outline"
+                title="Verification Failed"
+                description={
+                  result.error.message || "Invalid code. Please try again."
+                }
+                action="error"
+              />
+            );
+          },
+        });
         setVerificationCode("");
         setIsLoading(false);
         return;
@@ -160,10 +253,23 @@ export default function TwoFactorSetup({
       onComplete();
     } catch (error: any) {
       console.error("2FA verify error:", error);
-      Alert.alert(
-        "Error",
-        error?.message || "An error occurred. Please try again."
-      );
+      toast.show({
+        placement: "top",
+        render: ({ id }) => {
+          const uniqueToastId = "toast-" + id;
+          return (
+            <Toaster
+              uniqueToastId={uniqueToastId}
+              variant="outline"
+              title="Error"
+              description={
+                error?.message || "An error occurred. Please try again."
+              }
+              action="error"
+            />
+          );
+        },
+      });
       setVerificationCode("");
     } finally {
       setIsLoading(false);
