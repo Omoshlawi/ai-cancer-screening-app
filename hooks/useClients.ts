@@ -1,5 +1,6 @@
-import { apiFetch, APIFetchResponse, mutate } from "@/lib/api";
+import { apiFetch, APIFetchResponse } from "@/lib/api";
 import { constructUrl } from "@/lib/api/constructUrl";
+import { invalidateCache } from "@/lib/helpers";
 import { Client, ClientFormData } from "@/types/client";
 import { Referral, ReferralFormData } from "@/types/screening";
 import { useState } from "react";
@@ -24,7 +25,8 @@ const createClient = async (data: ClientFormData) => {
     method: "POST",
     data: data,
   });
-  mutate("/clients");
+
+  invalidateCache();
   return response.data;
 };
 
@@ -34,7 +36,7 @@ const updateClient = async (id: string, data: Partial<ClientFormData>) => {
     method: "PUT",
     data: data,
   });
-  mutate("/clients");
+  invalidateCache();
   return response.data;
 };
 
@@ -43,7 +45,7 @@ const deleteClient = async (id: string) => {
   const response = await apiFetch<Client>(url, {
     method: "DELETE",
   });
-  mutate("/clients");
+  invalidateCache();
   return response.data;
 };
 
@@ -59,6 +61,7 @@ export const referClient = async (data: ReferralFormData) => {
     method: "POST",
     data: data,
   });
+  invalidateCache();
   return response.data;
 };
 

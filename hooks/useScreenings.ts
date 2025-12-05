@@ -1,4 +1,5 @@
-import { apiFetch, APIFetchResponse, constructUrl, mutate } from "@/lib/api";
+import { apiFetch, APIFetchResponse, constructUrl } from "@/lib/api";
+import { invalidateCache } from "@/lib/helpers";
 import { ScreenClientFormData, Screening } from "@/types/screening";
 import useSWR from "swr";
 
@@ -8,7 +9,7 @@ const createScreening = async (data: ScreenClientFormData) => {
     method: "POST",
     data: data,
   });
-  mutate("/screenings");
+  invalidateCache();
   return response.data;
 };
 
@@ -21,7 +22,7 @@ const updateScreening = async (
     method: "PUT",
     data: data,
   });
-  mutate("/screenings");
+  invalidateCache();
   return response.data;
 };
 
@@ -30,7 +31,7 @@ const deleteScreening = async (id: string) => {
   const response = await apiFetch<Screening>(url, {
     method: "DELETE",
   });
-  mutate("/screenings");
+  invalidateCache();  
   return response.data;
 };
 

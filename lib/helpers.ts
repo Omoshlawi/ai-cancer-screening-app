@@ -1,4 +1,5 @@
 import { ReferralStatus, RiskInterpretation } from "@/types/screening";
+import { mutate } from "./api";
 import { SCREENING_FORM_BOOLEAN_OPTIONS, SMOKING_OPTIONS } from "./constants";
 
 export const getInitials = (name: string) => {
@@ -80,4 +81,11 @@ export const getRiskPercentage = (interpretation?: RiskInterpretation) => {
     case RiskInterpretation.HIGH_RISK:
       return 100;
   }
+};
+
+export const invalidateCache = () => {
+  mutate("/screenings");
+  mutate("/clients"); // invalidate clients for the screening
+  mutate("/referrals"); // invalidate referrals for the screening
+  mutate("/activities"); // invalidate activities
 };
