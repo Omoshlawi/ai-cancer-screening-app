@@ -15,6 +15,10 @@ import { HStack } from "../ui/hstack";
 import { Icon } from "../ui/icon";
 import { Spinner } from "../ui/spinner";
 import { Text } from "../ui/text";
+
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
+
 const RecentActivity = () => {
   const { activities, error, isLoading } = useActivities({
     limit: "5",
@@ -74,7 +78,7 @@ const RecentActivity = () => {
                 }
                 trailing={
                   <Text size="xs" className="text-typography-500">
-                    {dayjs(activity.createdAt).format("DD/MM/YYYY HH:mm")}
+                    {dayjs(activity.createdAt).fromNow()}
                   </Text>
                 }
               />

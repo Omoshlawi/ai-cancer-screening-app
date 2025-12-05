@@ -1,6 +1,7 @@
 import { useClients } from "@/hooks/useClients";
 import { useScreenings } from "@/hooks/useScreenings";
 import { cn } from "@gluestack-ui/utils/nativewind-utils";
+import dayjs from "dayjs";
 import {
   AlertCircle,
   CheckCircle,
@@ -15,8 +16,8 @@ import { Icon } from "../ui/icon";
 import { Text } from "../ui/text";
 const SummaryCards = () => {
   const { count: screeningsCount } = useScreenings({
-    screeningDateFrom: new Date().toISOString(),
-    screeningDateTo: new Date().toISOString(),
+    screeningDateFrom: dayjs().startOf("day").toISOString(),
+    screeningDateTo: dayjs().endOf("day").toISOString(),
     limit: "1",
   });
   const { count: clientsCount } = useClients({

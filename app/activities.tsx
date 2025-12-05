@@ -12,6 +12,10 @@ import dayjs from "dayjs";
 import { Dot } from "lucide-react-native";
 import React from "react";
 import { FlatList } from "react-native";
+
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
+
 const ActivitiesScreen = () => {
   const { activities, error, isLoading } = useActivities({});
 
@@ -29,7 +33,7 @@ const ActivitiesScreen = () => {
               ItemSeparatorComponent={() => <Box className="h-2 " />}
               renderItem={({ item: activity }) => (
                 <ListTile
-                  className="bg-background-0"
+                  className="bg-background-0 p-4"
                   key={activity.id}
                   leading={
                     <Icon
@@ -64,7 +68,7 @@ const ActivitiesScreen = () => {
                   }
                   trailing={
                     <Text size="xs" className="text-typography-500">
-                      {dayjs(activity.createdAt).format("DD/MM/YYYY HH:mm")}
+                      {dayjs(activity.createdAt).fromNow()}
                     </Text>
                   }
                 />
