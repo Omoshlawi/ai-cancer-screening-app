@@ -5,12 +5,14 @@ import { Box } from "@/components/ui/box";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 import { authClient } from "@/lib/auth-client";
-import { Wifi } from "lucide-react-native";
+import { Wifi, WifiOff } from "lucide-react-native";
 import { ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 export default function HomeScreen() {
   const { data: userSession } = authClient.useSession();
+  const { isOnline } = useNetworkStatus();
   return (
     <SafeAreaView className="flex-1 bg-background-0">
       <CHPLandingScreenLayout>
@@ -35,11 +37,15 @@ export default function HomeScreen() {
               <Badge
                 size="lg"
                 variant="solid"
-                action="success"
-                className="rounded-full w-[100px] gap-2 bg-teal-200"
+                action={isOnline ? "success" : "error"}
+                className={`rounded-full w-[100px] gap-2 ${
+                  isOnline ? "bg-teal-200" : "bg-red-200"
+                }`}
               >
-                <BadgeIcon as={Wifi} className="ml-2" />
-                <BadgeText className="w-fit">Online</BadgeText>
+                <BadgeIcon as={isOnline ? Wifi : WifiOff} className="ml-2" />
+                <BadgeText className="w-fit">
+                  {isOnline ? "Online" : "Offline"}
+                </BadgeText>
               </Badge>
             </Card>
             <SummaryCards />
