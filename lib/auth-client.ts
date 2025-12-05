@@ -2,9 +2,11 @@ import { expoClient } from "@better-auth/expo/client";
 import {
   adminClient,
   jwtClient,
+  twoFactorClient,
   usernameClient,
 } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
+import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { BASE_URL } from "./constants";
 
@@ -22,5 +24,10 @@ export const authClient = createAuthClient({
     adminClient(),
     usernameClient(),
     jwtClient(),
+    twoFactorClient({
+      onTwoFactorRedirect: () => {
+        router.push("/two-factor");
+      },
+    }),
   ],
 });

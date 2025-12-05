@@ -148,6 +148,7 @@ export default function RootLayout() {
           </Stack.Protected>
           <Stack.Protected guard={!isLoggedIn}>
             <Stack.Screen name="auth" options={{ headerShown: false }} />
+            <Stack.Screen name="two-factor" options={{ headerShown: false }} />
           </Stack.Protected>
           <Stack.Screen
             name="modal"

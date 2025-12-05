@@ -1,7 +1,8 @@
 import Toaster from "@/components/toaster";
 import { Box } from "@/components/ui/box";
-import { Button, ButtonText } from "@/components/ui/button";
+import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
 import { FormControl } from "@/components/ui/form-control";
+import { ArrowRightIcon } from "@/components/ui/icon";
 import { Input, InputField } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
@@ -98,11 +99,7 @@ const LoginScreen = () => {
             control={form.control}
             name="username"
             render={({ field, fieldState }) => (
-              <Input
-                variant="outline"
-                size="lg"
-                isInvalid={!!fieldState?.error?.message}
-              >
+              <Input variant="outline" isInvalid={!!fieldState?.error?.message}>
                 <InputField
                   placeholder="Enter Username..."
                   {...field}
@@ -116,11 +113,7 @@ const LoginScreen = () => {
             control={form.control}
             name="password"
             render={({ field, fieldState }) => (
-              <Input
-                variant="outline"
-                size="lg"
-                isInvalid={!!fieldState?.error?.message}
-              >
+              <Input variant="outline" isInvalid={!!fieldState?.error?.message}>
                 <InputField
                   placeholder="Enter Password..."
                   {...field}
@@ -133,7 +126,7 @@ const LoginScreen = () => {
           />
           <Box className="flex-row items-center justify-end">
             <Link href="/auth/forgot-password" withAnchor>
-              <Text className="text-sm text-primary-500">
+              <Text className="text-sm text-teal-500">
                 Forgot Password {"\u2192"}
               </Text>
             </Link>
@@ -141,10 +134,12 @@ const LoginScreen = () => {
           <Button
             onPress={form.handleSubmit(onSubmit)}
             disabled={form.formState.isSubmitting}
+            className="w-full bg-teal-500 justify-between rounded-none"
           >
             <ButtonText size="lg" className="text-background-100">
               Login
             </ButtonText>
+            <ButtonIcon as={ArrowRightIcon} />
           </Button>
         </VStack>
       </FormControl>

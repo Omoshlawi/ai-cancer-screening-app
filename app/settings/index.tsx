@@ -1,6 +1,7 @@
 import ActionSheetWrapper from "@/components/actions-sheet-wrapper";
 import AppBar from "@/components/app-bar";
 import LocalAuthSetup from "@/components/auth/LocalAuthSetup";
+import TwoFactorSetup from "@/components/auth/TwoFactorSetup";
 import ListTile from "@/components/list-tile";
 import {
   Avatar,
@@ -9,15 +10,17 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar";
 import { Box } from "@/components/ui/box";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Divider } from "@/components/ui/divider";
 import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
+import { Input, InputField } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useTwoFactorAuth } from "@/hooks/use-two-factor-auth";
 import { authClient } from "@/lib/auth-client";
 import { getInitials } from "@/lib/helpers";
 import {
@@ -49,6 +52,21 @@ const SettingsScreen = () => {
   const [localAuthEnabled, setLocalAuthEnabledState] = useState(false);
   const [showSetup, setShowSetup] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
+
+  // 2FA hook handles all 2FA-related state and logic
+  const {
+    twoFactorEnabled,
+    isChecking2FA,
+    show2FASetup,
+    showDisable2FA,
+    disablePassword,
+    setShowDisable2FA,
+    setDisablePassword,
+    handle2FAToggle,
+    handleDisable2FA,
+    handle2FASetupComplete,
+    handle2FASetupCancel,
+  } = useTwoFactorAuth();
 
   useEffect(() => {
     checkLocalAuthStatus();
@@ -207,11 +225,17 @@ const SettingsScreen = () => {
                     />
                   }
                   title="Two-Factor Authentication"
-                  description="Enable two-factor authentication to secure your account."
+                  description={
+                    twoFactorEnabled
+                      ? "Two-factor authentication is enabled"
+                      : "Enable two-factor authentication to secure your account."
+                  }
                   trailing={
                     <Switch
                       size="md"
-                      isDisabled={false}
+                      isDisabled={isChecking2FA}
+                      value={twoFactorEnabled}
+                      onValueChange={handle2FAToggle}
                       trackColor={{ false: "#d4d4d4", true: "#525252" }}
                       thumbColor="#fafafa"
                       ios_backgroundColor="#d4d4d4"
@@ -436,6 +460,95 @@ const SettingsScreen = () => {
             onComplete={handleSetupComplete}
             onCancel={handleSetupCancel}
           />
+        </Modal>
+        <TwoFactorSetup
+          visible={show2FASetup}
+          onComplete={handle2FASetupComplete}
+          onCancel={handle2FASetupCancel}
+        />
+        <Modal
+          visible={showDisable2FA}
+          transparent
+          animationType="slide"
+          statusBarTranslucent
+          onRequestClose={() => {
+            setShowDisable2FA(false);
+            setDisablePassword("");
+          }}
+        >
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={() => {
+              setShowDisable2FA(false);
+              setDisablePassword("");
+            }}
+          >
+            <View
+              style={[
+                StyleSheet.absoluteFill,
+                {
+                  backgroundColor:
+                    colorScheme === "dark"
+                      ? "rgba(0, 0, 0, 0.8)"
+                      : "rgba(0, 0, 0, 0.6)",
+                },
+              ]}
+            />
+          </Pressable>
+          <Box className="absolute bottom-0 left-0 right-0 bg-background-0 rounded-t-3xl p-6">
+            <VStack space="lg">
+              <HStack className="items-center justify-between mb-4">
+                <Text className="text-2xl font-bold">
+                  Disable Two-Factor Authentication
+                </Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    setShowDisable2FA(false);
+                    setDisablePassword("");
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name="close"
+                    size={24}
+                    color={colorScheme === "dark" ? "white" : "black"}
+                  />
+                </TouchableOpacity>
+              </HStack>
+              <Text className="text-sm text-typography-500">
+                Enter your password to disable two-factor authentication
+              </Text>
+              <Input variant="outline" size="lg">
+                <InputField
+                  placeholder="Enter your password"
+                  value={disablePassword}
+                  onChangeText={setDisablePassword}
+                  secureTextEntry
+                  autoCapitalize="none"
+                  autoFocus
+                />
+              </Input>
+              <HStack space="md">
+                <Button
+                  variant="outline"
+                  onPress={() => {
+                    setShowDisable2FA(false);
+                    setDisablePassword("");
+                  }}
+                  className="flex-1"
+                >
+                  <ButtonText>Cancel</ButtonText>
+                </Button>
+                <Button
+                  action="negative"
+                  onPress={handleDisable2FA}
+                  disabled={!disablePassword}
+                  className="flex-1"
+                >
+                  <ButtonText>Disable</ButtonText>
+                </Button>
+              </HStack>
+            </VStack>
+          </Box>
         </Modal>
       </ScrollView>
     </SafeAreaView>

@@ -1,6 +1,7 @@
 import { Box } from "@/components/ui/box";
-import { Button, ButtonText } from "@/components/ui/button";
+import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
 import { FormControl } from "@/components/ui/form-control";
+import { ArrowRightIcon } from "@/components/ui/icon";
 import { Input, InputField } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
@@ -45,10 +46,14 @@ const ForgotPasswordScreen = () => {
               </Input>
             )}
           />
-          <Button onPress={form.handleSubmit(onSubmit)}>
+          <Button
+            onPress={form.handleSubmit(onSubmit)}
+            className="w-full bg-teal-500 justify-between rounded-none"
+          >
             <ButtonText size="lg" className="text-background-100">
               Reset Password
             </ButtonText>
+            <ButtonIcon as={ArrowRightIcon} />
           </Button>
         </VStack>
       </FormControl>
