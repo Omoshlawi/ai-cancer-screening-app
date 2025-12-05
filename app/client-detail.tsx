@@ -1,4 +1,8 @@
-import { ClientInfo, ScreeningHistory } from "@/components/client";
+import {
+  ClientInfo,
+  RiskTratification,
+  ScreeningHistory,
+} from "@/components/client";
 import ReferralHistory from "@/components/client/ReferralHistory";
 import { ScreenLayout } from "@/components/layout";
 import { ErrorState, When } from "@/components/state-full-widgets";
@@ -116,7 +120,9 @@ const ClientDetail = () => {
                 </Menu>
               </HStack>
               <ClientInfo client={client!} />
-              {/* <RiskTratification client={client!} /> */}
+              {client?.screenings?.length && (
+                <RiskTratification client={client!} />
+              )}
               <ScreeningHistory client={client!} />
               <ReferralHistory client={client!} />
             </VStack>

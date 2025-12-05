@@ -1,5 +1,6 @@
 import { clientSchema } from "@/constants/schemas";
 import z from "zod";
+import { Screening } from "./screening";
 
 export type ClientFormData = z.infer<typeof clientSchema>;
 
@@ -13,5 +14,5 @@ export interface Client {
   nationalId: string;
   maritalStatus: ClientFormData["maritalStatus"];
   level?: "low" | "medium" | "high";
+  screenings?: Pick<Screening, "id" | "createdAt" | "scoringResult">[];
 }
-

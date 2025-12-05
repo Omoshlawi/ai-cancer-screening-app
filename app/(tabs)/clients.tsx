@@ -10,6 +10,8 @@ import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { useClients } from "@/hooks/useClients";
+import { getRiskColor, getRiskInterpretation } from "@/lib/helpers";
+import Color from "color";
 import dayjs from "dayjs";
 import { router } from "expo-router";
 import {
@@ -73,12 +75,32 @@ const ClientsScreen = () => {
                               <Heading size="sm">
                                 {item.firstName} {item.lastName}
                               </Heading>
-                              <Text
-                                size="xs"
-                                className="text-typography-500 bg-teal-100 px-2 py-1 rounded-full"
-                              >
-                                {item.level} Risk
-                              </Text>
+                              {item.screenings?.[0]?.scoringResult
+                                ?.interpretation && (
+                                <Text
+                                  size="xs"
+                                  className="px-2 py-1 rounded-full"
+                                  style={{
+                                    backgroundColor: Color(
+                                      getRiskColor(
+                                        item.screenings?.[0]?.scoringResult
+                                          ?.interpretation
+                                      )
+                                    )
+                                      .alpha(0.1)
+                                      .toString(),
+                                    color: getRiskColor(
+                                      item.screenings?.[0]?.scoringResult
+                                        ?.interpretation
+                                    ),
+                                  }}
+                                >
+                                  {getRiskInterpretation(
+                                    item.screenings?.[0]?.scoringResult
+                                      ?.interpretation
+                                  )}
+                                </Text>
+                              )}
                             </HStack>
                             <HStack className="items-center" space="lg">
                               <Text size="sm" className="text-typography-500">

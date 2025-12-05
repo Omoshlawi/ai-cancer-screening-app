@@ -70,3 +70,14 @@ export const getReferralStatusDisplayValue = (status?: ReferralStatus) => {
       return "Cancelled";
   }
 };
+
+export const getRiskPercentage = (interpretation?: RiskInterpretation) => {
+  switch (interpretation) {
+    case RiskInterpretation.LOW_RISK:
+      return 0;
+    case RiskInterpretation.MEDIUM_RISK:
+      return 50;
+    case RiskInterpretation.HIGH_RISK:
+      return 100;
+  }
+};
