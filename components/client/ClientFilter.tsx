@@ -1,3 +1,4 @@
+import { RiskInterpretation } from "@/types/screening";
 import { ChevronDownIcon, FilterIcon, Search } from "lucide-react-native";
 import React, { FC, useMemo } from "react";
 import { Card } from "../ui/card";
@@ -20,13 +21,12 @@ import {
 import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 
-type Level = "all" | "low" | "medium" | "high";
-
 type ClientFilterProps = {
   search?: string;
   onSearchChange?: (search: string) => void;
-  level?: Level;
-  onLevelChange?: (level: Level) => void;
+  level?: RiskInterpretation | "";
+  onLevelChange?: (level: RiskInterpretation | "") => void;
+  count?: number;
 };
 
 const ClientFilter: FC<ClientFilterProps> = ({
@@ -34,24 +34,27 @@ const ClientFilter: FC<ClientFilterProps> = ({
   onSearchChange,
   level,
   onLevelChange,
+  count = 0,
 }) => {
-  const levels = useMemo<{ label: string; value: Level }[]>(() => {
+  const levels = useMemo<
+    { label: string; value: RiskInterpretation | "" }[]
+  >(() => {
     return [
       {
         label: "All Risk Levels",
-        value: "all",
+        value: "",
       },
       {
         label: "Low Risks",
-        value: "low",
+        value: RiskInterpretation.LOW_RISK,
       },
       {
         label: "Medium Risks",
-        value: "medium",
+        value: RiskInterpretation.MEDIUM_RISK,
       },
       {
         label: "High Risks",
-        value: "high",
+        value: RiskInterpretation.HIGH_RISK,
       },
     ];
   }, []);
@@ -78,8 +81,10 @@ const ClientFilter: FC<ClientFilterProps> = ({
           <Icon as={FilterIcon} size="md" className="text-typography-500" />
           <Select
             className="flex-1"
-            selectedValue={level}
-            onValueChange={(value) => onLevelChange?.(value as Level)}
+            selectedValue={level ?? ""}
+            onValueChange={(value) =>
+              onLevelChange?.(value as RiskInterpretation | "")
+            }
           >
             <SelectTrigger variant="outline" size="md">
               <SelectInput placeholder="Select option" className="flex-1" />
@@ -103,7 +108,9 @@ const ClientFilter: FC<ClientFilterProps> = ({
           </Select>
         </HStack>
         <Divider />
-        <Text size="2xs">12 Found Clients</Text>
+        <Text size="2xs">
+          {count} Found Client{count !== 1 ? "s" : ""}
+        </Text>
       </VStack>
     </Card>
   );

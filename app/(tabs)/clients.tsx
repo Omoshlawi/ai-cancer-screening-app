@@ -10,7 +10,9 @@ import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { useClients } from "@/hooks/useClients";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { getRiskColor, getRiskInterpretation } from "@/lib/helpers";
+import { RiskInterpretation } from "@/types/screening";
 import Color from "color";
 import dayjs from "dayjs";
 import { router } from "expo-router";
@@ -21,14 +23,27 @@ import {
   Phone,
   UserPlus,
 } from "lucide-react-native";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const ClientsScreen = () => {
   const [search, setSearch] = useState("");
-  const [level, setLevel] = useState<"all" | "low" | "medium" | "high">("all");
-  const { clients, error, isLoading } = useClients();
+  const [level, setLevel] = useState<RiskInterpretation | "">("");
+  const [debouncedSearch] = useDebouncedValue(search, 500);
+
+  const params = useMemo(() => {
+    const p: Record<string, string> = {};
+    if (debouncedSearch.trim()) {
+      p.search = debouncedSearch.trim();
+    }
+    if (level) {
+      p.risk = level;
+    }
+    return p;
+  }, [debouncedSearch, level]);
+
+  const { clients, error, isLoading, count } = useClients(params);
   return (
     <SafeAreaView className="flex-1 bg-background-0">
       <CHPLandingScreenLayout>
@@ -49,6 +64,7 @@ const ClientsScreen = () => {
               level={level}
               onSearchChange={setSearch}
               onLevelChange={setLevel}
+              count={count}
             />
             <Box className="flex-1 ">
               <When

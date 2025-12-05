@@ -24,9 +24,10 @@ const RiskTratification: FC<RiskTratificationProps> = ({ client }) => {
   const riskPercentage = getRiskPercentage(
     client.screenings?.[0]?.scoringResult?.interpretation
   );
-  const symptoms = client.screenings?.[0]?.scoringResult?.breakdown.map(
-    (factor) => factor.reason
-  );
+  const symptoms =
+    client.screenings?.[0]?.scoringResult?.breakdown.map(
+      (factor) => factor.reason
+    ) ?? [];
   return (
     <Card size="sm" variant="elevated" className="p-2 gap-3">
       <Heading size="xs">AI Risk Tratification</Heading>
