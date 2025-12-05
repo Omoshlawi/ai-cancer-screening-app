@@ -6,11 +6,16 @@ import { useState } from "react";
 import useSWR from "swr";
 import { useDebouncedValue } from "./useDebouncedValue";
 
-export const useClients = () => {
-  const url = constructUrl("/clients");
+export const useClients = (params: Record<string, string> = {}) => {
+  const url = constructUrl("/clients", params);
   const { data, error, isLoading } =
-    useSWR<APIFetchResponse<{ results: Client[] }>>(url);
-  return { clients: data?.data?.results ?? [], error, isLoading };
+    useSWR<APIFetchResponse<{ results: Client[]; totalCount: number }>>(url);
+  return {
+    clients: data?.data?.results ?? [],
+    error,
+    isLoading,
+    count: data?.data?.totalCount ?? 0,
+  };
 };
 
 const createClient = async (data: ClientFormData) => {

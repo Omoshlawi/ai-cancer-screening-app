@@ -17,7 +17,7 @@ export default function HomeScreen() {
     <SafeAreaView className="flex-1 bg-background-0">
       <CHPLandingScreenLayout>
         <Box className="flex-1 p-4">
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
             <Card
               size="lg"
               variant="elevated"

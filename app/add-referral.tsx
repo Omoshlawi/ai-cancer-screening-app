@@ -30,7 +30,7 @@ import { handleApiErrors } from "@/lib/api";
 import { ReferralFormData } from "@/types/screening";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import {
   AlertCircleIcon,
   ArrowRightIcon,
@@ -95,6 +95,10 @@ const AddReferralScreen = () => {
           },
         });
       }
+      router.replace({
+        pathname: "/client-detail",
+        params: { id: clientId },
+      });
     } catch (error) {
       const errors = handleApiErrors<ReferralFormData>(error);
       if (errors.detail) {

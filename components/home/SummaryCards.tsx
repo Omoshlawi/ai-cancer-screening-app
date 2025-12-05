@@ -1,3 +1,5 @@
+import { useClients } from "@/hooks/useClients";
+import { useScreenings } from "@/hooks/useScreenings";
 import { cn } from "@gluestack-ui/utils/nativewind-utils";
 import {
   AlertCircle,
@@ -12,6 +14,14 @@ import { Card } from "../ui/card";
 import { Icon } from "../ui/icon";
 import { Text } from "../ui/text";
 const SummaryCards = () => {
+  const { count: screeningsCount } = useScreenings({
+    screeningDateFrom: new Date().toISOString(),
+    screeningDateTo: new Date().toISOString(),
+    limit: "1",
+  });
+  const { count: clientsCount } = useClients({
+    limit: "1",
+  });
   const cards = useMemo<
     {
       title: string;
@@ -23,7 +33,7 @@ const SummaryCards = () => {
     return [
       {
         title: "Today's Screenings",
-        value: 12,
+        value: screeningsCount,
         icon: CheckCircle,
         iconClassName: "text-teal-200",
       },
@@ -41,12 +51,12 @@ const SummaryCards = () => {
       },
       {
         title: "My Clients",
-        value: 262,
+        value: clientsCount,
         icon: Users,
         iconClassName: "text-blue-200",
       },
     ];
-  }, []);
+  }, [clientsCount, screeningsCount]);
   return (
     <Box className="w-full flex flex-row flex-wrap gap-2 mt-4">
       {cards.map((card, index) => (

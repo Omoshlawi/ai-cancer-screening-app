@@ -37,8 +37,13 @@ const deleteScreening = async (id: string) => {
 export const useScreenings = (params: Record<string, string> = {}) => {
   const url = constructUrl("/screenings", params);
   const { data, error, isLoading } =
-    useSWR<APIFetchResponse<{ results: Screening[] }>>(url);
-  return { screenings: data?.data?.results ?? [], error, isLoading };
+    useSWR<APIFetchResponse<{ results: Screening[]; totalCount: number }>>(url);
+  return {
+    screenings: data?.data?.results ?? [],
+    error,
+    isLoading,
+    count: data?.data?.totalCount ?? 0,
+  };
 };
 
 export const useScreening = (id?: string) => {
