@@ -25,7 +25,7 @@ const ErrorState = <T extends { detail?: string; [k: string]: any }>({
       )}
       {(detail || error) && (
         <Text className="text-outline text-bodySmall">
-          {error?.response?.data?.detail ?? detail}
+          {error?.response?.data?.detail ?? error?.response?.data?.message ?? detail}
         </Text>
       )}
     </Box>

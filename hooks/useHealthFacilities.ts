@@ -52,3 +52,29 @@ export const useSearchHealthFacility = (defaultSearch: string = "") => {
     searchValue: search,
   };
 };
+
+export const useNearbyHealthFacilities = (params: {
+  lat: number;
+  lng: number;
+  targetCount?: number;
+  maxDistanceKm?: number;
+  initialDistanceKm?: number;
+  distanceIncrementKm?: number;
+}) => {
+  console.log(params);
+  
+  const url = constructUrl("/health-facilities/nearest", {
+    ...params,
+    // targetCount: params.targetCount ?? 10,
+    // maxDistanceKm: params.maxDistanceKm ?? 5000,
+    // initialDistanceKm: params.initialDistanceKm ?? 1,
+    // distanceIncrementKm: params.distanceIncrementKm ?? 1,
+  });
+  const { data, error, isLoading } =
+    useSWR<APIFetchResponse<{ results: (HealthFacility & { distanceKm: number })[] }>>(url);
+  return {
+    healthFacilities: data?.data?.results ?? [],
+    error,
+    isLoading,
+  };
+};

@@ -1,7 +1,7 @@
 import { referralSchema, screenClientSchema } from "@/constants/schemas";
 import z from "zod";
 import { Client } from "./client";
-import { HealthFacility } from "./facilities";
+import { Coordinates, HealthFacility } from "./facilities";
 
 export type Screening = {
   id: string;
@@ -20,6 +20,7 @@ export type Screening = {
   updatedAt: string;
   client?: Client;
   scoringResult?: ScoringResult;
+  coordinates?: Coordinates;
 };
 
 export type ScreenClientFormData = z.infer<typeof screenClientSchema>;

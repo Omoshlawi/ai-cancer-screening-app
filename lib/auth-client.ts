@@ -2,6 +2,7 @@ import { expoClient } from "@better-auth/expo/client";
 import {
   adminClient,
   jwtClient,
+  phoneNumberClient,
   twoFactorClient,
   usernameClient,
 } from "better-auth/client/plugins";
@@ -23,6 +24,7 @@ export const authClient = createAuthClient({
     }),
     adminClient(),
     usernameClient(),
+    phoneNumberClient(),
     jwtClient(),
     twoFactorClient({
       onTwoFactorRedirect: () => {

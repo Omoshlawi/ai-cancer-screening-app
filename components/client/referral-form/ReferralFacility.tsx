@@ -16,7 +16,11 @@ import { Image } from "@/components/ui/image";
 import { Input, InputField } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { useSearchHealthFacility } from "@/hooks/useHealthFacilities";
+import {
+  useNearbyHealthFacilities,
+  useSearchHealthFacility,
+} from "@/hooks/useHealthFacilities";
+import { useScreening } from "@/hooks/useScreenings";
 import { ReferralFormData } from "@/types/screening";
 import { MapPin, Phone } from "lucide-react-native";
 import React, { FC } from "react";
@@ -31,15 +35,24 @@ const ReferralFacility: FC<ReferralFacilityProps> = ({
   facilitySearchAsync,
 }) => {
   const form = useFormContext<ReferralFormData>();
-  const { healthFacilities, error, isLoading, onSearchChange, searchValue } =
-    facilitySearchAsync;
+  const screeningId = form.watch("screeningId");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { screening: _ } = useScreening(screeningId);
+  const {
+    healthFacilities: nearbyHealthFacilities,
+    error: nearbyError,
+    isLoading: nearbyIsLoading,
+  } = useNearbyHealthFacilities({
+    lat: /*screening?.coordinates?.latitude ??*/ -1.2921,
+    lng: /*screening?.coordinates?.longitude ??*/ 36.8219,
+  });
   return (
     <Controller
       control={form.control}
       name="healthFacilityId"
       render={({ field, fieldState: { invalid, error } }) => (
         <ActionSheetWrapper
-          loading={isLoading}
+          loading={nearbyIsLoading}
           renderTrigger={({ onPress }) => (
             <FormControl
               isInvalid={invalid}
@@ -56,8 +69,8 @@ const ReferralFacility: FC<ReferralFacilityProps> = ({
                   {...field}
                   value={
                     field.value
-                      ? healthFacilities.find(
-                          (client) => client.id === field.value
+                      ? nearbyHealthFacilities.find(
+                          (facility) => facility.id === field.value
                         )?.name
                       : ""
                   }
@@ -79,7 +92,7 @@ const ReferralFacility: FC<ReferralFacilityProps> = ({
               )}
             </FormControl>
           )}
-          data={healthFacilities}
+          data={nearbyHealthFacilities}
           renderItem={({ item, close }) => (
             <TouchableOpacity
               onPress={() => {
@@ -113,7 +126,9 @@ const ReferralFacility: FC<ReferralFacilityProps> = ({
                         size="sm"
                         className="text-typography-500"
                       />
-                      <Text size="xs">{item.address}</Text>
+                      <Text size="xs">
+                        {item.address} - {item.distanceKm} km
+                      </Text>
                     </HStack>
                     <HStack className="items-center" space="sm">
                       <Icon
@@ -129,14 +144,19 @@ const ReferralFacility: FC<ReferralFacilityProps> = ({
             </TouchableOpacity>
           )}
           renderEmptyState={() => {
-            if (error) {
-              return <ErrorState error={error as any} />;
+            if (error || nearbyError) {
+              console.log(error, nearbyError);
+
+              return (
+                <ErrorState error={(error as any) || (nearbyError as any)} />
+              );
             }
-            return <EmptyState message="No facilitiesonyo found" />;
+            return <EmptyState message="No nearby facilities found" />;
           }}
-          searchable
-          searchText={searchValue}
-          onSearchTextChange={onSearchChange}
+
+          // searchable
+          // searchText={searchValue}
+          // onSearchTextChange={onSearchChange}
         />
       )}
     />

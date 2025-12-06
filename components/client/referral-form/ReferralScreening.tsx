@@ -69,7 +69,7 @@ const ReferralScreening: FC<ReferralScreeningProps> = ({ client }) => {
                 className="w-full"
               >
                 <FormControlLabel>
-                  <FormControlLabelText>Referral Facility</FormControlLabelText>
+                  <FormControlLabelText>Screening</FormControlLabelText>
                 </FormControlLabel>
                 <Input className="my-1" size="md">
                   <InputField
