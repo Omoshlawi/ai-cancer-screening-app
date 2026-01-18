@@ -58,7 +58,7 @@ const ObstetricHostory: FC<ObstetricHostoryProps> = ({
           >
             <FormControlLabel>
               <FormControlLabelText>
-                How many times hve you given birth?
+                How many times have you given birth?
               </FormControlLabelText>
             </FormControlLabel>
             <Input className="my-1" size="md">

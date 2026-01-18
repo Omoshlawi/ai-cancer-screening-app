@@ -63,7 +63,7 @@ const SmokingHistory: FC<SmokingHistoryProps> = ({ onNext, onPrevious }) => {
           >
             <FormControlLabel>
               <FormControlLabelText>
-                Do you currently smoking or have you ever smoked?
+                Do you currently smoke or have you ever smoked?
               </FormControlLabelText>
             </FormControlLabel>
             <RadioGroup value={field.value} onChange={field.onChange}>
