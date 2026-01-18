@@ -23,7 +23,7 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
 const steps: (keyof ClientFormData)[][] = [
   ["firstName", "lastName", "dateOfBirth"],
-  ["phoneNumber", "address"],
+  ["phoneNumber", "county", "subcounty", "ward"],
   ["nationalId", "maritalStatus"],
 ];
 
@@ -37,7 +37,9 @@ const AddClientScreen = () => {
       firstName: "",
       lastName: "",
       phoneNumber: "",
-      address: "",
+      county: "",
+      subcounty: "",
+      ward: "",
       nationalId: "",
     },
   });
@@ -96,7 +98,7 @@ const AddClientScreen = () => {
         Object.entries(errors ?? {}).forEach(([field, error]) => {
           form.setError(field as keyof ClientFormData, { message: error });
         });
-         
+
       }
     }
   };

@@ -10,7 +10,9 @@ export interface Client {
   lastName: string;
   dateOfBirth: string;
   phoneNumber: string;
-  address: string;
+  county: string;
+  subcounty: string;
+  ward: string;
   nationalId: string;
   maritalStatus: ClientFormData["maritalStatus"];
   level?: "low" | "medium" | "high";

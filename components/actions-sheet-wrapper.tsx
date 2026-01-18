@@ -1,6 +1,6 @@
 import { SearchIcon } from "lucide-react-native";
 import React, { useCallback } from "react";
-import { ListRenderItem } from "react-native";
+import { DimensionValue, ListRenderItem } from "react-native";
 import {
   Actionsheet,
   ActionsheetBackdrop,
@@ -29,6 +29,7 @@ type ActionSheetWrapperProps<T> = {
   searchText?: string;
   onSearchTextChange?: (text: string) => void;
   loading?: boolean;
+  maxHeight?: DimensionValue
 };
 
 const ActionSheetWrapper = <T,>({
@@ -41,6 +42,7 @@ const ActionSheetWrapper = <T,>({
   searchText,
   onSearchTextChange,
   loading = false,
+  maxHeight = "80%"
 }: ActionSheetWrapperProps<T>) => {
   const [showActionsheet, setShowActionsheet] = React.useState(false);
   const handleOpen = () => setShowActionsheet(true);
@@ -103,7 +105,7 @@ const ActionSheetWrapper = <T,>({
       {renderTrigger({ onPress: handleOpen })}
       <Actionsheet isOpen={showActionsheet} onClose={handleClose}>
         <ActionsheetBackdrop />
-        <ActionsheetContent>
+        <ActionsheetContent style={{ maxHeight }}>
           <ActionsheetDragIndicatorWrapper>
             <ActionsheetDragIndicator />
           </ActionsheetDragIndicatorWrapper>

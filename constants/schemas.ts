@@ -36,7 +36,9 @@ export const clientSchema = z.object({
   phoneNumber: z.string().regex(PHONE_NUMBER_REGEX, {
     message: "Phone number must be a valid Kenyan phone number",
   }),
-  address: z.string().min(3),
+  county: z.string().min(3),
+  subcounty: z.string().min(3),
+  ward: z.string().min(3),
   nationalId: z.string().min(6),
   maritalStatus: z.enum([
     "SINGLE",

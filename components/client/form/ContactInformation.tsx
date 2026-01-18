@@ -12,16 +12,19 @@ import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
 import { Input, InputField } from "@/components/ui/input";
 
+
+import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { ClientFormData } from "@/types/client";
 import {
   AlertCircleIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
-  Phone,
+  Phone
 } from "lucide-react-native";
 import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import AddressFieldsInput from "./AddressFieldsInput";
 
 type ContactInformationProps = {
   onNext: () => void;
@@ -33,7 +36,8 @@ const ContactInformation = ({
   onPrevious,
 }: ContactInformationProps) => {
   const form = useFormContext<ClientFormData>();
-
+  const selectedCounty = form.watch("county")
+  const selectedSubcounty = form.watch("subcounty")
   return (
     <VStack space="md" className="flex-1 items-center">
       <Icon
@@ -82,43 +86,10 @@ const ContactInformation = ({
           </FormControl>
         )}
       />
-      <Controller
-        control={form.control}
-        name="address"
-        render={({ field, fieldState: { invalid, error } }) => (
-          <FormControl
-            isInvalid={invalid}
-            size="md"
-            isDisabled={false}
-            isReadOnly={false}
-            isRequired={false}
-            className="w-full"
-          >
-            <FormControlLabel>
-              <FormControlLabelText>Location/Area</FormControlLabelText>
-            </FormControlLabel>
-            <Input className="my-1" size="md">
-              <InputField
-                placeholder="Location/Area"
-                {...field}
-                onChangeText={field.onChange}
-              />
-            </Input>
-
-            {error && (
-              <FormControlError>
-                <FormControlErrorIcon
-                  as={AlertCircleIcon}
-                  className="text-red-500"
-                />
-                <FormControlErrorText className="text-red-500">
-                  {error.message}
-                </FormControlErrorText>
-              </FormControlError>
-            )}
-          </FormControl>
-        )}
-      />
+      <Text>{JSON.stringify(form.watch(), null, 2)}</Text>
+      <AddressFieldsInput control={form.control} name="county" label="County" level={1} />
+      <AddressFieldsInput control={form.control} name="subcounty" label="Subcounty" level={2} parentName={selectedCounty} />
+      < AddressFieldsInput control={form.control} name="ward" label="Ward" level={3} parentName={selectedSubcounty} />
 
       <HStack space="sm" className="w-full">
         <Button
@@ -135,7 +106,7 @@ const ContactInformation = ({
           size="sm"
           className="flex-1 bg-teal-500 justify-between rounded-none"
           onPress={async () => {
-            const isValid = await form.trigger(["phoneNumber", "address"]);
+            const isValid = await form.trigger(["phoneNumber", "county", "subcounty", "ward"]);
             if (isValid) {
               onNext();
             }
