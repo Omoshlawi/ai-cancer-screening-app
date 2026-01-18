@@ -145,6 +145,7 @@ export default function RootLayout() {
                 headerShown: false,
               }}
             />
+            <Stack.Screen name="faq" options={{ headerShown: false }} />
           </Stack.Protected>
           <Stack.Protected guard={!isLoggedIn}>
             <Stack.Screen name="auth" options={{ headerShown: false }} />

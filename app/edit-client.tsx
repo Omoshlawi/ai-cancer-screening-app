@@ -80,7 +80,9 @@ const Form = ({ client }: { client: Client }) => {
         ? dayjs(client?.dateOfBirth).toDate()
         : undefined,
       phoneNumber: client?.phoneNumber,
-      address: client?.address,
+      county: client?.county,
+      subcounty: client?.subcounty,
+      ward: client?.ward,
       nationalId: client?.nationalId,
       maritalStatus: client?.maritalStatus,
     },
@@ -284,43 +286,6 @@ const Form = ({ client }: { client: Client }) => {
                         {...field}
                         onChangeText={field.onChange}
                         keyboardType="numeric"
-                      />
-                    </Input>
-
-                    {error && (
-                      <FormControlError>
-                        <FormControlErrorIcon
-                          as={AlertCircleIcon}
-                          className="text-red-500"
-                        />
-                        <FormControlErrorText className="text-red-500">
-                          {error.message}
-                        </FormControlErrorText>
-                      </FormControlError>
-                    )}
-                  </FormControl>
-                )}
-              />
-              <Controller
-                control={form.control}
-                name="address"
-                render={({ field, fieldState: { invalid, error } }) => (
-                  <FormControl
-                    isInvalid={invalid}
-                    size="md"
-                    isDisabled={false}
-                    isReadOnly={false}
-                    isRequired={false}
-                    className="w-full"
-                  >
-                    <FormControlLabel>
-                      <FormControlLabelText>Location/Area</FormControlLabelText>
-                    </FormControlLabel>
-                    <Input className="my-1" size="md">
-                      <InputField
-                        placeholder="Location/Area"
-                        {...field}
-                        onChangeText={field.onChange}
                       />
                     </Input>
 

@@ -7,7 +7,7 @@ import { Box } from "@/components/ui/box";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { cn } from "@gluestack-ui/utils/nativewind-utils";
-import { BookOpenText, Home, Hospital, Users } from "lucide-react-native";
+import { BotMessageSquareIcon, Home, Hospital, Users } from "lucide-react-native";
 
 export default function TabLayout() {
   return (
@@ -66,10 +66,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="education"
         options={{
-          title: "Education",
+          title: "Chat",
           tabBarIcon: ({ focused, size }) => (
             <Icon
-              as={BookOpenText}
+              as={BotMessageSquareIcon}
               size={"xl"}
               className={cn(focused ? "text-teal-700" : "text-typography-500")}
             />

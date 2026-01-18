@@ -366,8 +366,8 @@ const SettingsScreen = () => {
                               item.value === "light"
                                 ? "weather-sunny"
                                 : item.value === "dark"
-                                ? "weather-night"
-                                : "weather-sunny-alert"
+                                  ? "weather-night"
+                                  : "weather-sunny-alert"
                             }
                             size={20}
                             color={colorScheme === "dark" ? "white" : "black"}
@@ -400,6 +400,17 @@ const SettingsScreen = () => {
                   Support
                 </Heading>
                 <Divider className="my-0.5" />
+                <ListTile
+                  description="Frequently asked questions (FAQ)"
+                  onPress={() => router.push("/faq")}
+                  trailing={
+                    <MaterialCommunityIcons
+                      name="chevron-right"
+                      size={16}
+                      color={colorScheme === "dark" ? "white" : "black"}
+                    />
+                  }
+                />
                 <ListTile
                   description="Help and Support"
                   trailing={
