@@ -18,9 +18,10 @@ type AddressFieldsInputProps<T extends FieldValues> = {
     label: string
     control: Control<T>
     name: Path<T>
+    onChange?: (value:string) => void
 }
 
-const AddressFieldsInput = <T extends FieldValues,>({ level, parentName, label, control, name }: AddressFieldsInputProps<T>) => {
+const AddressFieldsInput = <T extends FieldValues,>({ level, parentName, label, control, name, onChange }: AddressFieldsInputProps<T>) => {
     const { isLoading, addresses } = useAddressHierarchy({ level, parentName })
     const [searchValue, onSearchChange] = useState("")
     const isDisabled = level !== 1 && !parentName
@@ -76,6 +77,7 @@ const AddressFieldsInput = <T extends FieldValues,>({ level, parentName, label, 
                         <TouchableOpacity
                             onPress={() => {
                                 field.onChange(item.name)
+                                onChange?.(item.name)
                                 close();
                             }}
                         >

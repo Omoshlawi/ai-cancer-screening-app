@@ -43,7 +43,7 @@ const ClientDetail = () => {
               <HStack className="justify-between items-center">
                 <VStack>
                   <Heading size="lg">
-                    {client?.firstName} {client?.lastName}
+                    {`${client?.firstName || ""} ${client?.lastName || ""}`.trim()}
                   </Heading>
                   <Text size="sm" className="text-typography-500">
                     Client Profile and Screening History
@@ -120,7 +120,7 @@ const ClientDetail = () => {
                 </Menu>
               </HStack>
               <ClientInfo client={client!} />
-              {client?.screenings?.length && (
+              {!!client?.screenings?.length && (
                 <RiskTratification client={client!} />
               )}
               <ScreeningHistory client={client!} />

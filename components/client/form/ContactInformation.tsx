@@ -11,9 +11,6 @@ import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
 import { Input, InputField } from "@/components/ui/input";
-
-
-import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { ClientFormData } from "@/types/client";
 import {
@@ -22,7 +19,7 @@ import {
   ArrowRightIcon,
   Phone
 } from "lucide-react-native";
-import React from "react";
+import React, { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import AddressFieldsInput from "./AddressFieldsInput";
 
@@ -36,8 +33,9 @@ const ContactInformation = ({
   onPrevious,
 }: ContactInformationProps) => {
   const form = useFormContext<ClientFormData>();
-  const selectedCounty = form.watch("county")
-  const selectedSubcounty = form.watch("subcounty")
+  const [selectedCounty, setSelectedCounty] = useState("")
+  const [selectedSubcounty, setSelectedsubCounty] = useState("")
+
   return (
     <VStack space="md" className="flex-1 items-center">
       <Icon
@@ -86,9 +84,8 @@ const ContactInformation = ({
           </FormControl>
         )}
       />
-      <Text>{JSON.stringify(form.watch(), null, 2)}</Text>
-      <AddressFieldsInput control={form.control} name="county" label="County" level={1} />
-      <AddressFieldsInput control={form.control} name="subcounty" label="Subcounty" level={2} parentName={selectedCounty} />
+      <AddressFieldsInput control={form.control} name="county" label="County" level={1} onChange={(val) => { setSelectedCounty(val); form.setValue("subcounty", ""); form.setValue("ward", "") }} />
+      <AddressFieldsInput control={form.control} name="subcounty" label="Subcounty" level={2} parentName={selectedCounty} onChange={(val) => { setSelectedsubCounty(val); form.setValue("ward", "") }} />
       < AddressFieldsInput control={form.control} name="ward" label="Ward" level={3} parentName={selectedSubcounty} />
 
       <HStack space="sm" className="w-full">

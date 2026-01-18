@@ -28,7 +28,7 @@ const ClientInfo: FC<ClientInfoProps> = ({ client }) => {
       {
         icon: Pin,
         label: "Location",
-        value: `${client?.address}`,
+        value: `${client?.ward} ${client.subcounty}, ${client.county}`,
         color: "blue",
       },
       {

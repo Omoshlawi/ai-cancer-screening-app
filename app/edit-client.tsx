@@ -1,3 +1,4 @@
+import AddressFieldsInput from "@/components/client/form/AddressFieldsInput";
 import DateTimePickerInput from "@/components/date-time-picker";
 import { ScreenLayout } from "@/components/layout";
 import { ErrorState, When } from "@/components/state-full-widgets";
@@ -87,6 +88,8 @@ const Form = ({ client }: { client: Client }) => {
       maritalStatus: client?.maritalStatus,
     },
   });
+  const selectedCounty = form.watch("county")
+  const selectedSubcounty = form.watch("subcounty")
   const toast = useToast();
   const { updateClient } = useClientApi();
   const maritalStatuses = useMemo<
@@ -403,6 +406,10 @@ const Form = ({ client }: { client: Client }) => {
                   </FormControl>
                 )}
               />
+              <AddressFieldsInput control={form.control} name="county" label="County" level={1} onChange={(val) => { form.setValue("subcounty", ""); form.setValue("ward", "") }} />
+              <AddressFieldsInput control={form.control} name="subcounty" label="Subcounty" level={2} parentName={selectedCounty} onChange={(val) => { form.setValue("ward", "") }} />
+              < AddressFieldsInput control={form.control} name="ward" label="Ward" level={3} parentName={selectedSubcounty} />
+
               <Button
                 action="primary"
                 size="sm"
