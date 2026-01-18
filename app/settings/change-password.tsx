@@ -1,3 +1,4 @@
+import { ScreenLayout } from "@/components/layout";
 import Toaster from "@/components/toaster";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonText } from "@/components/ui/button";
@@ -91,80 +92,82 @@ const ChangePasswordScreen = () => {
     }
   };
   return (
-    <Box className="flex-1 items-center justify-center p-4 bg-background-100">
-      <FormControl className="p-4 border border-outline-200 rounded-lg w-full bg-background-50">
-        <VStack space="lg">
-          <Text className="text-2xl font-bold text-center mb-8">
-            Change Password
-          </Text>
-          <Controller
-            control={form.control}
-            name="currentPassword"
-            render={({ field, fieldState }) => (
-              <Input
-                variant="outline"
-                size="lg"
-                isInvalid={!!fieldState?.error?.message}
-              >
-                <InputField
-                  placeholder="Enter Current Password..."
-                  {...field}
-                  onChangeText={field.onChange}
-                  secureTextEntry
-                  autoCapitalize="none"
-                />
-              </Input>
-            )}
-          />
-          <Controller
-            control={form.control}
-            name="newPassword"
-            render={({ field, fieldState }) => (
-              <Input
-                variant="outline"
-                size="lg"
-                isInvalid={!!fieldState?.error?.message}
-              >
-                <InputField
-                  placeholder="Enter New Password..."
-                  {...field}
-                  onChangeText={field.onChange}
-                  secureTextEntry
-                  autoCapitalize="none"
-                />
-              </Input>
-            )}
-          />
-          <Controller
-            control={form.control}
-            name="confirmPassword"
-            render={({ field, fieldState }) => (
-              <Input
-                variant="outline"
-                size="lg"
-                isInvalid={!!fieldState?.error?.message}
-              >
-                <InputField
-                  placeholder="Confirm New Password..."
-                  {...field}
-                  onChangeText={field.onChange}
-                  secureTextEntry
-                  autoCapitalize="none"
-                />
-              </Input>
-            )}
-          />
-          <Button
-            onPress={form.handleSubmit(onSubmit)}
-            disabled={form.formState.isSubmitting}
-          >
-            <ButtonText size="lg" className="text-background-100">
+    <ScreenLayout title="">
+      <Box className="flex-1 items-center justify-center p-4 bg-background-100">
+        <FormControl className="p-4 border border-outline-200 rounded-lg w-full bg-background-50">
+          <VStack space="lg">
+            <Text className="text-2xl font-bold text-center mb-8">
               Change Password
-            </ButtonText>
-          </Button>
-        </VStack>
-      </FormControl>
-    </Box>
+            </Text>
+            <Controller
+              control={form.control}
+              name="currentPassword"
+              render={({ field, fieldState }) => (
+                <Input
+                  variant="outline"
+                  size="lg"
+                  isInvalid={!!fieldState?.error?.message}
+                >
+                  <InputField
+                    placeholder="Enter Current Password..."
+                    {...field}
+                    onChangeText={field.onChange}
+                    secureTextEntry
+                    autoCapitalize="none"
+                  />
+                </Input>
+              )}
+            />
+            <Controller
+              control={form.control}
+              name="newPassword"
+              render={({ field, fieldState }) => (
+                <Input
+                  variant="outline"
+                  size="lg"
+                  isInvalid={!!fieldState?.error?.message}
+                >
+                  <InputField
+                    placeholder="Enter New Password..."
+                    {...field}
+                    onChangeText={field.onChange}
+                    secureTextEntry
+                    autoCapitalize="none"
+                  />
+                </Input>
+              )}
+            />
+            <Controller
+              control={form.control}
+              name="confirmPassword"
+              render={({ field, fieldState }) => (
+                <Input
+                  variant="outline"
+                  size="lg"
+                  isInvalid={!!fieldState?.error?.message}
+                >
+                  <InputField
+                    placeholder="Confirm New Password..."
+                    {...field}
+                    onChangeText={field.onChange}
+                    secureTextEntry
+                    autoCapitalize="none"
+                  />
+                </Input>
+              )}
+            />
+            <Button
+              onPress={form.handleSubmit(onSubmit)}
+              disabled={form.formState.isSubmitting}
+            >
+              <ButtonText size="lg" className="text-background-100">
+                Change Password
+              </ButtonText>
+            </Button>
+          </VStack>
+        </FormControl>
+      </Box>
+    </ScreenLayout>
   );
 };
 

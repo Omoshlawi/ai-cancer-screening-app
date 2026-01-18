@@ -1,9 +1,9 @@
 import Toaster from "@/components/toaster";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
-import { FormControl } from "@/components/ui/form-control";
-import { ArrowRightIcon } from "@/components/ui/icon";
-import { Input, InputField } from "@/components/ui/input";
+import { FormControl, FormControlError, FormControlErrorIcon, FormControlErrorText, FormControlLabel, FormControlLabelText } from "@/components/ui/form-control";
+import { AlertCircleIcon, ArrowRightIcon } from "@/components/ui/icon";
+import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
@@ -12,7 +12,8 @@ import { authClient } from "@/lib/auth-client";
 import { LoginFormData } from "@/types/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "expo-router";
-import React from "react";
+import { Eye, EyeOff } from "lucide-react-native";
+import React, { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 const LoginScreen = () => {
   const form = useForm<LoginFormData>({
@@ -22,6 +23,7 @@ const LoginScreen = () => {
       password: "",
     },
   });
+  const [hidePassword, setHidePassword] = useState(true)
   const toast = useToast();
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     try {
@@ -98,30 +100,79 @@ const LoginScreen = () => {
           <Controller
             control={form.control}
             name="username"
-            render={({ field, fieldState }) => (
-              <Input variant="outline" isInvalid={!!fieldState?.error?.message}>
-                <InputField
-                  placeholder="Enter Username..."
-                  {...field}
-                  onChangeText={field.onChange}
-                  autoCapitalize="none"
-                />
-              </Input>
+            render={({ field, fieldState: { invalid, error } }) => (
+              <FormControl
+                isInvalid={invalid}
+                size="md"
+                isDisabled={false}
+                isReadOnly={false}
+                isRequired={false}
+                className="w-full"
+              >
+                <FormControlLabel>
+                  <FormControlLabelText>username</FormControlLabelText>
+                </FormControlLabel>
+                <Input variant="outline" isInvalid={!!error?.message}>
+                  <InputField
+                    placeholder="Enter Username..."
+                    {...field}
+                    onChangeText={field.onChange}
+                    autoCapitalize="none"
+                  />
+                </Input>
+                {error && (
+                  <FormControlError>
+                    <FormControlErrorIcon
+                      as={AlertCircleIcon}
+                      className="text-red-500"
+                    />
+                    <FormControlErrorText className="text-red-500">
+                      {error.message}
+                    </FormControlErrorText>
+                  </FormControlError>
+                )}
+              </FormControl>
             )}
           />
           <Controller
             control={form.control}
             name="password"
-            render={({ field, fieldState }) => (
-              <Input variant="outline" isInvalid={!!fieldState?.error?.message}>
-                <InputField
-                  placeholder="Enter Password..."
-                  {...field}
-                  onChangeText={field.onChange}
-                  secureTextEntry
-                  autoCapitalize="none"
-                />
-              </Input>
+            render={({ field, fieldState: { invalid, error } }) => (
+              <FormControl
+                isInvalid={invalid}
+                size="md"
+                isDisabled={false}
+                isReadOnly={false}
+                isRequired={false}
+                className="w-full"
+              >
+                <FormControlLabel>
+                  <FormControlLabelText>Password</FormControlLabelText>
+                </FormControlLabel>
+                <Input variant="outline" isInvalid={!!error?.message}>
+                  <InputField
+                    placeholder="Enter Password..."
+                    {...field}
+                    onChangeText={field.onChange}
+                    secureTextEntry={hidePassword}
+                    autoCapitalize="none"
+                  />
+                  <InputSlot className="px-3" onPress={() => setHidePassword((p) => !p)}>
+                    <InputIcon as={hidePassword ? EyeOff : Eye} />
+                  </InputSlot>
+                </Input>
+                {error && (
+                  <FormControlError>
+                    <FormControlErrorIcon
+                      as={AlertCircleIcon}
+                      className="text-red-500"
+                    />
+                    <FormControlErrorText className="text-red-500">
+                      {error.message}
+                    </FormControlErrorText>
+                  </FormControlError>
+                )}
+              </FormControl>
             )}
           />
           <Box className="flex-row items-center justify-end">
