@@ -12,8 +12,18 @@ import {
   FormControlLabelText,
 } from "@/components/ui/form-control";
 import { Heading } from "@/components/ui/heading";
+import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
 import { Input, InputField } from "@/components/ui/input";
+import {
+  Modal,
+  ModalBackdrop,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from "@/components/ui/modal";
+import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { useSearchClients } from "@/hooks/useClients";
 import { SCREENING_FORM_STEPS } from "@/lib/constants";
@@ -38,8 +48,19 @@ type ClientSearchProps = {
 
 const ClientSearch: FC<ClientSearchProps> = ({ onNext, searchClientAsync }) => {
   const form = useFormContext<ScreenClientFormData>();
-
+  const [isConsentOpen, setIsConsentOpen] = React.useState(false);
+  const [hasConsented, setHasConsented] = React.useState(false);
   const { isLoading, onSearchChange, searchValue, clients } = searchClientAsync;
+
+  const handleNextPress = async () => {
+    const isValid = await form.trigger(["clientId"]);
+    if (!isValid) return;
+    if (hasConsented) {
+      onNext();
+      return;
+    }
+    setIsConsentOpen(true);
+  };
 
   return (
     <VStack space="md" className="flex-1 items-center">
@@ -75,10 +96,10 @@ const ClientSearch: FC<ClientSearchProps> = ({ onNext, searchClientAsync }) => {
                     value={
                       field.value
                         ? clients.find((client) => client.id === field.value)
-                            ?.firstName +
-                          " " +
-                          clients.find((client) => client.id === field.value)
-                            ?.lastName
+                          ?.firstName +
+                        " " +
+                        clients.find((client) => client.id === field.value)
+                          ?.lastName
                         : ""
                     }
                     onChangeText={field.onChange}
@@ -105,7 +126,7 @@ const ClientSearch: FC<ClientSearchProps> = ({ onNext, searchClientAsync }) => {
                 title={`${item.firstName} ${item.lastName}`}
                 description={`Age: ${dayjs().diff(
                   dayjs(item.dateOfBirth),
-                  "years"
+                  "years",
                 )} | ID: ${item.nationalId}`}
                 leading={
                   <Icon
@@ -155,16 +176,58 @@ const ClientSearch: FC<ClientSearchProps> = ({ onNext, searchClientAsync }) => {
         action="primary"
         size="sm"
         className="w-full bg-teal-500 justify-between rounded-none"
-        onPress={async () => {
-          const isValid = await form.trigger(["clientId"]);
-          if (isValid) {
-            onNext();
-          }
-        }}
+        onPress={handleNextPress}
       >
         <ButtonText>Next</ButtonText>
         <ButtonIcon as={ArrowRightIcon} />
       </Button>
+
+      <Modal
+        isOpen={isConsentOpen}
+        onClose={() => setIsConsentOpen(false)}
+        size="md"
+      >
+        <ModalBackdrop />
+        <ModalContent>
+          <ModalHeader>
+            <VStack space="xs">
+              <Heading size="lg">Consent Required</Heading>
+              <Text size="sm" className="text-typography-500">
+                Please review and confirm before continuing.
+              </Text>
+            </VStack>
+          </ModalHeader>
+          <ModalBody>
+            <Text size="md">
+              By proceeding, you confirm that you have the Clients{"'"}s          informed consent to complete this screening and store the provided
+              information
+            </Text>
+
+          </ModalBody>
+          <ModalFooter>
+            <HStack space="md" className="w-full">
+              <Button
+                variant="outline"
+                onPress={() => setIsConsentOpen(false)}
+                className="flex-1"
+              >
+                <ButtonText>Cancel</ButtonText>
+              </Button>
+              <Button
+                action="primary"
+                onPress={() => {
+                  setHasConsented(true);
+                  setIsConsentOpen(false);
+                  onNext();
+                }}
+                className="flex-1"
+              >
+                <ButtonText>I consent</ButtonText>
+              </Button>
+            </HStack>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </VStack>
   );
 };

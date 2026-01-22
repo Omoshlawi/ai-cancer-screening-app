@@ -27,7 +27,7 @@ const ChatBubble: FC<ChatBubbleProps> = ({ message, user }) => {
                 <Icon as={user === "bot" ? Bot : User} size="xl" color="white" />
             </Box>
             <Text
-                className="text-typography-700 bg-background-50 p-2 flex-1"
+                className={`${user === "bot" ? "text-typography-700" : "text-white"} ${user === "bot" ? "bg-background-50" : "bg-teal-500"} p-2 flex-1`}
                 size="sm"
             >
                 {message}

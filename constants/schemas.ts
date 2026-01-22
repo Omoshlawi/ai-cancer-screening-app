@@ -52,7 +52,7 @@ export const clientSchema = z.object({
 const screenBoolean = z.enum(["YES", "NO", "NOT_SURE"]);
 
 export const screenClientSchema = z.object({
-  clientId: z.string(),
+  clientId: z.string().nonempty(),
   lifeTimePatners: z.coerce.number(),
   firstIntercourseAge: z.coerce.number(),
   everDiagnosedWithHIV: screenBoolean,
