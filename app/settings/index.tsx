@@ -260,7 +260,7 @@ const SettingsScreen = () => {
                   App Preferences
                 </Heading>
                 <Divider className="my-0.5" />
-                <ActionSheetWrapper
+                {/* <ActionSheetWrapper
                   renderTrigger={({ onPress }) => (
                     <ListTile
                       onPress={onPress}
@@ -317,7 +317,7 @@ const SettingsScreen = () => {
                     </TouchableOpacity>
                   )}
                   valueExtractor={(item) => item.value}
-                />
+                /> */}
                 <ActionSheetWrapper
                   renderTrigger={({ onPress }) => (
                     <ListTile

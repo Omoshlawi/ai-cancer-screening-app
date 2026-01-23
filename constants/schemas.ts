@@ -30,9 +30,18 @@ export const changePasswordSchema = z
 export const clientSchema = z.object({
   firstName: z.string().min(3),
   lastName: z.string().min(3),
-  dateOfBirth: z.date().refine((date) => dayjs(date).isBefore(dayjs()), {
-    message: "Date of birth must not be a future date",
-  }),
+  dateOfBirth: z.date().refine(
+    (date) => {
+      const today = dayjs();
+      const dob = dayjs(date);
+      const age = today.diff(dob, "year");
+      return dob.isBefore(today, "day") && age >= 16 && age <= 80;
+    },
+    {
+      message:
+        "Client age must be between 16 and 80 years (DOB must not be a future date)",
+    }
+  ),
   phoneNumber: z.string().regex(PHONE_NUMBER_REGEX, {
     message: "Phone number must be a valid Kenyan phone number",
   }),
@@ -75,4 +84,60 @@ export const referralSchema = z.object({
   appointmentTime: z.coerce.date(),
   healthFacilityId: z.string(),
   additionalNotes: z.string().optional(),
+});
+
+export const followUpSchema = z.object({
+  category: z.enum(["REFERRAL_ADHERENCE", "RE_SCREENING_RECALL"]),
+  startDate: z.coerce.date(),
+  dueDate: z.coerce.date(),
+  priority: z.enum(["HIGH", "MEDIUM", "LOW"]),
+  screeningId: z.string().nonempty(),
+  referralId: z.string().nonempty(),
+});
+
+export const cancelFollowUpSchema = z.object({
+  canceledAt: z.coerce.date(),
+  cancelReason: z.enum([
+    "DECEASED",
+    "RELOCATED",
+    "UNREACHABLE",
+    "REFUSED_SERVICE",
+    "INCORRECT_DATA",
+    "HOSPITALIZED_OTHER",
+  ]),
+  cancelNotes: z.string().optional(),
+});
+
+export const updateFollowUpSchema = followUpSchema.pick({
+  dueDate: true,
+  priority: true,
+  startDate: true,
+});
+
+export const outreachActionSchema = z.object({
+  actionDate: z.coerce.date(),
+  actionType: z.enum([
+    "PATIENT_CONTACTED",
+    "PATIENT_UNAVAILABLE",
+    "PATIENT_COMMITTED",
+    "PATIENT_VISITED_FACILITY",
+    "PATIENT_REFUSED",
+    "BARRIER_IDENTIFIED",
+  ]),
+  outcome: z.enum([
+    "PATIENT_CONTACTED",
+    "PATIENT_UNAVAILABLE",
+    "PATIENT_COMMITTED",
+    "PATIENT_VISITED_FACILITY",
+    "PATIENT_REFUSED",
+    "BARRIER_IDENTIFIED",
+    "LOST_CONTACT",
+  ]),
+  verifiedAtFacility: z.boolean().optional(),
+  barriers: z.string().optional(),
+  contactMethod: z.enum(["PHONE", "IN_PERSON", "SMS", "WHATSAPP"]),
+  duration: z.coerce.number().optional(),
+  location: z.string().optional(),
+  nextPlannedDate: z.coerce.date(),
+  notes: z.string().optional(),
 });

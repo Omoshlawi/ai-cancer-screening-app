@@ -58,8 +58,8 @@ const AddReferralScreen = () => {
   const { clients, error, isLoading, onSearchChange, searchValue } =
     useSearchClients(search);
   const healthFacilitySearchAsync = useSearchHealthFacility(facilitySearch);
-  const form = useForm<ReferralFormData>({
-    resolver: zodResolver(referralSchema) as any,
+  const form = useForm({
+    resolver: zodResolver(referralSchema),
     defaultValues: {
       clientId: client ?? "",
       appointmentTime: new Date(),
@@ -151,12 +151,12 @@ const AddReferralScreen = () => {
                           value={
                             field.value
                               ? clients.find(
-                                  (client) => client.id === field.value
-                                )?.firstName +
-                                " " +
-                                clients.find(
-                                  (client) => client.id === field.value
-                                )?.lastName
+                                (client) => client.id === field.value
+                              )?.firstName +
+                              " " +
+                              clients.find(
+                                (client) => client.id === field.value
+                              )?.lastName
                               : ""
                           }
                           onChangeText={field.onChange}
@@ -228,7 +228,7 @@ const AddReferralScreen = () => {
               name="appointmentTime"
               render={({ field, fieldState: { invalid, error } }) => (
                 <DateTimePickerInput
-                  date={field.value}
+                  date={field.value instanceof Date ? field.value : undefined}
                   mode="datetime"
                   onDateChanged={field.onChange}
                   renderTrigger={({ onPress, formattedDate }) => (

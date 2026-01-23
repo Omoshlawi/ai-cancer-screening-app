@@ -17,7 +17,7 @@ import { Referral } from "@/types/screening";
 import dayjs from "dayjs";
 import { useLocalSearchParams } from "expo-router";
 import React, { useMemo } from "react";
-import { Linking, Platform } from "react-native";
+import { Linking, Platform, ScrollView } from "react-native";
 
 const ReferralDetailScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -29,71 +29,71 @@ const ReferralDetailScreen = () => {
         error={(e) => <ErrorState error={e} />}
         loading={() => <Spinner color="primary" />}
         success={(referral) => (
-          <VStack space="md" className="flex-1">
-            <ClientDetailsDetails referral={referral!} />
-            <AppointmentDetails referral={referral!} />
-            <Card
-              size="lg"
-              variant="elevated"
-              className="gap-3 bg-background-0 rounded-none"
-            >
-              <Text size="sm" className="text-typography-500 font-bold">
-                Clinical Notes:
-              </Text>
-              <Text size="sm" className="text-typography-500">
-                {referral?.additionalNotes}
-              </Text>
-            </Card>
-            <HStack space="sm" className="justify-between items-center">
-              <Button
-                size="sm"
-                className="flex-1"
-                action="secondary"
-                onPress={async () => {
-                  const phoneNumber = referral?.screening?.client?.phoneNumber;
-                  if (phoneNumber) {
-                    const url = Platform.select({
-                      ios: `telprompt:${phoneNumber}`,
-                      android: `tel:${phoneNumber}`,
-                      default: `tel:${phoneNumber}`,
-                    });
-                    if (url && (await Linking.canOpenURL(url))) {
-                      await Linking.openURL(url);
-                    }
-                  }
-                }}
+          <ScrollView>
+            <VStack space="md" className="flex-1">
+              <ClientDetailsDetails referral={referral!} />
+              <AppointmentDetails referral={referral!} />
+              <Card
+                size="lg"
+                variant="elevated"
+                className="gap-3 bg-background-0 rounded-none"
               >
-                <ButtonText>Call Client</ButtonText>
-              </Button>
-              <Button
-                size="sm"
-                className="flex-1"
-                action="secondary"
-                onPress={async () => {
-                  const facilityPhoneNumber =
-                    referral?.healthFacility?.phoneNumber;
-                  if (facilityPhoneNumber) {
-                    const url = Platform.select({
-                      ios: `telprompt:${facilityPhoneNumber}`,
-                      android: `tel:${facilityPhoneNumber}`,
-                      default: `tel:${facilityPhoneNumber}`,
-                    });
-                    if (url && (await Linking.canOpenURL(url))) {
-                      await Linking.openURL(url);
+                <Text size="sm" className="text-typography-500 font-bold">
+                  Clinical Notes:
+                </Text>
+                <Text size="sm" className="text-typography-500">
+                  {referral?.additionalNotes}
+                </Text>
+              </Card>
+              <HStack space="sm" className="justify-between items-center">
+                <Button
+                  size="sm"
+                  className="flex-1"
+                  action="secondary"
+                  onPress={async () => {
+                    const phoneNumber = referral?.screening?.client?.phoneNumber;
+                    if (phoneNumber) {
+                      const url = Platform.select({
+                        ios: `telprompt:${phoneNumber}`,
+                        android: `tel:${phoneNumber}`,
+                        default: `tel:${phoneNumber}`,
+                      });
+                      if (url && (await Linking.canOpenURL(url))) {
+                        await Linking.openURL(url);
+                      }
                     }
-                  }
-                }}
-              >
-                <ButtonText>Call Facility</ButtonText>
+                  }}
+                >
+                  <ButtonText>Call Client</ButtonText>
+                </Button>
+                <Button
+                  size="sm"
+                  className="flex-1"
+                  action="secondary"
+                  onPress={async () => {
+                    const facilityPhoneNumber =
+                      referral?.healthFacility?.phoneNumber;
+                    if (facilityPhoneNumber) {
+                      const url = Platform.select({
+                        ios: `telprompt:${facilityPhoneNumber}`,
+                        android: `tel:${facilityPhoneNumber}`,
+                        default: `tel:${facilityPhoneNumber}`,
+                      });
+                      if (url && (await Linking.canOpenURL(url))) {
+                        await Linking.openURL(url);
+                      }
+                    }
+                  }}
+                >
+                  <ButtonText>Call Facility</ButtonText>
+                </Button>
+              </HStack>
+          
+              <Button action="primary" size="sm" className="bg-teal-500">
+                <ButtonText>Follow Up</ButtonText>
               </Button>
-            </HStack>
-            <Button action="primary" size="sm">
-              <ButtonText>Print Summary</ButtonText>
-            </Button>
-            <Button action="primary" size="sm" className="bg-teal-500">
-              <ButtonText>Send SMS Reminder</ButtonText>
-            </Button>
-          </VStack>
+            </VStack>
+          </ScrollView>
         )}
       />
     </ScreenLayout>
