@@ -24,6 +24,7 @@ export interface FollowUp {
   canceledAt?: string;
   createdAt: string;
   updatedAt: string;
+  outreachActions?: OutreachAction[];
 }
 export interface OutreachAction {
   id: string;

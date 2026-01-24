@@ -1,7 +1,8 @@
 import VariableValue from "@/components/client/VariableValue";
+import { ReferralFollowUps } from "@/components/follow-up";
 import ScreenLayout from "@/components/layout/ScreenLayout";
 import { ErrorState, When } from "@/components/state-full-widgets";
-import { Button, ButtonText } from "@/components/ui/button";
+import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
@@ -15,7 +16,8 @@ import {
 } from "@/lib/helpers";
 import { Referral } from "@/types/screening";
 import dayjs from "dayjs";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
+import { PlusIcon } from "lucide-react-native";
 import React, { useMemo } from "react";
 import { Linking, Platform, ScrollView } from "react-native";
 
@@ -38,20 +40,24 @@ const ReferralDetailScreen = () => {
                 variant="elevated"
                 className="gap-3 bg-background-0 rounded-none"
               >
-                <Text size="sm" className="text-typography-500 font-bold">
+                <Heading size="sm" className="text-typography-500 font-bold">
                   Clinical Notes:
-                </Text>
+                </Heading>
                 <Text size="sm" className="text-typography-500">
-                  {referral?.additionalNotes}
+                  {referral?.additionalNotes
+                    ? referral?.additionalNotes
+                    : "No clinical notes"}
                 </Text>
               </Card>
+              <ReferralFollowUps referral={referral!} />
               <HStack space="sm" className="justify-between items-center">
                 <Button
                   size="sm"
                   className="flex-1"
                   action="secondary"
                   onPress={async () => {
-                    const phoneNumber = referral?.screening?.client?.phoneNumber;
+                    const phoneNumber =
+                      referral?.screening?.client?.phoneNumber;
                     if (phoneNumber) {
                       const url = Platform.select({
                         ios: `telprompt:${phoneNumber}`,
@@ -88,9 +94,24 @@ const ReferralDetailScreen = () => {
                   <ButtonText>Call Facility</ButtonText>
                 </Button>
               </HStack>
-          
-              <Button action="primary" size="sm" className="bg-teal-500">
-                <ButtonText>Follow Up</ButtonText>
+
+              <Button
+                action="primary"
+                size="sm"
+                className="bg-teal-500"
+                onPress={() => {
+                  router.push({
+                    pathname: "/follow-up",
+                    params: {
+                      referralId: id,
+                      appointmentTime: referral?.appointmentTime,
+                      screeningId: referral?.screeningId,
+                    },
+                  });
+                }}
+              >
+                <ButtonIcon as={PlusIcon} />
+                <ButtonText>Add Follow Up</ButtonText>
               </Button>
             </VStack>
           </ScrollView>

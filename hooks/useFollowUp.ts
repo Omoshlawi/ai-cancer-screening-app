@@ -9,12 +9,23 @@ import {
 } from "@/types/follow-up";
 import useSWR from "swr";
 
-export const useFollowUp = () => {
-  const url = constructUrl("/follow-up");
+export const useFollowUps = (params: Record<string, any> = {}) => {
+  const url = constructUrl("/follow-up", params);
   const { data, error, isLoading } =
     useSWR<APIFetchResponse<{ results: FollowUp[] }>>(url);
+
   return {
     followUps: data?.data?.results ?? [],
+    isLoading,
+    error,
+  };
+};
+export const useFollowUp = (id: string) => {
+  const url = constructUrl(`/follow-up/${id}`);
+  const { data, error, isLoading } = useSWR<APIFetchResponse<FollowUp>>(url);
+
+  return {
+    followUp: data?.data,
     isLoading,
     error,
   };

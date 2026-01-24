@@ -86,14 +86,19 @@ export const referralSchema = z.object({
   additionalNotes: z.string().optional(),
 });
 
-export const followUpSchema = z.object({
-  category: z.enum(["REFERRAL_ADHERENCE", "RE_SCREENING_RECALL"]),
-  startDate: z.coerce.date(),
-  dueDate: z.coerce.date(),
-  priority: z.enum(["HIGH", "MEDIUM", "LOW"]),
-  screeningId: z.string().nonempty(),
-  referralId: z.string().nonempty(),
-});
+export const followUpSchema = z
+  .object({
+    category: z.enum(["REFERRAL_ADHERENCE", "RE_SCREENING_RECALL"]),
+    startDate: z.coerce.date(),
+    dueDate: z.coerce.date(),
+    priority: z.enum(["HIGH", "MEDIUM", "LOW"]),
+    screeningId: z.string().nonempty(),
+    referralId: z.string().nonempty(),
+  })
+  .refine((data) => data.dueDate >= data.startDate, {
+    message: "Due date must not be before start date",
+    path: ["dueDate"],
+  });
 
 export const cancelFollowUpSchema = z.object({
   canceledAt: z.coerce.date(),

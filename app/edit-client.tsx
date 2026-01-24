@@ -88,8 +88,8 @@ const Form = ({ client }: { client: Client }) => {
       maritalStatus: client?.maritalStatus,
     },
   });
-  const selectedCounty = form.watch("county")
-  const selectedSubcounty = form.watch("subcounty")
+  const selectedCounty = form.watch("county");
+  const selectedSubcounty = form.watch("subcounty");
   const toast = useToast();
   const { updateClient } = useClientApi();
   const maritalStatuses = useMemo<
@@ -123,7 +123,22 @@ const Form = ({ client }: { client: Client }) => {
         },
       });
       router.back();
-    } catch (error) {
+    } catch (error: any) {
+      toast.show({
+        placement: "top",
+        render: ({ id }) => {
+          const uniqueToastId = "toast-" + id;
+          return (
+            <Toaster
+              uniqueToastId={uniqueToastId}
+              variant="outline"
+              title="Error"
+              description={error?.message}
+              action="error"
+            />
+          );
+        },
+      });
       console.error(error);
     }
   };
@@ -347,68 +362,100 @@ const Form = ({ client }: { client: Client }) => {
               <Controller
                 control={form.control}
                 name="maritalStatus"
-                render={({ field, fieldState: { invalid, error } }) => (
-                  <FormControl
-                    isInvalid={invalid}
-                    size="md"
-                    isDisabled={false}
-                    isReadOnly={false}
-                    isRequired={false}
-                    className="w-full"
-                  >
-                    <FormControlLabel>
-                      <FormControlLabelText>
-                        Marital Status
-                      </FormControlLabelText>
-                    </FormControlLabel>
-                    <Select
+                render={({ field, fieldState: { invalid, error } }) => {
+                  const selectedMaritalStatus = maritalStatuses.find(
+                    (m) => m.value === field.value
+                  );
+                  return (
+                    <FormControl
+                      isInvalid={invalid}
+                      size="md"
+                      isDisabled={false}
+                      isReadOnly={false}
+                      isRequired={false}
                       className="w-full"
-                      selectedValue={field.value}
-                      onValueChange={(value) =>
-                        field.onChange(value as ClientFormData["maritalStatus"])
-                      }
                     >
-                      <SelectTrigger variant="outline" size="md">
-                        <SelectInput
-                          placeholder="Select option"
-                          className="flex-1"
-                        />
-                        <SelectIcon className="mr-3" as={ChevronDownIcon} />
-                      </SelectTrigger>
-                      <SelectPortal>
-                        <SelectBackdrop />
-                        <SelectContent>
-                          <SelectDragIndicatorWrapper>
-                            <SelectDragIndicator />
-                          </SelectDragIndicatorWrapper>
-                          {maritalStatuses.map((maritalStatus, i) => (
-                            <SelectItem
-                              label={maritalStatus.label}
-                              value={maritalStatus.value}
-                              key={maritalStatus.value}
-                            />
-                          ))}
-                        </SelectContent>
-                      </SelectPortal>
-                    </Select>
+                      <FormControlLabel>
+                        <FormControlLabelText>
+                          Marital Status
+                        </FormControlLabelText>
+                      </FormControlLabel>
+                      <Select
+                        className="w-full"
+                        selectedValue={field.value}
+                        onValueChange={(value) =>
+                          field.onChange(
+                            value as ClientFormData["maritalStatus"]
+                          )
+                        }
+                      >
+                        <SelectTrigger variant="outline" size="md">
+                          <SelectInput
+                            placeholder="Select option"
+                            className="flex-1"
+                            value={selectedMaritalStatus?.label}
+                          />
+                          <SelectIcon className="mr-3" as={ChevronDownIcon} />
+                        </SelectTrigger>
+                        <SelectPortal>
+                          <SelectBackdrop />
+                          <SelectContent>
+                            <SelectDragIndicatorWrapper>
+                              <SelectDragIndicator />
+                            </SelectDragIndicatorWrapper>
+                            {maritalStatuses.map((maritalStatus, i) => (
+                              <SelectItem
+                                label={maritalStatus.label}
+                                value={maritalStatus.value}
+                                key={maritalStatus.value}
+                              />
+                            ))}
+                          </SelectContent>
+                        </SelectPortal>
+                      </Select>
 
-                    {error && (
-                      <FormControlError>
-                        <FormControlErrorIcon
-                          as={AlertCircleIcon}
-                          className="text-red-500"
-                        />
-                        <FormControlErrorText className="text-red-500">
-                          {error.message}
-                        </FormControlErrorText>
-                      </FormControlError>
-                    )}
-                  </FormControl>
-                )}
+                      {error && (
+                        <FormControlError>
+                          <FormControlErrorIcon
+                            as={AlertCircleIcon}
+                            className="text-red-500"
+                          />
+                          <FormControlErrorText className="text-red-500">
+                            {error.message}
+                          </FormControlErrorText>
+                        </FormControlError>
+                      )}
+                    </FormControl>
+                  );
+                }}
               />
-              <AddressFieldsInput control={form.control} name="county" label="County" level={1} onChange={(val) => { form.setValue("subcounty", ""); form.setValue("ward", "") }} />
-              <AddressFieldsInput control={form.control} name="subcounty" label="Subcounty" level={2} parentName={selectedCounty} onChange={(val) => { form.setValue("ward", "") }} />
-              < AddressFieldsInput control={form.control} name="ward" label="Ward" level={3} parentName={selectedSubcounty} />
+              <AddressFieldsInput
+                control={form.control}
+                name="county"
+                label="County"
+                level={1}
+                onChange={(val) => {
+                  form.setValue("subcounty", "");
+                  form.setValue("ward", "");
+                }}
+              />
+              <AddressFieldsInput
+                control={form.control}
+                name="subcounty"
+                label="Subcounty"
+                level={2}
+                parentName={selectedCounty}
+                onChange={(val) => {
+                  form.setValue("ward", "");
+                }}
+              />
+              <AddressFieldsInput
+                control={form.control}
+                name="ward"
+                label="Ward"
+                level={3}
+                parentName={selectedSubcounty}
+              />
 
               <Button
                 action="primary"
