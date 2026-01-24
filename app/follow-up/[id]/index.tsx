@@ -14,8 +14,10 @@ import { DEFAULT_DATE_FORMAT } from "@/constants";
 import { useFollowUp } from "@/hooks/useFollowUp";
 import {
   getFollowUpCategoryDisply,
+  getOutreachActionTypeDisplay,
   getOutreachOutcomeColor,
   getOutreachOutcomeDisplay,
+  getOutreactActionContachMethodDisplay,
   getPriorityDisplay,
 } from "@/lib/helpers";
 import { FollowUp } from "@/types/follow-up";
@@ -175,8 +177,12 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
               {outreachActions.map((action) => (
                 <ListTile
                   key={action.id}
-                  title={dayjs(action.createdAt).format("DD/MM/YYYY")}
-                  description={`Score: ${action.actionType}`}
+                  title={`${getOutreachActionTypeDisplay(
+                    action.actionType
+                  )} (${dayjs(action.actionDate).format(DEFAULT_DATE_FORMAT)})`}
+                  description={`Contact Method: ${getOutreactActionContachMethodDisplay(
+                    action.contactMethod
+                  )} `}
                   leading={
                     <Icon
                       as={Calendar}

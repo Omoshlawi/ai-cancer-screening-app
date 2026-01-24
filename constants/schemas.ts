@@ -119,30 +119,32 @@ export const updateFollowUpSchema = followUpSchema.pick({
   startDate: true,
 });
 
-export const outreachActionSchema = z.object({
-  actionDate: z.coerce.date(),
-  actionType: z.enum([
-    "PATIENT_CONTACTED",
-    "PATIENT_UNAVAILABLE",
-    "PATIENT_COMMITTED",
-    "PATIENT_VISITED_FACILITY",
-    "PATIENT_REFUSED",
-    "BARRIER_IDENTIFIED",
-  ]),
-  outcome: z.enum([
-    "PATIENT_CONTACTED",
-    "PATIENT_UNAVAILABLE",
-    "PATIENT_COMMITTED",
-    "PATIENT_VISITED_FACILITY",
-    "PATIENT_REFUSED",
-    "BARRIER_IDENTIFIED",
-    "LOST_CONTACT",
-  ]),
-  verifiedAtFacility: z.boolean().optional(),
-  barriers: z.string().optional(),
-  contactMethod: z.enum(["PHONE", "IN_PERSON", "SMS", "WHATSAPP"]),
-  duration: z.coerce.number().optional(),
-  location: z.string().optional(),
-  nextPlannedDate: z.coerce.date(),
-  notes: z.string().optional(),
-});
+export const outreachActionSchema = z
+  .object({
+    actionDate: z.coerce.date(),
+    actionType: z.enum([
+      "PHONE_CALL",
+      "HOME_VISIT",
+      "SMS_SENT",
+      "FACILITY_VERIFICATION",
+    ]),
+    outcome: z.enum([
+      "PATIENT_CONTACTED",
+      "PATIENT_UNAVAILABLE",
+      "PATIENT_COMMITTED",
+      "PATIENT_VISITED_FACILITY",
+      "PATIENT_REFUSED",
+      "BARRIER_IDENTIFIED",
+      "LOST_CONTACT",
+    ]),
+    barriers: z.string().optional(),
+    contactMethod: z.enum(["PHONE", "IN_PERSON", "SMS", "WHATSAPP"]),
+    duration: z.coerce.number().optional(),
+    location: z.string().optional(),
+    nextPlannedDate: z.coerce.date(),
+    notes: z.string().optional(),
+  })
+  .refine((data) => data.nextPlannedDate > data.actionDate, {
+    message: "Next planned date must be after action date",
+    path: ["nextPlannedDate"],
+  });

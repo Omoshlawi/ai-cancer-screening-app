@@ -57,7 +57,12 @@ const createFollowUpOutreachAction = async (
     `follow-up/${followUpId}/outreach-action`,
     {
       method: "POST",
-      data,
+      data: {
+        ...data,
+        location: data.actionType === "HOME_VISIT" ? data.location : undefined,
+        barriers:
+          data.outcome === "BARRIER_IDENTIFIED" ? data.barriers : undefined,
+      },
     }
   );
   mutate("/follow-up");

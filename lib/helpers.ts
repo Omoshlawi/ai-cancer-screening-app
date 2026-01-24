@@ -75,19 +75,49 @@ export const getOutreachOutcomeDisplay = (
 ) => {
   switch (outcome) {
     case "PATIENT_CONTACTED":
-      return "Patient Contacted";
+      return "Client Contacted";
     case "PATIENT_UNAVAILABLE":
-      return "Patient Unavailable";
+      return "Client Unavailable";
     case "PATIENT_COMMITTED":
-      return "Patient Committed";
+      return "Client Committed";
     case "PATIENT_VISITED_FACILITY":
-      return "Patient Visited Facility";
+      return "Client Visited Facility";
     case "PATIENT_REFUSED":
-      return "Patient Refused";
+      return "Client Refused";
     case "BARRIER_IDENTIFIED":
       return "Barrier Identified";
     case "LOST_CONTACT":
       return "Lost Contact";
+  }
+};
+
+export const getOutreachActionTypeDisplay = (
+  action: OutreachAction["actionType"]
+) => {
+  switch (action) {
+    case "PHONE_CALL":
+      return "Phone Call";
+    case "HOME_VISIT":
+      return "Home Visit";
+    case "SMS_SENT":
+      return "SMS Sent";
+    case "FACILITY_VERIFICATION":
+      return "Facility Verification";
+  }
+};
+
+export const getOutreactActionContachMethodDisplay = (
+  method: OutreachAction["contactMethod"]
+) => {
+  switch (method) {
+    case "PHONE":
+      return "Phone";
+    case "IN_PERSON":
+      return "In Person";
+    case "SMS":
+      return "Sms";
+    case "WHATSAPP":
+      return "Whatsapp";
   }
 };
 export const getRiskColor = (interpretation?: RiskInterpretation) => {
