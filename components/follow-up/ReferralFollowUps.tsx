@@ -2,6 +2,7 @@ import { useFollowUps } from "@/hooks/useFollowUp";
 import {
   getPriorityDisplay,
   getReferralStatusColor,
+  getRiskInterpretation,
   getStatusFromDates,
 } from "@/lib/helpers";
 import { Referral } from "@/types/screening";
@@ -57,6 +58,8 @@ const ReferralFollowUps: FC<ReferralFollowUpsProps> = ({ referral }) => {
                 }
                 description={`Priority: ${getPriorityDisplay(
                   followUp.priority
+                )} | ${getRiskInterpretation(
+                  followUp.triggerScreening.scoringResult?.interpretation
                 )}`}
                 leading={
                   <Icon

@@ -93,7 +93,7 @@ export const followUpSchema = z
     dueDate: z.coerce.date(),
     priority: z.enum(["HIGH", "MEDIUM", "LOW"]),
     screeningId: z.string().nonempty(),
-    referralId: z.string().nonempty(),
+    referralId: z.string().nonempty().optional(),
   })
   .refine((data) => data.dueDate >= data.startDate, {
     message: "Due date must not be before start date",

@@ -19,6 +19,7 @@ import {
   getOutreachOutcomeDisplay,
   getOutreactActionContachMethodDisplay,
   getPriorityDisplay,
+  getRiskInterpretation,
 } from "@/lib/helpers";
 import { FollowUp } from "@/types/follow-up";
 import Color from "color";
@@ -59,6 +60,13 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
     { variable: string; value: string | number | undefined; show: boolean }[]
   >(() => {
     return [
+      {
+        variable: "Risk Score",
+        value: getRiskInterpretation(
+          followUp.triggerScreening.scoringResult?.interpretation
+        ),
+        show: true,
+      },
       {
         variable: "Category",
         value: getFollowUpCategoryDisply(followUp.category),

@@ -24,6 +24,7 @@ import {
   SelectPortal,
   SelectTrigger,
 } from "@/components/ui/select";
+import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { followUpSchema } from "@/constants/schemas";
@@ -43,15 +44,21 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 const FollowUpScreen = () => {
   const toast = useToast();
   const { createFollowUp } = useFollowUpApi();
-  const { referralId, appointmentTime, screeningId } = useLocalSearchParams<{
-    referralId: string;
-    appointmentTime: string;
-    screeningId: string;
-  }>();
+  const { referralId, appointmentTime, screeningId, startDate } =
+    useLocalSearchParams<{
+      referralId: string;
+      appointmentTime: string;
+      screeningId: string;
+      startDate: string;
+    }>();
   const defaultDueDate = useMemo(() => {
     const time = dayjs(appointmentTime);
     return time.isValid() ? time.toDate() : undefined;
   }, [appointmentTime]);
+  const defaultStartDate = useMemo(() => {
+    const time = dayjs(startDate);
+    return time.isValid() ? time.toDate() : undefined;
+  }, [startDate]);
 
   const form = useForm({
     resolver: zodResolver(followUpSchema),
@@ -59,7 +66,7 @@ const FollowUpScreen = () => {
       category: referralId ? "REFERRAL_ADHERENCE" : "RE_SCREENING_RECALL",
       priority: "MEDIUM",
       screeningId: screeningId,
-      startDate: dayjs().toDate(),
+      startDate: defaultStartDate ?? dayjs().toDate(),
       referralId,
       dueDate: defaultDueDate,
     },

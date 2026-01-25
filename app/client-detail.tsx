@@ -3,6 +3,7 @@ import {
   RiskTratification,
   ScreeningHistory,
 } from "@/components/client";
+import FollowUpHistory from "@/components/client/FollowUpHistory";
 import ReferralHistory from "@/components/client/ReferralHistory";
 import { ScreenLayout } from "@/components/layout";
 import { ErrorState, When } from "@/components/state-full-widgets";
@@ -43,7 +44,9 @@ const ClientDetail = () => {
               <HStack className="justify-between items-center">
                 <VStack>
                   <Heading size="lg">
-                    {`${client?.firstName || ""} ${client?.lastName || ""}`.trim()}
+                    {`${client?.firstName || ""} ${
+                      client?.lastName || ""
+                    }`.trim()}
                   </Heading>
                   <Text size="sm" className="text-typography-500">
                     Client Profile and Screening History
@@ -125,6 +128,7 @@ const ClientDetail = () => {
               )}
               <ScreeningHistory client={client!} />
               <ReferralHistory client={client!} />
+              <FollowUpHistory client={client!} />
             </VStack>
           </ScrollView>
         )}

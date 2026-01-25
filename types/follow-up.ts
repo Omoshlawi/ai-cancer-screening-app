@@ -5,6 +5,7 @@ import {
   updateFollowUpSchema,
 } from "@/constants/schemas";
 import z from "zod";
+import { Screening } from "./screening";
 
 export interface FollowUp {
   id: string;
@@ -25,6 +26,7 @@ export interface FollowUp {
   createdAt: string;
   updatedAt: string;
   outreachActions?: OutreachAction[];
+  triggerScreening: Screening
 }
 export interface OutreachAction {
   id: string;

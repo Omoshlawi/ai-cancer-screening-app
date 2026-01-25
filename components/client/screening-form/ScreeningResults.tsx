@@ -183,6 +183,29 @@ const ScreeningResults: FC<ScreeningResultsProps> = ({ screening }) => {
             <ButtonIcon as={ArrowRightIcon} />
           </Button>
         )}
+        {screening.scoringResult?.interpretation ===
+          RiskInterpretation.MEDIUM_RISK && (
+          <Button
+            action="primary"
+            size="sm"
+            className="w-full bg-teal-500 justify-between rounded-none"
+            onPress={() => {
+              router.push({
+                pathname: "/follow-up",
+                params: {
+                  appointmentTime: dayjs(screening.createdAt)
+                    .add(6, "months")
+                    .toISOString(),
+                  screeningId: screening.id,
+                  startDate: screening.createdAt,
+                },
+              });
+            }}
+          >
+            <ButtonText>Folloup in 6 months for re screening</ButtonText>
+            <ButtonIcon as={ArrowRightIcon} />
+          </Button>
+        )}
       </VStack>
     </VStack>
   );
