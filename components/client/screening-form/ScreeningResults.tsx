@@ -206,6 +206,31 @@ const ScreeningResults: FC<ScreeningResultsProps> = ({ screening }) => {
             <ButtonIcon as={ArrowRightIcon} />
           </Button>
         )}
+        {screening.scoringResult?.interpretation ===
+          RiskInterpretation.LOW_RISK && (
+          <Button
+            action="primary"
+            size="sm"
+            className="w-full bg-teal-500 justify-between rounded-none"
+            onPress={() => {
+              router.push({
+                pathname: "/follow-up",
+                params: {
+                  appointmentTime: dayjs(screening.createdAt)
+                    .add(5, "years")
+                    .toISOString(),
+                  screeningId: screening.id,
+                  startDate: dayjs(screening.createdAt)
+                    .add(3, "years")
+                    .toISOString(),
+                },
+              });
+            }}
+          >
+            <ButtonText>Folloup in 3 to 5 years fo re screening</ButtonText>
+            <ButtonIcon as={ArrowRightIcon} />
+          </Button>
+        )}
       </VStack>
     </VStack>
   );

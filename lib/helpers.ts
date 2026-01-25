@@ -1,5 +1,9 @@
 import { FollowUp, OutreachAction } from "@/types/follow-up";
-import { ReferralStatus, RiskInterpretation } from "@/types/screening";
+import {
+  CompleteReferralFormData,
+  ReferralStatus,
+  RiskInterpretation,
+} from "@/types/screening";
 import { mutate } from "./api";
 import { SCREENING_FORM_BOOLEAN_OPTIONS, SMOKING_OPTIONS } from "./constants";
 
@@ -182,4 +186,35 @@ export const invalidateCache = () => {
   mutate("/clients"); // invalidate clients for the screening
   mutate("/referrals"); // invalidate referrals for the screening
   mutate("/activities"); // invalidate activities
+  mutate("/follow-up"); // invalidate activities
+};
+
+export const getFollowUpCanceletionReasonDisplay = (
+  reason: FollowUp["cancelReason"]
+) => {
+  switch (reason) {
+    case "DECEASED":
+      return "Deceased";
+    case "RELOCATED":
+      return "Relocated";
+    case "UNREACHABLE":
+      return "Unreachable";
+    case "REFUSED_SERVICE":
+      return "Refused Service";
+    case "INCORRECT_DATA":
+      return "Incorect data";
+    case "HOSPITALIZED_OTHER":
+      return "other";
+  }
+};
+
+export const getReferralResultDisplay = (
+  result: CompleteReferralFormData["testResult"]
+) => {
+  switch (result) {
+    case "POSITIVE":
+      return "Positive";
+    case "NEGATIVE":
+      return "Negative";
+  }
 };

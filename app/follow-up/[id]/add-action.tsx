@@ -184,7 +184,7 @@ const AddAction = () => {
   return (
     <ScreenLayout title="Add Outreach Action">
       <ScrollView>
-        <FormControl className="p-4 w-full bg-background-50">
+        <FormControl className="p-4 w-full bg-background-50"  >
           <VStack space="lg">
             <Controller
               control={form.control}

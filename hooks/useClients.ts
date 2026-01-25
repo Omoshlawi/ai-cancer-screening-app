@@ -55,22 +55,11 @@ export const useClient = (id?: string) => {
   return { client: data?.data, error, isLoading };
 };
 
-export const referClient = async (data: ReferralFormData) => {
-  const url = constructUrl("/referrals");
-  const response = await apiFetch<Referral>(url, {
-    method: "POST",
-    data: data,
-  });
-  invalidateCache();
-  return response.data;
-};
-
 export const useClientApi = () => {
   return {
     createClient,
     updateClient,
     deleteClient,
-    referClient,
   };
 };
 

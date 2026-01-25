@@ -10,11 +10,24 @@ import { VStack } from "@/components/ui/vstack";
 import { getBooleanDisplayValue, getSmokingDisplayValue } from "@/lib/helpers";
 import { Client } from "@/types/client";
 
+import { Divider } from "@/components/ui/divider";
+import {
+  FormControl,
+  FormControlError,
+  FormControlErrorIcon,
+  FormControlErrorText,
+  FormControlLabel,
+  FormControlLabelText,
+} from "@/components/ui/form-control";
+import { AlertCircleIcon } from "@/components/ui/icon";
+import { Textarea, TextareaInput } from "@/components/ui/textarea";
 import { ScreenClientFormData } from "@/types/screening";
 import dayjs from "dayjs";
+import { useLocalSearchParams } from "expo-router";
 import { ArrowLeftIcon } from "lucide-react-native";
 import React, { FC, useMemo } from "react";
-import { useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
+import { ScrollView } from "react-native";
 import VariableValue from "../VariableValue";
 
 type ReviewAndSubmitProps = {
@@ -94,53 +107,112 @@ const ReviewAndSubmit: FC<ReviewAndSubmitProps> = ({
     ];
   }, [client?.dateOfBirth, client?.firstName, client?.lastName, form]);
 
+  const { followUpId } = useLocalSearchParams<{
+    followUpId?: string;
+  }>();
+
   return (
-    <VStack space="md" className="flex-1 items-center">
-      <Heading size="xs" className="text-start w-full">
-        Risk Factors Identified
-      </Heading>
+    <ScrollView className="w-full">
+      <VStack space="md" className="flex-1 items-center">
+        <Heading size="xs" className="text-start w-full">
+          Risk Factors Identified
+        </Heading>
 
-      <VStack space="sm">
-        {values.map((value, i) => (
-          <VariableValue
-            key={i}
-            value={value.value}
-            variable={value.variable}
-          />
-        ))}
-      </VStack>
+        <VStack space="sm">
+          {values.map((value, i) => (
+            <VariableValue
+              key={i}
+              value={value.value}
+              variable={value.variable}
+            />
+          ))}
+          {!!followUpId && (
+            <>
+              <Divider className="my-2" />
+              <Controller
+                control={form.control}
+                name="outcomeNotes"
+                render={({ field, fieldState: { invalid, error } }) => (
+                  <FormControl
+                    isInvalid={invalid}
+                    size="md"
+                    isDisabled={false}
+                    isReadOnly={false}
+                    isRequired={false}
+                  >
+                    <FormControlLabel>
+                      <FormControlLabelText>
+                        Followup outcome notes
+                      </FormControlLabelText>
+                    </FormControlLabel>
+                    <Textarea
+                      size="md"
+                      isReadOnly={false}
+                      isInvalid={false}
+                      isDisabled={false}
+                      className=""
+                    >
+                      <TextareaInput
+                        placeholder="Type notes here..."
+                        {...field}
+                        onChangeText={field.onChange}
+                      />
+                    </Textarea>
 
-      <HStack space="sm" className="w-full">
-        <Button
-          action="secondary"
-          size="sm"
-          className="flex-1 justify-between rounded-none"
-          onPress={onPrevious}
-        >
-          <ButtonIcon as={ArrowLeftIcon} />
-          <ButtonText>Edit/Go back</ButtonText>
-        </Button>
-        <Button
-          action="primary"
-          size="sm"
-          className="flex-1 bg-teal-500 justify-between rounded-none"
-          isDisabled={form.formState.isSubmitting}
-          onPress={async () => {
-            const isValid = await form.trigger();
-            if (isValid) {
-              await onNext();
-            }
-          }}
-        >
-          {form.formState.isSubmitting && (
-            <ButtonSpinner color={"white"} size={"small"} />
+                    {error && (
+                      <FormControlError>
+                        <FormControlErrorIcon
+                          as={AlertCircleIcon}
+                          className="text-red-500"
+                        />
+                        <FormControlErrorText className="text-red-500">
+                          {error.message}
+                        </FormControlErrorText>
+                      </FormControlError>
+                    )}
+                  </FormControl>
+                )}
+              />
+            </>
           )}
-          <ButtonText>
-            {form.formState.isSubmitting ? "Submitting..." : "Submit"}
-          </ButtonText>
-        </Button>
-      </HStack>
-    </VStack>
+        </VStack>
+
+        <HStack space="sm" className="w-full">
+          <Button
+            action="secondary"
+            size="sm"
+            className="flex-1 justify-between rounded-none"
+            onPress={onPrevious}
+          >
+            <ButtonIcon as={ArrowLeftIcon} />
+            <ButtonText>Edit/Go back</ButtonText>
+          </Button>
+          <Button
+            action="primary"
+            size="sm"
+            className="flex-1 bg-teal-500 justify-between rounded-none"
+            isDisabled={form.formState.isSubmitting}
+            onPress={async () => {
+              const isValid = await form.trigger();
+              if (isValid) {
+                await onNext();
+              }
+            }}
+          >
+            {form.formState.isSubmitting && (
+              <ButtonSpinner color={"white"} size={"small"} />
+            )}
+            <ButtonText>
+              {form.formState.isSubmitting
+                ? "Submitting..."
+                : !!followUpId
+                ? "Submit & Complete"
+                : "Submit"}
+            </ButtonText>
+          </Button>
+        </HStack>
+      </VStack>
+    </ScrollView>
   );
 };
 

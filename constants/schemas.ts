@@ -76,6 +76,8 @@ export const screenClientSchema = z.object({
     latitude: z.coerce.number(),
     longitude: z.coerce.number(),
   }),
+  followUpId: z.string().optional(),
+  outcomeNotes: z.string().optional(),
 });
 
 export const referralSchema = z.object({
@@ -84,6 +86,14 @@ export const referralSchema = z.object({
   appointmentTime: z.coerce.date(),
   healthFacilityId: z.string(),
   additionalNotes: z.string().optional(),
+});
+
+export const completeReferralSchema = z.object({
+  followUpId: z.string().nonempty(),
+  testResult: z.enum(["POSITIVE", "NEGATIVE"]),
+  visitedDate: z.coerce.date(),
+  finalDiagnosis: z.string().optional(),
+  outcomeNotes: z.string().optional(),
 });
 
 export const followUpSchema = z
@@ -101,7 +111,6 @@ export const followUpSchema = z
   });
 
 export const cancelFollowUpSchema = z.object({
-  canceledAt: z.coerce.date(),
   cancelReason: z.enum([
     "DECEASED",
     "RELOCATED",

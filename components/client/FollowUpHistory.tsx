@@ -56,7 +56,7 @@ const FollowUpHistory: FC<FollowUpHistoryProps> = ({ client }) => {
                 followUp.priority
               )} | ${getRiskInterpretation(
                 followUp.triggerScreening.scoringResult?.interpretation
-              )}`}
+              )}(${followUp.triggerScreening.scoringResult?.aggregateScore})`}
               leading={
                 <Icon
                   as={ArrowRightLeft}

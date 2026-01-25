@@ -19,13 +19,17 @@ import {
   getOutreachOutcomeDisplay,
   getOutreactActionContachMethodDisplay,
   getPriorityDisplay,
+  getReferralResultDisplay,
   getRiskInterpretation,
+  getStatusFromDates,
 } from "@/lib/helpers";
 import { FollowUp } from "@/types/follow-up";
+import { ReferralStatus } from "@/types/screening";
+import { cn } from "@gluestack-ui/utils/nativewind-utils";
 import Color from "color";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
-import { Calendar, PlusIcon } from "lucide-react-native";
+import { ArrowRight, Calendar, PlusIcon } from "lucide-react-native";
 import React, { useMemo } from "react";
 import { ScrollView } from "react-native";
 
@@ -62,9 +66,9 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
     return [
       {
         variable: "Risk Score",
-        value: getRiskInterpretation(
+        value: `${getRiskInterpretation(
           followUp.triggerScreening.scoringResult?.interpretation
-        ),
+        )}(${followUp.triggerScreening.scoringResult?.aggregateScore})`,
         show: true,
       },
       {
@@ -110,6 +114,31 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
           dayjs(followUp.completedAt).format(DEFAULT_DATE_FORMAT),
         show: !!followUp.completedAt,
       },
+      {
+        variable: "Test Result",
+        value: followUp?.referral?.testResult
+          ? getReferralResultDisplay(followUp?.referral.testResult)
+          : undefined,
+        show:
+          !!followUp.completedAt && followUp.category === "REFERRAL_ADHERENCE",
+      },
+      {
+        variable: "Final Diagnosis",
+        value: followUp?.referral?.finalDiagnosis,
+        show:
+          !!followUp.completedAt && followUp.category === "REFERRAL_ADHERENCE",
+      },
+      {
+        variable: "Screening Result",
+        value: followUp?.resolvingScreening?.scoringResult
+          ? `${getRiskInterpretation(
+              followUp.resolvingScreening.scoringResult.interpretation
+            )}(${followUp.resolvingScreening.scoringResult.aggregateScore})`
+          : undefined,
+        show:
+          !!followUp.completedAt && followUp.category === "RE_SCREENING_RECALL",
+      },
+
       {
         variable: "Outcome Notes",
         value: followUp?.outcomeNotes,
@@ -166,19 +195,22 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
             <Heading size="sm" className="text-typography-500">
               Outreach Actions
             </Heading>
-            <Button
-              variant="outline"
-              size="xs"
-              onPress={() => {
-                router.push({
-                  pathname: "/follow-up/[id]/add-action",
-                  params: { id: followUp.id },
-                });
-              }}
-            >
-              <ButtonIcon as={PlusIcon} />
-              <ButtonText>Record action</ButtonText>
-            </Button>
+            {getStatusFromDates(followUp.completedAt, followUp.canceledAt) ===
+              ReferralStatus.PENDING && (
+              <Button
+                variant="outline"
+                size="xs"
+                onPress={() => {
+                  router.push({
+                    pathname: "/follow-up/[id]/add-action",
+                    params: { id: followUp.id },
+                  });
+                }}
+              >
+                <ButtonIcon as={PlusIcon} />
+                <ButtonText>Record action</ButtonText>
+              </Button>
+            )}
           </HStack>
           {outreachActions && outreachActions.length > 0 ? (
             <VStack space="xs" className="bg-background-50 p-2 rounded-md">
@@ -230,6 +262,77 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
           )}
         </VStack>
       </Card>
+      {getStatusFromDates(followUp.completedAt, followUp.canceledAt) ===
+        ReferralStatus.PENDING && (
+        <Card
+          size="lg"
+          variant="elevated"
+          className="gap-3 bg-background-0 rounded-none"
+        >
+          <VStack space="sm">
+            <Heading size="sm" className="text-typography-500">
+              Actions
+            </Heading>
+            {!followUp.completedAt && (
+              <>
+                {followUp.category === "REFERRAL_ADHERENCE" ? (
+                  <Button
+                    className={cn("bg-teal-500 justify-between")}
+                    size="sm"
+                    onPress={() => {
+                      router.push({
+                        pathname: "/follow-up/[id]/complete",
+                        params: {
+                          id: followUp.id,
+                          referralId: followUp.referralId,
+                        },
+                      });
+                    }}
+                  >
+                    <ButtonText>Complete follow up</ButtonText>
+                    <ButtonIcon as={ArrowRight} />
+                  </Button>
+                ) : (
+                  <Button
+                    className={cn("bg-teal-500 justify-between")}
+                    size="sm"
+                    onPress={() => {
+                      router.push({
+                        pathname: "/screen-client",
+                        params: {
+                          followUpId: followUp.id,
+                          client: followUp.clientId,
+                          search: followUp.client?.nationalId,
+                        },
+                      });
+                    }}
+                  >
+                    <ButtonText>Complete follow up</ButtonText>
+                    <ButtonIcon as={ArrowRight} />
+                  </Button>
+                )}
+              </>
+            )}
+            {!followUp.canceledAt && (
+              <Button
+                className="bg-red-500 justify-between"
+                size="sm"
+                onPress={() => {
+                  router.push({
+                    pathname: "/follow-up/[id]/cancel",
+                    params: {
+                      id: followUp.id,
+                    },
+                  });
+                }}
+              >
+                <ButtonText>Cancel Follow up</ButtonText>
+                <ButtonIcon as={ArrowRight} />
+              </Button>
+            )}
+          </VStack>
+        </Card>
+      )}
     </>
   );
 };

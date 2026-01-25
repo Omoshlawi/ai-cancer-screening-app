@@ -24,8 +24,9 @@ import { Textarea, TextareaInput } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { referralSchema } from "@/constants/schemas";
-import { useClientApi, useSearchClients } from "@/hooks/useClients";
+import { useSearchClients } from "@/hooks/useClients";
 import { useSearchHealthFacility } from "@/hooks/useHealthFacilities";
+import { useReferralApi } from "@/hooks/useReferrals";
 import { handleApiErrors } from "@/lib/api";
 import { ReferralFormData } from "@/types/screening";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -73,7 +74,7 @@ const AddReferralScreen = () => {
     () => clients.find((client) => client.id === clientId),
     [clientId, clients]
   );
-  const { referClient } = useClientApi();
+  const { referClient } = useReferralApi();
   const toast = useToast();
 
   const onSubmit: SubmitHandler<ReferralFormData> = async (data) => {
@@ -151,12 +152,12 @@ const AddReferralScreen = () => {
                           value={
                             field.value
                               ? clients.find(
-                                (client) => client.id === field.value
-                              )?.firstName +
-                              " " +
-                              clients.find(
-                                (client) => client.id === field.value
-                              )?.lastName
+                                  (client) => client.id === field.value
+                                )?.firstName +
+                                " " +
+                                clients.find(
+                                  (client) => client.id === field.value
+                                )?.lastName
                               : ""
                           }
                           onChangeText={field.onChange}

@@ -22,6 +22,7 @@ import { screenClientSchema } from "@/constants/schemas";
 import { useSearchClients } from "@/hooks/useClients";
 import { useLocation } from "@/hooks/useLocation";
 import { useScreeningsApi } from "@/hooks/useScreenings";
+import { handleApiErrors } from "@/lib/api";
 import { SCREENING_FORM_STEPS } from "@/lib/constants";
 import { ScreenClientFormData, Screening } from "@/types/screening";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,12 +33,13 @@ import { ActivityIndicator } from "react-native";
 
 const ScreenClientScreen = () => {
   const [step, setStep] = useState(1);
-  const { client, search } = useLocalSearchParams<{
+  const { client, search, followUpId } = useLocalSearchParams<{
     client: string;
     search: string;
+    followUpId?: string;
   }>();
-  const form = useForm<ScreenClientFormData>({
-    resolver: zodResolver(screenClientSchema) as any,
+  const form = useForm({
+    resolver: zodResolver(screenClientSchema),
     defaultValues: {
       clientId: client ?? "",
       lifeTimePatners: 0,
@@ -51,6 +53,7 @@ const ScreenClientScreen = () => {
       smoking: "NEVER",
       familyMemberDiagnosedWithCervicalCancer: "NO",
       coordinates: undefined as any,
+      followUpId,
     },
   });
   const { createScreening } = useScreeningsApi();
@@ -95,24 +98,35 @@ const ScreenClientScreen = () => {
       });
       setStep(10);
       setScreening(screening);
-    } catch (errors) {
-      console.info("Error registering client:", errors);
+    } catch (error) {
+      const errors = handleApiErrors(error);
+      if (errors.detail) {
+        toast.show({
+          placement: "top",
+          render: ({ id }) => {
+            const uniqueToastId = "toast-" + id;
+            return (
+              <Toaster
+                uniqueToastId={uniqueToastId}
+                variant="outline"
+                title="Error"
+                description={errors.detail}
+                action="error"
+              />
+            );
+          },
+        });
+      }
 
-      // for (let i = 1; i <= steps.length; i++) {
-      //   for (const stepField of steps[i]) {
-      //     if (stepField in (errors ?? {})) {
-      //       setStep(i);
-      //       return;
-      //     }
-      //   }
-      // }
       Object.entries(errors ?? {}).forEach(([field, error]) => {
         form.setError(field as any, { message: error as string });
       });
     }
   };
   return (
-    <ScreenLayout title="Screen Client">
+    <ScreenLayout
+      title={followUpId ? "Screen & complete followup" : "Screen Client"}
+    >
       <FormProvider {...form}>
         <VStack space="lg" className="flex-1">
           <Card size="md" variant="elevated">

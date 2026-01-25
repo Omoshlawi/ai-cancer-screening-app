@@ -19,10 +19,8 @@ import { useClient } from "@/hooks/useClients";
 import { router, useLocalSearchParams } from "expo-router";
 import {
   ArrowRightLeft,
-  Calendar,
   MoreVertical,
   Printer,
-  TagsIcon,
   UserPlus,
 } from "lucide-react-native";
 import React from "react";
@@ -104,17 +102,6 @@ const ClientDetail = () => {
                   >
                     <Icon as={ArrowRightLeft} size="sm" className="mr-2" />
                     <MenuItemLabel size="sm">Refer Client</MenuItemLabel>
-                  </MenuItem>
-                  <MenuItem key="View Referrals" textValue="View Referrals">
-                    <Icon as={TagsIcon} size="sm" className="mr-2" />
-                    <MenuItemLabel size="sm">View Referrals</MenuItemLabel>
-                  </MenuItem>
-                  <MenuItem
-                    key="Schedule Follow Up"
-                    textValue="Schedule Follow Up"
-                  >
-                    <Icon as={Calendar} size="sm" className="mr-2" />
-                    <MenuItemLabel size="sm">Schedule Follow Up</MenuItemLabel>
                   </MenuItem>
                   <MenuItem key="Print Summary" textValue="Print Summary">
                     <Icon as={Printer} size="sm" className="mr-2" />

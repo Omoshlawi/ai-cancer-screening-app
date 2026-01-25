@@ -60,7 +60,7 @@ const ReferralFollowUps: FC<ReferralFollowUpsProps> = ({ referral }) => {
                   followUp.priority
                 )} | ${getRiskInterpretation(
                   followUp.triggerScreening.scoringResult?.interpretation
-                )}`}
+                )}(${followUp.triggerScreening.scoringResult?.aggregateScore})`}
                 leading={
                   <Icon
                     as={ArrowRightLeft}

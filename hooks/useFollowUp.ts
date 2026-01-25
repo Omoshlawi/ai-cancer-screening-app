@@ -1,4 +1,5 @@
-import { apiFetch, APIFetchResponse, constructUrl, mutate } from "@/lib/api";
+import { apiFetch, APIFetchResponse, constructUrl } from "@/lib/api";
+import { invalidateCache } from "@/lib/helpers";
 import {
   CancelFollowUpFormData,
   FollowUp,
@@ -36,7 +37,7 @@ const createFollowUp = async (data: FollowUpFormData) => {
     method: "POST",
     data: data,
   });
-  mutate("/follow-up");
+  invalidateCache();
   return res.data;
 };
 
@@ -45,7 +46,7 @@ const updateFollowUp = async (id: string, data: UpdateFollowUpFormData) => {
     method: "PUT",
     data,
   });
-  mutate("/follow-up");
+  invalidateCache();
   return res.data;
 };
 
@@ -65,7 +66,7 @@ const createFollowUpOutreachAction = async (
       },
     }
   );
-  mutate("/follow-up");
+  invalidateCache();
   return res.data;
 };
 
@@ -74,7 +75,7 @@ const cancelFollowUp = async (id: string, data: CancelFollowUpFormData) => {
     method: "POST",
     data,
   });
-  mutate("/follow-up");
+  invalidateCache();
   return res.data;
 };
 

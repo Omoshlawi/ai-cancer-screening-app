@@ -24,11 +24,11 @@ import {
   SelectPortal,
   SelectTrigger,
 } from "@/components/ui/select";
-import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { followUpSchema } from "@/constants/schemas";
 import { useFollowUpApi } from "@/hooks/useFollowUp";
+import { getFollowUpCategoryDisply, getPriorityDisplay } from "@/lib/helpers";
 import { FollowUpFormData } from "@/types/follow-up";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
@@ -76,9 +76,9 @@ const FollowUpScreen = () => {
     { label: string; value: FollowUpFormData["priority"] }[]
   >(
     () => [
-      { label: "High", value: "HIGH" },
-      { label: "Medium", value: "MEDIUM" },
-      { label: "Low", value: "LOW" },
+      { label: getPriorityDisplay("HIGH"), value: "HIGH" },
+      { label: getPriorityDisplay("MEDIUM"), value: "MEDIUM" },
+      { label: getPriorityDisplay("LOW"), value: "LOW" },
     ],
     []
   );
@@ -87,8 +87,14 @@ const FollowUpScreen = () => {
     { label: string; value: FollowUpFormData["category"] }[]
   >(
     () => [
-      { label: "Referral Adherence", value: "REFERRAL_ADHERENCE" },
-      { label: "Re Screening recall", value: "RE_SCREENING_RECALL" },
+      {
+        label: getFollowUpCategoryDisply("REFERRAL_ADHERENCE"),
+        value: "REFERRAL_ADHERENCE",
+      },
+      {
+        label: getFollowUpCategoryDisply("RE_SCREENING_RECALL"),
+        value: "RE_SCREENING_RECALL",
+      },
     ],
     []
   );

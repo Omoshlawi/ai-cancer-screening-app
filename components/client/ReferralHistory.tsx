@@ -65,7 +65,7 @@ const ReferralHistory: FC<ReferralHistoryProps> = ({ client }) => {
                 "DD/MM/YYYY HH:mm"
               )} | ${getRiskInterpretation(
                 referral.screening?.scoringResult?.interpretation
-              )}`}
+              )}(${referral.screening?.scoringResult?.aggregateScore})`}
               leading={
                 <Icon as={Calendar} size="xs" className="text-typography-500" />
               }

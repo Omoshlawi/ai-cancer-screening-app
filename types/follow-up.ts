@@ -5,7 +5,8 @@ import {
   updateFollowUpSchema,
 } from "@/constants/schemas";
 import z from "zod";
-import { Screening } from "./screening";
+import { Client } from "./client";
+import { Referral, Screening } from "./screening";
 
 export interface FollowUp {
   id: string;
@@ -20,13 +21,16 @@ export interface FollowUp {
   completedAt?: string;
   outcomeNotes?: string;
   resolvingScreeningId?: string;
+  resolvingScreening?: Screening;
   cancelReason: CancelFollowUpFormData["cancelReason"];
   cancelNotes?: string;
   canceledAt?: string;
   createdAt: string;
   updatedAt: string;
   outreachActions?: OutreachAction[];
-  triggerScreening: Screening
+  triggerScreening: Screening;
+  referral?: Referral;
+  client?: Client;
 }
 export interface OutreachAction {
   id: string;
