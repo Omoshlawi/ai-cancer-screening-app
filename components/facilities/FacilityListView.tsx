@@ -1,7 +1,8 @@
 import { useHealthFacilities } from "@/hooks/useHealthFacilities";
-import { Hospital, MapPin, Phone } from "lucide-react-native";
+import { Hospital, Info, MapPin } from "lucide-react-native";
 import React from "react";
 import { FlatList } from "react-native";
+import Pagination from "../Pagination";
 import { EmptyState, ErrorState } from "../state-full-widgets";
 import { Box } from "../ui/box";
 import { Card } from "../ui/card";
@@ -19,10 +20,11 @@ type FacilityListViewProps = {
 };
 
 const FacilityListView = ({ search, typeId }: FacilityListViewProps) => {
-  const { healthFacilities, error, isLoading } = useHealthFacilities({
-    search: search || "",
-    typeId: typeId || "",
-  });
+  const { healthFacilities, error, isLoading, ...pagination } =
+    useHealthFacilities({
+      search: search || "",
+      typeId: typeId || "",
+    });
 
   if (isLoading) {
     return <Spinner />;
@@ -62,24 +64,31 @@ const FacilityListView = ({ search, typeId }: FacilityListViewProps) => {
                   <Heading size="xs">{item.name}</Heading>
                   <Text
                     size="2xs"
-                    className="bg-teal-100 px-2 py-1 rounded-full text-teal-500"
+                    className="bg-teal-100 px-2 py-1 rounded-full text-teal-500 absolute right-2 top-1"
                   >
                     {item.type.name}
                   </Text>
                 </HStack>
                 <HStack className="items-center" space="sm">
                   <Icon as={MapPin} size="sm" className="text-typography-500" />
-                  <Text size="xs">{item.address}</Text>
+                  <Text size="xs">
+                    {`${item.ward ? item.ward + ", " : ""} ${item.subcounty}, ${
+                      item.county
+                    }`}
+                  </Text>
                 </HStack>
                 <HStack className="items-center" space="sm">
-                  <Icon as={Phone} size="sm" className="text-typography-500" />
-                  <Text size="xs">{`${item.phoneNumber} | ${item.email}`}</Text>
+                  <Icon as={Info} size="sm" className="text-typography-500" />
+                  <Text size="xs">{`MFL: ${item.kmflCode} | Owner: ${
+                    item.owner ?? "N/A"
+                  }`}</Text>
                 </HStack>
               </VStack>
             </HStack>
           </Card>
         )}
       />
+      <Pagination {...pagination} />
     </VStack>
   );
 };

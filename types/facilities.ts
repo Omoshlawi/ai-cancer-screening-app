@@ -22,12 +22,16 @@ export type Coordinates = {
 
 export type HealthFacility = {
   id: string;
+  kmflCode: string;
   name: string;
-  address: string;
-  phoneNumber: string;
-  email: string;
-  logo: string;
-  coordinates: Coordinates;
+  county: string;
+  subcounty: string;
+  ward?: string;
+  owner?: string;
+  phoneNumber?: string;
+  email?: string;
+  logo?: string;
+  coordinates?: Coordinates;
   typeId: string;
   type: HealthFacilityType;
   referrals: HealthFacilityReferral[];

@@ -18,6 +18,13 @@ const FacilityMapView = ({ search, typeId }: FacilityMapViewProps) => {
     search: search || "",
     typeId: typeId || "",
   });
+  const healthFacilitiesWithCordinates = useMemo(
+    () =>
+      healthFacilities.filter(
+        (h) => h.coordinates?.latitude && h.coordinates?.longitude
+      ),
+    [healthFacilities]
+  );
   const { coordinates: userLocation, isLoading: isLocationLoading } =
     useLocation();
   const [selectedFacility, setSelectedFacility] = useState<{
@@ -27,7 +34,7 @@ const FacilityMapView = ({ search, typeId }: FacilityMapViewProps) => {
 
   // Calculate initial region based on facilities or user location
   const initialRegion = useMemo<Region | undefined>(() => {
-    if (healthFacilities.length === 0) {
+    if (healthFacilitiesWithCordinates.length === 0) {
       // Default to user location or a default location (e.g., Kenya)
       if (userLocation) {
         return {
@@ -47,8 +54,12 @@ const FacilityMapView = ({ search, typeId }: FacilityMapViewProps) => {
     }
 
     // Calculate region to fit all facilities
-    const latitudes = healthFacilities.map((f) => f.coordinates.latitude);
-    const longitudes = healthFacilities.map((f) => f.coordinates.longitude);
+    const latitudes = healthFacilitiesWithCordinates.map(
+      (f) => f.coordinates!.latitude
+    );
+    const longitudes = healthFacilitiesWithCordinates.map(
+      (f) => f.coordinates!.longitude
+    );
 
     const minLat = Math.min(...latitudes);
     const maxLat = Math.max(...latitudes);
@@ -64,7 +75,7 @@ const FacilityMapView = ({ search, typeId }: FacilityMapViewProps) => {
       latitudeDelta: Math.max(latDelta, 0.1),
       longitudeDelta: Math.max(lngDelta, 0.1),
     };
-  }, [healthFacilities, userLocation]);
+  }, [healthFacilitiesWithCordinates, userLocation]);
 
   if (isLoading || isLocationLoading) {
     return <Spinner />;
@@ -74,10 +85,16 @@ const FacilityMapView = ({ search, typeId }: FacilityMapViewProps) => {
     return <ErrorState error={error} />;
   }
 
-  const handleMarkerPress = (facility: (typeof healthFacilities)[0]) => {
+  const handleMarkerPress = (
+    facility: (typeof healthFacilitiesWithCordinates)[0]
+  ) => {
     setSelectedFacility({
       name: facility.name,
-      details: `${facility.address}\n${facility.phoneNumber}\n${facility.email}`,
+      details: `\nMFL: ${facility.kmflCode}\nOwner:${
+        facility.owner
+      }\nAddress: ${facility.county}, ${facility.subcounty}, ${
+        facility.ward ?? ""
+      }`,
     });
   };
 
@@ -93,15 +110,15 @@ const FacilityMapView = ({ search, typeId }: FacilityMapViewProps) => {
           showsCompass={true}
           toolbarEnabled={false}
         >
-          {healthFacilities.map((facility) => (
+          {healthFacilitiesWithCordinates.map((facility) => (
             <Marker
               key={facility.id}
               coordinate={{
-                latitude: facility.coordinates.latitude,
-                longitude: facility.coordinates.longitude,
+                latitude: facility.coordinates!.latitude,
+                longitude: facility.coordinates!.longitude,
               }}
               title={facility.name}
-              description={facility.address}
+              description={`${facility.county}, ${facility.subcounty}, `}
               onPress={() => handleMarkerPress(facility)}
             />
           ))}

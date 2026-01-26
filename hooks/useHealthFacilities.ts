@@ -4,6 +4,7 @@ import { HealthFacility } from "@/types/facilities";
 import { useState } from "react";
 import useSWR from "swr";
 import { useDebouncedValue } from "./useDebouncedValue";
+import { useMergePaginationInfo } from "./usePagination";
 
 export const useHealthFacilities = (params: Record<string, string> = {}) => {
   // Build query params - only include non-empty values
@@ -25,15 +26,21 @@ export const useHealthFacilities = (params: Record<string, string> = {}) => {
     queryParams.limit = params.limit;
   }
 
-  const url = constructUrl("/health-facilities", queryParams);
+  const { onPageChange, mergedSearchParams, showPagination } =
+    useMergePaginationInfo(queryParams);
+
+  const url = constructUrl("/health-facilities", mergedSearchParams);
   const { data, error, isLoading } =
     useSWR<APIFetchResponse<APIListResponse<HealthFacility>>>(url);
-
+  const { results: healthFacilities = [], ...rest } =
+    data?.data ?? ({} as APIListResponse<HealthFacility>);
   return {
-    healthFacilities: data?.data?.results ?? [],
-    totalCount: data?.data?.totalCount ?? 0,
+    ...rest,
+    healthFacilities,
     error,
     isLoading,
+    onPageChange,
+    showPagination: showPagination(rest.totalCount),
   };
 };
 
@@ -62,7 +69,7 @@ export const useNearbyHealthFacilities = (params: {
   distanceIncrementKm?: number;
 }) => {
   console.log(params);
-  
+
   const url = constructUrl("/health-facilities/nearest", {
     ...params,
     // targetCount: params.targetCount ?? 10,
@@ -71,7 +78,9 @@ export const useNearbyHealthFacilities = (params: {
     // distanceIncrementKm: params.distanceIncrementKm ?? 1,
   });
   const { data, error, isLoading } =
-    useSWR<APIFetchResponse<{ results: (HealthFacility & { distanceKm: number })[] }>>(url);
+    useSWR<
+      APIFetchResponse<{ results: (HealthFacility & { distanceKm: number })[] }>
+    >(url);
   return {
     healthFacilities: data?.data?.results ?? [],
     error,

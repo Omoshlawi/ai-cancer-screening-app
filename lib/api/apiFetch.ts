@@ -1,3 +1,4 @@
+import handleApiErrors from "./handleApiErrors";
 import httpClient from "./httpClient";
 import { APIFetchInit, APIFetchResponse } from "./types";
 
@@ -22,7 +23,7 @@ export const apiFetch = async <T = any, K = any>(
   } catch (error) {
     // Optionally log or process the error before rethrowing
     // TODO Properly handle error
-    console.log("APIFetch Error:", error);
+    console.log("APIFetch Error:", url, handleApiErrors(error));
     throw error; // Re-throw error to be handled by the caller
   }
 };

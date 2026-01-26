@@ -1,14 +1,23 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useSearchParamsExtended } from "./useSearchParams";
 
 type UsePaginationOptions = {
   defaultLimit?: number;
   defaultPage?: number;
+  context?: "router" | "state";
 };
 
 export const usePagination = (options?: UsePaginationOptions) => {
-  const { defaultLimit = 10, defaultPage = 1 } = options ?? {};
-  const { searchParams, updateParams } = useSearchParamsExtended();
+  const {
+    defaultLimit = 10,
+    defaultPage = 1,
+    context = "router",
+  } = options ?? {};
+  const { searchParams: params, updateParams } = useSearchParamsExtended();
+  const [paginationParams, setPaginationParam] = useState<URLSearchParams>(
+    new URLSearchParams()
+  );
+  const searchParams = context === "router" ? params : paginationParams;
   const limit = searchParams?.get("limit") ?? `${defaultLimit}`;
   const page = searchParams?.get("page") ?? `${defaultPage}`;
 
@@ -19,10 +28,22 @@ export const usePagination = (options?: UsePaginationOptions) => {
     },
     [limit]
   );
+
+  const onPageChange = useCallback(
+    (page: number) => {
+      if (context === "router") updateParams({ page: `${page}` });
+      else
+        setPaginationParam((state) => {
+          state.set("page", `${page}`);
+          return new URLSearchParams(state);
+        });
+    },
+    [updateParams, context, setPaginationParam]
+  );
   return {
     limit,
     page,
-    onPageChange: (page: number) => updateParams({ page: `${page}` }),
+    onPageChange,
     showPagination,
   };
 };

@@ -17,7 +17,7 @@ import {
   AlertCircleIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
-  Phone
+  Phone,
 } from "lucide-react-native";
 import React, { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
@@ -33,8 +33,8 @@ const ContactInformation = ({
   onPrevious,
 }: ContactInformationProps) => {
   const form = useFormContext<ClientFormData>();
-  const [selectedCounty, setSelectedCounty] = useState("")
-  const [selectedSubcounty, setSelectedsubCounty] = useState("")
+  const [selectedCounty, setSelectedCounty] = useState("");
+  const [selectedSubcounty, setSelectedsubCounty] = useState("");
 
   return (
     <VStack space="md" className="flex-1 items-center">
@@ -84,9 +84,35 @@ const ContactInformation = ({
           </FormControl>
         )}
       />
-      <AddressFieldsInput control={form.control} name="county" label="County" level={1} onChange={(val) => { setSelectedCounty(val); form.setValue("subcounty", ""); form.setValue("ward", "") }} />
-      <AddressFieldsInput control={form.control} name="subcounty" label="Subcounty" level={2} parentName={selectedCounty} onChange={(val) => { setSelectedsubCounty(val); form.setValue("ward", "") }} />
-      < AddressFieldsInput control={form.control} name="ward" label="Ward" level={3} parentName={selectedSubcounty} />
+      <AddressFieldsInput
+        control={form.control}
+        name="county"
+        label="County"
+        level={1}
+        onChange={(val) => {
+          setSelectedCounty(val);
+          form.setValue("subcounty", "");
+          form.setValue("ward", "");
+        }}
+      />
+      <AddressFieldsInput
+        control={form.control}
+        name="subcounty"
+        label="Subcounty"
+        level={2}
+        parentName={selectedCounty}
+        onChange={(val) => {
+          setSelectedsubCounty(val);
+          form.setValue("ward", "");
+        }}
+      />
+      <AddressFieldsInput
+        control={form.control}
+        name="ward"
+        label="Ward"
+        level={3}
+        parentName={selectedSubcounty}
+      />
 
       <HStack space="sm" className="w-full">
         <Button
@@ -103,7 +129,12 @@ const ContactInformation = ({
           size="sm"
           className="flex-1 bg-teal-500 justify-between rounded-none"
           onPress={async () => {
-            const isValid = await form.trigger(["phoneNumber", "county", "subcounty", "ward"]);
+            const isValid = await form.trigger([
+              "phoneNumber",
+              "county",
+              "subcounty",
+              "ward",
+            ]);
             if (isValid) {
               onNext();
             }

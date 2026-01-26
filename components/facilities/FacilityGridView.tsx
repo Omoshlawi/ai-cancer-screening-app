@@ -1,7 +1,8 @@
 import { useHealthFacilities } from "@/hooks/useHealthFacilities";
-import { Hospital, Mail, MapPin, Phone } from "lucide-react-native";
+import { Hospital, Info, MapPin, User } from "lucide-react-native";
 import React from "react";
 import { Dimensions, FlatList } from "react-native";
+import Pagination from "../Pagination";
 import { EmptyState, ErrorState } from "../state-full-widgets";
 import { Box } from "../ui/box";
 import { Card } from "../ui/card";
@@ -25,10 +26,11 @@ type FacilityGridViewProps = {
 };
 
 const FacilityGridView = ({ search, typeId }: FacilityGridViewProps) => {
-  const { healthFacilities, error, isLoading } = useHealthFacilities({
-    search: search || "",
-    typeId: typeId || "",
-  });
+  const { healthFacilities, error, isLoading, ...pagination } =
+    useHealthFacilities({
+      search: search || "",
+      typeId: typeId || "",
+    });
 
   if (isLoading) {
     return <Spinner />;
@@ -81,19 +83,21 @@ const FacilityGridView = ({ search, typeId }: FacilityGridViewProps) => {
                 <HStack className="items-center" space="xs">
                   <Icon as={MapPin} size="xs" className="text-typography-500" />
                   <Text size="2xs" numberOfLines={1} className="flex-1">
-                    {item.address}
+                    {`${item.ward ? item.ward + ", " : ""} ${item.subcounty}, ${
+                      item.county
+                    }`}{" "}
                   </Text>
                 </HStack>
                 <HStack className="items-center" space="xs">
-                  <Icon as={Phone} size="xs" className="text-typography-500" />
+                  <Icon as={Info} size="xs" className="text-typography-500" />
                   <Text size="2xs" numberOfLines={1} className="flex-1">
-                    {`${item.phoneNumber}`}
+                    {`MFL: ${item.kmflCode}`}
                   </Text>
                 </HStack>
                 <HStack className="items-center" space="xs">
-                  <Icon as={Mail} size="xs" className="text-typography-500" />
+                  <Icon as={User} size="xs" className="text-typography-500" />
                   <Text size="2xs" numberOfLines={1} className="flex-1">
-                    {`${item.email}`}
+                    {`owner: ${item.owner}`}
                   </Text>
                 </HStack>
               </VStack>
@@ -101,6 +105,7 @@ const FacilityGridView = ({ search, typeId }: FacilityGridViewProps) => {
           </Card>
         )}
       />
+      <Pagination {...pagination} />
     </VStack>
   );
 };
