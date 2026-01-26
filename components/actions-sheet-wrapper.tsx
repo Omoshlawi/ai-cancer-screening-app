@@ -22,6 +22,7 @@ type ActionSheetWrapperProps<T> = {
   renderTrigger: (props: RenderTriggerProps<T>) => React.ReactNode;
   data: T[];
   renderItem?: (args: { item: T; close: () => void }) => React.ReactNode;
+  renderPagination?: () => React.ReactNode;
   valueExtractor?: (item: T) => string;
   searchable?: boolean;
   renderEmptyState?: () => React.ReactNode;
@@ -29,7 +30,7 @@ type ActionSheetWrapperProps<T> = {
   searchText?: string;
   onSearchTextChange?: (text: string) => void;
   loading?: boolean;
-  maxHeight?: DimensionValue
+  maxHeight?: DimensionValue;
 };
 
 const ActionSheetWrapper = <T,>({
@@ -42,7 +43,8 @@ const ActionSheetWrapper = <T,>({
   searchText,
   onSearchTextChange,
   loading = false,
-  maxHeight = "80%"
+  maxHeight = "80%",
+  renderPagination,
 }: ActionSheetWrapperProps<T>) => {
   const [showActionsheet, setShowActionsheet] = React.useState(false);
   const handleOpen = () => setShowActionsheet(true);
@@ -134,6 +136,7 @@ const ActionSheetWrapper = <T,>({
             }
             ListEmptyComponent={renderEmptyState}
           />
+          {renderPagination?.()}
         </ActionsheetContent>
       </Actionsheet>
     </>
