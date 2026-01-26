@@ -1,5 +1,5 @@
 import { useHealthFacilities } from "@/hooks/useHealthFacilities";
-import { Mail, MapPin, Phone } from "lucide-react-native";
+import { Hospital, Mail, MapPin, Phone } from "lucide-react-native";
 import React from "react";
 import { Dimensions, FlatList } from "react-native";
 import { EmptyState, ErrorState } from "../state-full-widgets";
@@ -53,13 +53,20 @@ const FacilityGridView = ({ search, typeId }: FacilityGridViewProps) => {
           <Card size="md" variant="elevated" style={{ width: CARD_WIDTH }}>
             <VStack space="sm" className="flex-1">
               <Box className="w-full h-24 rounded-sm relative">
-                <Image
-                  source={{
-                    uri: item.logo,
-                  }}
-                  alt="Logo"
-                  className="w-full h-full overflow-hidden"
-                />
+                {item?.logo ? (
+                  <Image
+                    source={{
+                      uri: item.logo,
+                    }}
+                    alt="Logo"
+                    className="w-full h-full overflow-hidden"
+                  />
+                ) : (
+                  <Icon
+                    as={Hospital}
+                    className="w-full h-full overflow-hidden color-background-200"
+                  />
+                )}
                 <Text
                   size="2xs"
                   className="bg-teal-100 px-2 py-1 rounded-full text-teal-500 absolute top-2 right-2"

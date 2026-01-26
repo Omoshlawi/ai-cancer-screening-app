@@ -1,5 +1,4 @@
-import { AxiosError } from "axios";
-import { AxiosRequestConfig, AxiosResponse } from "axios";
+import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { User } from "better-auth";
 import { Organization } from "better-auth/plugins/organization";
 
@@ -17,7 +16,7 @@ export interface PaginationControls {
 }
 
 export interface APIListResponse<T> extends PaginationControls {
-  results: Array<T>;
+  results: T[];
 }
 
 export interface FileUploadPayload {

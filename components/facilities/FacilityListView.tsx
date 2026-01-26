@@ -1,5 +1,5 @@
 import { useHealthFacilities } from "@/hooks/useHealthFacilities";
-import { MapPin, Phone } from "lucide-react-native";
+import { Hospital, MapPin, Phone } from "lucide-react-native";
 import React from "react";
 import { FlatList } from "react-native";
 import { EmptyState, ErrorState } from "../state-full-widgets";
@@ -41,14 +41,22 @@ const FacilityListView = ({ search, typeId }: FacilityListViewProps) => {
         renderItem={({ item }) => (
           <Card size="md" variant="elevated">
             <HStack className="items-center" space="sm">
-              <Image
-                source={{
-                  uri: item.logo,
-                }}
-                alt="Logo"
-                size="lg"
-                className="aspect-1 rounded-sm"
-              />
+              {item.logo ? (
+                <Image
+                  source={{
+                    uri: item.logo,
+                  }}
+                  alt="Logo"
+                  size="lg"
+                  className="aspect-1 rounded-sm"
+                />
+              ) : (
+                <Icon
+                  as={Hospital}
+                  className="aspect-1 rounded-sm color-background-200"
+                  size={60 as any}
+                />
+              )}
               <VStack space="md" className="flex-1">
                 <HStack className="items-center justify-between" space="sm">
                   <Heading size="xs">{item.name}</Heading>

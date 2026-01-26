@@ -1,21 +1,27 @@
-import { apiFetch, APIFetchResponse } from "@/lib/api";
+import { apiFetch, APIFetchResponse, APIListResponse } from "@/lib/api";
 import { constructUrl } from "@/lib/api/constructUrl";
 import { invalidateCache } from "@/lib/helpers";
 import { Client, ClientFormData } from "@/types/client";
-import { Referral, ReferralFormData } from "@/types/screening";
 import { useState } from "react";
 import useSWR from "swr";
 import { useDebouncedValue } from "./useDebouncedValue";
+import { useMergePaginationInfo } from "./usePagination";
 
 export const useClients = (params: Record<string, string> = {}) => {
-  const url = constructUrl("/clients", params);
+  const { onPageChange, mergedSearchParams, showPagination } =
+    useMergePaginationInfo(params);
+  const url = constructUrl("/clients", mergedSearchParams);
   const { data, error, isLoading } =
-    useSWR<APIFetchResponse<{ results: Client[]; totalCount: number }>>(url);
+    useSWR<APIFetchResponse<APIListResponse<Client>>>(url);
+  const { results: clients = [], ...rest } =
+    data?.data ?? ({} as APIListResponse<Client>);
   return {
-    clients: data?.data?.results ?? [],
+    ...rest,
+    clients,
     error,
     isLoading,
-    count: data?.data?.totalCount ?? 0,
+    onPageChange,
+    showPagination: showPagination(rest.totalCount),
   };
 };
 

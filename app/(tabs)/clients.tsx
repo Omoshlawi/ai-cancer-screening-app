@@ -1,5 +1,6 @@
 import { ClientFilter } from "@/components/client";
 import { CHPLandingScreenLayout } from "@/components/layout";
+import Pagination from "@/components/Pagination";
 import { EmptyState, ErrorState, When } from "@/components/state-full-widgets";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
@@ -43,7 +44,7 @@ const ClientsScreen = () => {
     return p;
   }, [debouncedSearch, level]);
 
-  const { clients, error, isLoading, count } = useClients(params);
+  const { clients, error, isLoading, ...pagination } = useClients(params);
   return (
     <SafeAreaView className="flex-1 bg-background-0">
       <CHPLandingScreenLayout>
@@ -64,7 +65,7 @@ const ClientsScreen = () => {
               level={level}
               onSearchChange={setSearch}
               onLevelChange={setLevel}
-              count={count}
+              count={pagination.totalCount}
             />
             <Box className="flex-1 ">
               <When
@@ -72,106 +73,121 @@ const ClientsScreen = () => {
                 loading={() => <Text>Loading...</Text>}
                 error={(e) => <ErrorState error={e} />}
                 success={(d) => (
-                  <FlatList
-                    data={clients}
-                    keyExtractor={(item) => item.id.toString()}
-                    ItemSeparatorComponent={() => <Box className="h-2" />}
-                    ListEmptyComponent={() => (
-                      <EmptyState message="No clients found" />
-                    )}
-                    renderItem={({ item }) => {
-                      const age = dayjs().diff(
-                        dayjs(item.dateOfBirth),
-                        "years"
-                      );
-                      return (
-                        <Card size="md" variant="elevated">
-                          <VStack space="md">
-                            <HStack className="justify-between items-center">
-                              <Heading size="sm">
-                                {item.firstName} {item.lastName}
-                              </Heading>
-                              {item.screenings?.[0]?.scoringResult
-                                ?.interpretation && (
-                                <Text
-                                  size="xs"
-                                  className="px-2 py-1 rounded-full"
-                                  style={{
-                                    backgroundColor: Color(
-                                      getRiskColor(
+                  <Box className="flex-1">
+                    <FlatList
+                      data={clients}
+                      keyExtractor={(item) => item.id.toString()}
+                      ItemSeparatorComponent={() => <Box className="h-2" />}
+                      ListEmptyComponent={() => (
+                        <EmptyState message="No clients found" />
+                      )}
+                      renderItem={({ item }) => {
+                        const age = dayjs().diff(
+                          dayjs(item.dateOfBirth),
+                          "years"
+                        );
+                        return (
+                          <Card size="md" variant="elevated">
+                            <VStack space="md">
+                              <HStack className="justify-between items-center">
+                                <Heading size="sm">
+                                  {item.firstName} {item.lastName}
+                                </Heading>
+                                {item.screenings?.[0]?.scoringResult
+                                  ?.interpretation && (
+                                  <Text
+                                    size="xs"
+                                    className="px-2 py-1 rounded-full"
+                                    style={{
+                                      backgroundColor: Color(
+                                        getRiskColor(
+                                          item.screenings?.[0]?.scoringResult
+                                            ?.interpretation
+                                        )
+                                      )
+                                        .alpha(0.1)
+                                        .toString(),
+                                      color: getRiskColor(
                                         item.screenings?.[0]?.scoringResult
                                           ?.interpretation
-                                      )
-                                    )
-                                      .alpha(0.1)
-                                      .toString(),
-                                    color: getRiskColor(
+                                      ),
+                                    }}
+                                  >
+                                    {getRiskInterpretation(
                                       item.screenings?.[0]?.scoringResult
                                         ?.interpretation
-                                    ),
-                                  }}
-                                >
-                                  {getRiskInterpretation(
-                                    item.screenings?.[0]?.scoringResult
-                                      ?.interpretation
-                                  )}
+                                    )}
+                                  </Text>
+                                )}
+                              </HStack>
+                              <HStack className="items-center" space="lg">
+                                <Text size="sm" className="text-typography-500">
+                                  Age: {age}
                                 </Text>
-                              )}
-                            </HStack>
-                            <HStack className="items-center" space="lg">
-                              <Text size="sm" className="text-typography-500">
-                                Age: {age}
-                              </Text>
-                              <Icon
-                                as={Dot}
-                                size="sm"
-                                className="text-typography-500"
-                              />
-                              <Text size="sm" className="text-typography-500">
-                                Id: {item.nationalId}
-                              </Text>
-                            </HStack>
-                            <HStack className="items-center" space="lg">
-                              <Icon
-                                as={Phone}
-                                size="xs"
-                                className="text-typography-500"
-                              />
-                              <Text size="sm" className="text-typography-500">
-                                {item.phoneNumber}
-                              </Text>
-                            </HStack>
-                            <HStack className="justify-between">
+                                <Icon
+                                  as={Dot}
+                                  size="sm"
+                                  className="text-typography-500"
+                                />
+                                <Text size="sm" className="text-typography-500">
+                                  Id: {item.nationalId}
+                                </Text>
+                              </HStack>
                               <HStack className="items-center" space="lg">
                                 <Icon
-                                  as={Calendar}
+                                  as={Phone}
                                   size="xs"
                                   className="text-typography-500"
                                 />
                                 <Text size="sm" className="text-typography-500">
-                                  Next follow-up: {dayjs().format("DD/MM/YYYY")}
+                                  {item.phoneNumber}
                                 </Text>
                               </HStack>
-                              <Button
-                                action="positive"
-                                size="sm"
-                                className="bg-teal-500"
-                                onPress={() =>
-                                  router.push({
-                                    pathname: "/client-detail",
-                                    params: { id: item.id },
-                                  })
-                                }
-                              >
-                                <ButtonText>View</ButtonText>
-                                <ButtonIcon as={ArrowRight} size="sm" />
-                              </Button>
-                            </HStack>
-                          </VStack>
-                        </Card>
-                      );
-                    }}
-                  />
+                              <HStack className="justify-between">
+                                <HStack className="items-center" space="lg">
+                                  <Icon
+                                    as={Calendar}
+                                    size="xs"
+                                    className="text-typography-500"
+                                  />
+                                  <Text
+                                    size="sm"
+                                    className="text-typography-500"
+                                  >
+                                    Next follow-up:{" "}
+                                    {dayjs().format("DD/MM/YYYY")}
+                                  </Text>
+                                </HStack>
+                                <Button
+                                  action="positive"
+                                  size="sm"
+                                  className="bg-teal-500"
+                                  onPress={() =>
+                                    router.push({
+                                      pathname: "/client-detail",
+                                      params: { id: item.id },
+                                    })
+                                  }
+                                >
+                                  <ButtonText>View</ButtonText>
+                                  <ButtonIcon as={ArrowRight} size="sm" />
+                                </Button>
+                              </HStack>
+                            </VStack>
+                          </Card>
+                        );
+                      }}
+                    />
+                    {pagination.showPagination && (
+                      <Pagination
+                        isLoading={isLoading}
+                        currentPage={pagination.currentPage ?? 1}
+                        totalCount={pagination.totalCount ?? 0}
+                        totalPages={pagination.totalPages ?? 0}
+                        onPageChange={pagination.onPageChange}
+                      />
+                    )}
+                  </Box>
                 )}
               />
             </Box>
