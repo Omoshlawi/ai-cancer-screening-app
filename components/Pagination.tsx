@@ -5,30 +5,34 @@ import { ChevronLeftIcon, ChevronRightIcon } from "./ui/icon";
 import { Text } from "./ui/text";
 
 interface PaginationProps {
-  currentPage: number;
-  totalPages: number;
-  totalCount: number;
-  onPageChange: (page: number) => void;
+  currentPage?: number;
+  totalPages?: number;
+  totalCount?: number;
+  onPageChange?: (page: number) => void;
   isLoading?: boolean;
+  showPagination?: boolean;
 }
 
 const Pagination = ({
-  currentPage,
-  totalPages,
-  totalCount,
+  currentPage = 1,
+  totalPages = 0,
+  totalCount = 0,
   onPageChange,
   isLoading = false,
+  showPagination = true,
 }: PaginationProps) => {
   const isFirstPage = currentPage <= 1;
   const isLastPage = currentPage >= totalPages;
 
   const handlePrev = () => {
-    if (!isFirstPage) onPageChange(currentPage - 1);
+    if (!isFirstPage) onPageChange?.(currentPage - 1);
   };
 
   const handleNext = () => {
-    if (!isLastPage) onPageChange(currentPage + 1);
+    if (!isLastPage) onPageChange?.(currentPage + 1);
   };
+
+  if (!showPagination) return null;
 
   return (
     <HStack className="w-full items-center justify-between px-4 pt-4 border-t border-typography-300">

@@ -178,15 +178,7 @@ const ClientsScreen = () => {
                         );
                       }}
                     />
-                    {pagination.showPagination && (
-                      <Pagination
-                        isLoading={isLoading}
-                        currentPage={pagination.currentPage ?? 1}
-                        totalCount={pagination.totalCount ?? 0}
-                        totalPages={pagination.totalPages ?? 0}
-                        onPageChange={pagination.onPageChange}
-                      />
-                    )}
+                    <Pagination {...pagination} isLoading={isLoading} />
                   </Box>
                 )}
               />

@@ -1,15 +1,22 @@
-import { APIFetchResponse, constructUrl } from "@/lib/api";
+import { APIFetchResponse, APIListResponse, constructUrl } from "@/lib/api";
 import { Activity } from "@/types/users";
 import useSWR from "swr";
+import { useMergePaginationInfo } from "./usePagination";
 
 export const useActivities = (params: Record<string, string> = {}) => {
-  const url = constructUrl("/activities", params);
+  const { onPageChange, mergedSearchParams, showPagination } =
+    useMergePaginationInfo(params);
+  const url = constructUrl("/activities", mergedSearchParams);
   const { data, error, isLoading } =
-    useSWR<APIFetchResponse<{ results: Activity[]; totalCount: number }>>(url);
+    useSWR<APIFetchResponse<APIListResponse<Activity>>>(url);
+  const { results: activities = [], ...rest } =
+    data?.data ?? ({} as APIListResponse<Activity>);
   return {
-    activities: data?.data?.results ?? [],
+    ...rest,
+    activities,
     error,
     isLoading,
-    count: data?.data?.totalCount ?? 0,
+    onPageChange,
+    showPagination: showPagination(rest.totalCount),
   };
 };

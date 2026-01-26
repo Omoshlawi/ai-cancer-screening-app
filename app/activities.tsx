@@ -13,11 +13,12 @@ import { Dot } from "lucide-react-native";
 import React from "react";
 import { FlatList } from "react-native";
 
+import Pagination from "@/components/Pagination";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
 const ActivitiesScreen = () => {
-  const { activities, error, isLoading } = useActivities({});
+  const { activities, error, isLoading, ...pagination } = useActivities({});
 
   return (
     <ScreenLayout title="Activities">
@@ -27,7 +28,7 @@ const ActivitiesScreen = () => {
         error={(e) => <ErrorState error={e} />}
         success={(activities) => {
           if (!activities?.length)
-            return <EmptyState message="No activities" />
+            return <EmptyState message="No activities" />;
           return (
             <Box className="flex-1 mt-2">
               <FlatList
@@ -48,8 +49,8 @@ const ActivitiesScreen = () => {
                               ? "text-teal-600"
                               : activity.metadata?.riskInterpretation ===
                                 RiskInterpretation.MEDIUM_RISK
-                                ? "text-yellow-600"
-                                : "text-red-600"
+                              ? "text-yellow-600"
+                              : "text-red-600"
                             : "text-primary-600"
                         }
                         size="xl"
@@ -58,15 +59,16 @@ const ActivitiesScreen = () => {
                     title={`${activity.action} ${activity.resource} - ${activity.metadata?.clientName}`}
                     description={
                       activity.resource === "screening"
-                        ? `Score: ${activity.metadata?.riskScore ?? "N/A"
-                        } | ${getRiskInterpretation(
-                          activity.metadata?.riskInterpretation
-                        )}`
+                        ? `Score: ${
+                            activity.metadata?.riskScore ?? "N/A"
+                          } | ${getRiskInterpretation(
+                            activity.metadata?.riskInterpretation
+                          )}`
                         : activity.resource === "referral"
-                          ? `Referral to ${activity.metadata?.healthFacilityName}`
-                          : activity.resource === "client"
-                            ? `Client: ${activity.metadata?.clientName}`
-                            : ""
+                        ? `Referral to ${activity.metadata?.healthFacilityName}`
+                        : activity.resource === "client"
+                        ? `Client: ${activity.metadata?.clientName}`
+                        : ""
                     }
                     trailing={
                       <Text size="xs" className="text-typography-500">
@@ -76,8 +78,9 @@ const ActivitiesScreen = () => {
                   />
                 )}
               />
+              <Pagination {...pagination} isLoading={isLoading} />
             </Box>
-          )
+          );
         }}
       />
     </ScreenLayout>
