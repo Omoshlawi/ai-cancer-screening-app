@@ -38,7 +38,6 @@ export interface OutreachAction {
   actionType: OutreachActionFormData["actionType"];
   actionDate: string;
   outcome: OutreachActionFormData["outcome"];
-  contactMethod: OutreachActionFormData["contactMethod"];
   location?: string;
   duration?: number;
   notes?: string;

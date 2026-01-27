@@ -138,7 +138,6 @@ export const outreachActionSchema = z
       "FACILITY_VERIFICATION",
     ]),
     outcome: z.enum([
-      "PATIENT_CONTACTED",
       "PATIENT_UNAVAILABLE",
       "PATIENT_COMMITTED",
       "PATIENT_VISITED_FACILITY",
@@ -147,7 +146,6 @@ export const outreachActionSchema = z
       "LOST_CONTACT",
     ]),
     barriers: z.string().optional(),
-    contactMethod: z.enum(["PHONE", "IN_PERSON", "SMS", "WHATSAPP"]),
     duration: z.coerce.number().optional(),
     location: z.string().optional(),
     nextPlannedDate: z.coerce.date(),

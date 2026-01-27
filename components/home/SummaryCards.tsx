@@ -1,4 +1,5 @@
 import { useClients } from "@/hooks/useClients";
+import { usePendingFollowUps } from "@/hooks/useFollowUp";
 import { useScreenings } from "@/hooks/useScreenings";
 import { RiskInterpretation } from "@/types/screening";
 import { cn } from "@gluestack-ui/utils/nativewind-utils";
@@ -16,18 +17,21 @@ import { Card } from "../ui/card";
 import { Icon } from "../ui/icon";
 import { Text } from "../ui/text";
 const SummaryCards = () => {
-  const { count: screeningsCount } = useScreenings({
+  const { totalCount: screeningsCount } = useScreenings({
     screeningDateFrom: dayjs().startOf("day").toISOString(),
     screeningDateTo: dayjs().endOf("day").toISOString(),
     limit: "1",
   });
-  const { count: clientsCount } = useClients({
+  const { totalCount: clientsCount } = useClients({
     limit: "1",
   });
-  const { count: highriskClientsCount } = useScreenings({
+  const { totalCount: highriskClientsCount } = useScreenings({
     screeningDateFrom: dayjs().startOf("day").toISOString(),
     screeningDateTo: dayjs().endOf("day").toISOString(),
     risk: RiskInterpretation.HIGH_RISK,
+    limit: "1",
+  });
+  const { totalCount: followUpCount } = usePendingFollowUps({
     limit: "1",
   });
   const cards = useMemo<
@@ -47,7 +51,7 @@ const SummaryCards = () => {
       },
       {
         title: "Pending Follow-ups",
-        value: 8,
+        value: followUpCount,
         icon: Clock,
         iconClassName: "text-yellow-200",
       },
@@ -64,7 +68,7 @@ const SummaryCards = () => {
         iconClassName: "text-blue-200",
       },
     ];
-  }, [clientsCount, screeningsCount, highriskClientsCount]);
+  }, [clientsCount, screeningsCount, highriskClientsCount, followUpCount]);
   return (
     <Box className="w-full flex flex-row flex-wrap gap-2 mt-4">
       {cards.map((card, index) => (

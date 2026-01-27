@@ -58,8 +58,6 @@ export const getFollowUpCategoryDisply = (category: FollowUp["category"]) => {
 
 export const getOutreachOutcomeColor = (outcome: OutreachAction["outcome"]) => {
   switch (outcome) {
-    case "PATIENT_CONTACTED":
-      return "blue";
     case "PATIENT_UNAVAILABLE":
       return "gray";
     case "PATIENT_COMMITTED":
@@ -78,8 +76,6 @@ export const getOutreachOutcomeDisplay = (
   outcome: OutreachAction["outcome"]
 ) => {
   switch (outcome) {
-    case "PATIENT_CONTACTED":
-      return "Client Contacted";
     case "PATIENT_UNAVAILABLE":
       return "Client Unavailable";
     case "PATIENT_COMMITTED":
@@ -110,20 +106,6 @@ export const getOutreachActionTypeDisplay = (
   }
 };
 
-export const getOutreactActionContachMethodDisplay = (
-  method: OutreachAction["contactMethod"]
-) => {
-  switch (method) {
-    case "PHONE":
-      return "Phone";
-    case "IN_PERSON":
-      return "In Person";
-    case "SMS":
-      return "Sms";
-    case "WHATSAPP":
-      return "Whatsapp";
-  }
-};
 export const getRiskColor = (interpretation?: RiskInterpretation) => {
   switch (interpretation) {
     case RiskInterpretation.LOW_RISK:

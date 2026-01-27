@@ -1,4 +1,9 @@
-import { apiFetch, APIFetchResponse, constructUrl } from "@/lib/api";
+import {
+  apiFetch,
+  APIFetchResponse,
+  APIListResponse,
+  constructUrl,
+} from "@/lib/api";
 import { invalidateCache } from "@/lib/helpers";
 import {
   CancelFollowUpFormData,
@@ -9,16 +14,41 @@ import {
   UpdateFollowUpFormData,
 } from "@/types/follow-up";
 import useSWR from "swr";
+import { useMergePaginationInfo } from "./usePagination";
 
 export const useFollowUps = (params: Record<string, any> = {}) => {
-  const url = constructUrl("/follow-up", params);
+  const { onPageChange, mergedSearchParams, showPagination } =
+    useMergePaginationInfo(params);
+  const url = constructUrl("/follow-up", mergedSearchParams);
   const { data, error, isLoading } =
-    useSWR<APIFetchResponse<{ results: FollowUp[] }>>(url);
-
+    useSWR<APIFetchResponse<APIListResponse<FollowUp>>>(url);
+  const { results: followUps = [], ...rest } =
+    data?.data ?? ({} as APIListResponse<FollowUp>);
   return {
-    followUps: data?.data?.results ?? [],
+    ...rest,
+    followUps,
     isLoading,
     error,
+    onPageChange,
+    showPagination: showPagination(rest.totalCount),
+  };
+};
+
+export const usePendingFollowUps = (params: Record<string, any> = {}) => {
+  const { onPageChange, mergedSearchParams, showPagination } =
+    useMergePaginationInfo(params);
+  const url = constructUrl("/follow-up/pending", mergedSearchParams);
+  const { data, error, isLoading } =
+    useSWR<APIFetchResponse<APIListResponse<FollowUp>>>(url);
+  const { results: followUps = [], ...rest } =
+    data?.data ?? ({} as APIListResponse<FollowUp>);
+  return {
+    ...rest,
+    followUps,
+    isLoading,
+    error,
+    onPageChange,
+    showPagination: showPagination(rest.totalCount),
   };
 };
 export const useFollowUp = (id: string) => {

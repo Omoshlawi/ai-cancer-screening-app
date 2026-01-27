@@ -17,7 +17,6 @@ import {
   getOutreachActionTypeDisplay,
   getOutreachOutcomeColor,
   getOutreachOutcomeDisplay,
-  getOutreactActionContachMethodDisplay,
   getPriorityDisplay,
   getReferralResultDisplay,
   getRiskInterpretation,
@@ -219,10 +218,8 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
                   key={action.id}
                   title={`${getOutreachActionTypeDisplay(
                     action.actionType
-                  )} (${dayjs(action.actionDate).format(DEFAULT_DATE_FORMAT)})`}
-                  description={`Contact Method: ${getOutreactActionContachMethodDisplay(
-                    action.contactMethod
-                  )} `}
+                  )}`}
+                  description={dayjs(action.actionDate).format(DEFAULT_DATE_FORMAT)}
                   leading={
                     <Icon
                       as={Calendar}

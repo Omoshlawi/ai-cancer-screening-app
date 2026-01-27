@@ -37,7 +37,6 @@ import { handleApiErrors } from "@/lib/api";
 import {
   getOutreachActionTypeDisplay,
   getOutreachOutcomeDisplay,
-  getOutreactActionContachMethodDisplay,
 } from "@/lib/helpers";
 import { OutreachAction, OutreachActionFormData } from "@/types/follow-up";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -61,8 +60,6 @@ const AddAction = () => {
       actionDate: dayjs().toDate(),
       actionType: "HOME_VISIT",
       barriers: "",
-      contactMethod: "IN_PERSON",
-      outcome: "PATIENT_COMMITTED",
     },
   });
 
@@ -86,61 +83,51 @@ const AddAction = () => {
     ],
     []
   );
+
+  const selectedActionType = form.watch("actionType");
+  const selectedOutcome = form.watch("outcome");
+
   const outcomes = useMemo<
-    { label: string; value: OutreachAction["outcome"] }[]
+    {
+      label: string;
+      value: OutreachAction["outcome"];
+      types: OutreachAction["actionType"][];
+    }[]
   >(
     () => [
       {
         label: getOutreachOutcomeDisplay("BARRIER_IDENTIFIED"),
         value: "BARRIER_IDENTIFIED",
+        types: ["HOME_VISIT", "PHONE_CALL", "SMS_SENT"],
       },
       {
         label: getOutreachOutcomeDisplay("LOST_CONTACT"),
         value: "LOST_CONTACT",
+        types: ["HOME_VISIT", "PHONE_CALL", "SMS_SENT"],
       },
       {
         label: getOutreachOutcomeDisplay("PATIENT_COMMITTED"),
         value: "PATIENT_COMMITTED",
-      },
-      {
-        label: getOutreachOutcomeDisplay("PATIENT_CONTACTED"),
-        value: "PATIENT_CONTACTED",
+        types: ["HOME_VISIT", "PHONE_CALL", "SMS_SENT"],
       },
       {
         label: getOutreachOutcomeDisplay("PATIENT_REFUSED"),
         value: "PATIENT_REFUSED",
+        types: ["HOME_VISIT", "PHONE_CALL", "SMS_SENT"],
       },
       {
         label: getOutreachOutcomeDisplay("PATIENT_UNAVAILABLE"),
         value: "PATIENT_UNAVAILABLE",
+        types: ["HOME_VISIT", "PHONE_CALL", "FACILITY_VERIFICATION"],
       },
       {
         label: getOutreachOutcomeDisplay("PATIENT_VISITED_FACILITY"),
         value: "PATIENT_VISITED_FACILITY",
+        types: ["FACILITY_VERIFICATION"],
       },
     ],
     []
   );
-  const contactMethods = useMemo<
-    { label: string; value: OutreachAction["contactMethod"] }[]
-  >(
-    () => [
-      {
-        label: getOutreactActionContachMethodDisplay("IN_PERSON"),
-        value: "IN_PERSON",
-      },
-      { label: getOutreactActionContachMethodDisplay("PHONE"), value: "PHONE" },
-      { label: getOutreactActionContachMethodDisplay("SMS"), value: "SMS" },
-      {
-        label: getOutreactActionContachMethodDisplay("WHATSAPP"),
-        value: "WHATSAPP",
-      },
-    ],
-    []
-  );
-
-  const selectedActionType = form.watch("actionType");
-  const selectedOutcome = form.watch("outcome");
 
   const onSubmit: SubmitHandler<OutreachActionFormData> = async (formData) => {
     try {
@@ -184,7 +171,7 @@ const AddAction = () => {
   return (
     <ScreenLayout title="Add Outreach Action">
       <ScrollView>
-        <FormControl className="p-4 w-full bg-background-50"  >
+        <FormControl className="p-4 w-full bg-background-50">
           <VStack space="lg">
             <Controller
               control={form.control}
@@ -257,9 +244,10 @@ const AddAction = () => {
                     <Select
                       className="w-full"
                       selectedValue={field.value}
-                      onValueChange={(value) =>
-                        field.onChange(value as OutreachAction["actionType"])
-                      }
+                      onValueChange={(value) => {
+                        form.resetField("outcome");
+                        field.onChange(value as OutreachAction["actionType"]);
+                      }}
                     >
                       <SelectTrigger variant="outline" size="md">
                         <SelectInput
@@ -341,74 +329,6 @@ const AddAction = () => {
                 )}
               />
             )}
-            <Controller
-              control={form.control}
-              name="contactMethod"
-              render={({ field, fieldState: { invalid, error } }) => {
-                const selectedCategory = contactMethods.find(
-                  (c) => c.value === field.value
-                );
-                return (
-                  <FormControl
-                    isInvalid={invalid}
-                    size="md"
-                    isDisabled={false}
-                    isReadOnly={false}
-                    isRequired={false}
-                    className="w-full"
-                  >
-                    <FormControlLabel>
-                      <FormControlLabelText>
-                        Contact method
-                      </FormControlLabelText>
-                    </FormControlLabel>
-                    <Select
-                      className="w-full"
-                      selectedValue={field.value}
-                      onValueChange={(value) =>
-                        field.onChange(value as OutreachAction["contactMethod"])
-                      }
-                    >
-                      <SelectTrigger variant="outline" size="md">
-                        <SelectInput
-                          placeholder="Select option"
-                          className="flex-1"
-                          value={selectedCategory?.label}
-                        />
-                        <SelectIcon className="mr-3" as={ChevronDownIcon} />
-                      </SelectTrigger>
-                      <SelectPortal>
-                        <SelectBackdrop />
-                        <SelectContent>
-                          <SelectDragIndicatorWrapper>
-                            <SelectDragIndicator />
-                          </SelectDragIndicatorWrapper>
-                          {contactMethods.map((category, i) => (
-                            <SelectItem
-                              label={category.label}
-                              value={category.value}
-                              key={category.value}
-                            />
-                          ))}
-                        </SelectContent>
-                      </SelectPortal>
-                    </Select>
-
-                    {error && (
-                      <FormControlError>
-                        <FormControlErrorIcon
-                          as={AlertCircleIcon}
-                          className="text-red-500"
-                        />
-                        <FormControlErrorText className="text-red-500">
-                          {error.message}
-                        </FormControlErrorText>
-                      </FormControlError>
-                    )}
-                  </FormControl>
-                );
-              }}
-            />
 
             <Controller
               control={form.control}
@@ -452,13 +372,15 @@ const AddAction = () => {
                           <SelectDragIndicatorWrapper>
                             <SelectDragIndicator />
                           </SelectDragIndicatorWrapper>
-                          {outcomes.map((category, i) => (
-                            <SelectItem
-                              label={category.label}
-                              value={category.value}
-                              key={category.value}
-                            />
-                          ))}
+                          {outcomes
+                            .filter((o) => o.types.includes(selectedActionType))
+                            .map((category, i) => (
+                              <SelectItem
+                                label={category.label}
+                                value={category.value}
+                                key={category.value}
+                              />
+                            ))}
                         </SelectContent>
                       </SelectPortal>
                     </Select>

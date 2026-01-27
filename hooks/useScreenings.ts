@@ -1,7 +1,13 @@
-import { apiFetch, APIFetchResponse, constructUrl } from "@/lib/api";
+import {
+  apiFetch,
+  APIFetchResponse,
+  APIListResponse,
+  constructUrl,
+} from "@/lib/api";
 import { invalidateCache } from "@/lib/helpers";
 import { ScreenClientFormData, Screening } from "@/types/screening";
 import useSWR from "swr";
+import { useMergePaginationInfo } from "./usePagination";
 
 const createScreening = async (data: ScreenClientFormData) => {
   const url = constructUrl("/screenings");
@@ -31,19 +37,26 @@ const deleteScreening = async (id: string) => {
   const response = await apiFetch<Screening>(url, {
     method: "DELETE",
   });
-  invalidateCache();  
+  invalidateCache();
   return response.data;
 };
 
 export const useScreenings = (params: Record<string, string> = {}) => {
-  const url = constructUrl("/screenings", params);
+  const { onPageChange, mergedSearchParams, showPagination } =
+    useMergePaginationInfo(params);
+  const url = constructUrl("/screenings", mergedSearchParams);
   const { data, error, isLoading } =
-    useSWR<APIFetchResponse<{ results: Screening[]; totalCount: number }>>(url);
+    useSWR<APIFetchResponse<APIListResponse<Screening>>>(url);
+
+  const { results: screenings = [], ...rest } =
+    data?.data ?? ({} as APIListResponse<Screening>);
   return {
-    screenings: data?.data?.results ?? [],
+    ...rest,
+    screenings,
     error,
     isLoading,
-    count: data?.data?.totalCount ?? 0,
+    onPageChange,
+    showPagination: showPagination(rest.totalCount),
   };
 };
 

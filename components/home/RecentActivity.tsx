@@ -1,5 +1,9 @@
 import { useActivities } from "@/hooks/useActivities";
-import { getRiskInterpretation } from "@/lib/helpers";
+import {
+  getFollowUpCategoryDisply,
+  getPriorityDisplay,
+  getRiskInterpretation,
+} from "@/lib/helpers";
 import { RiskInterpretation } from "@/types/screening";
 import dayjs from "dayjs";
 import { router } from "expo-router";
@@ -43,12 +47,16 @@ const RecentActivity = () => {
         error={(e) => <ErrorState error={e} />}
         success={(activities) => {
           if (!activities?.length)
-            return <Card className="bg-background-0 flex-col gap-2 mt-2">
-              <Center>
-                <Icon as={Clipboard} size="xl" className="mb-2" />
-                <Text className="text-typography-500" size="sm">No activities</Text>
-              </Center>
-            </Card>
+            return (
+              <Card className="bg-background-0 flex-col gap-2 mt-2">
+                <Center>
+                  <Icon as={Clipboard} size="xl" className="mb-2" />
+                  <Text className="text-typography-500" size="sm">
+                    No activities
+                  </Text>
+                </Center>
+              </Card>
+            );
 
           return (
             <Card className="bg-background-0 flex-col gap-2 mt-2">
@@ -65,8 +73,8 @@ const RecentActivity = () => {
                             ? "text-teal-600"
                             : activity.metadata?.riskInterpretation ===
                               RiskInterpretation.MEDIUM_RISK
-                              ? "text-yellow-600"
-                              : "text-red-600"
+                            ? "text-yellow-600"
+                            : "text-red-600"
                           : "text-primary-600"
                       }
                       size="xl"
@@ -75,15 +83,20 @@ const RecentActivity = () => {
                   title={`${activity.action} ${activity.resource} - ${activity.metadata?.clientName}`}
                   description={
                     activity.resource === "screening"
-                      ? `Score: ${activity.metadata?.riskScore ?? "N/A"
-                      } | ${getRiskInterpretation(
-                        activity.metadata?.riskInterpretation
-                      )}`
+                      ? `Score: ${
+                          activity.metadata?.riskScore ?? "N/A"
+                        } | ${getRiskInterpretation(
+                          activity.metadata?.riskInterpretation
+                        )}`
                       : activity.resource === "referral"
-                        ? `Referral to ${activity.metadata?.healthFacilityName}`
-                        : activity.resource === "client"
-                          ? `Client: ${activity.metadata?.clientName}`
-                          : ""
+                      ? `Referral to ${activity.metadata?.healthFacilityName}`
+                      : activity.resource === "client"
+                      ? `Client: ${activity.metadata?.clientName}`
+                      : activity.resource === "followUp"
+                      ? `${getFollowUpCategoryDisply(
+                          activity.metadata?.category
+                        )}(${getPriorityDisplay(activity.metadata?.priority)})`
+                      : ""
                   }
                   trailing={
                     <Text size="xs" className="text-typography-500">
@@ -93,7 +106,7 @@ const RecentActivity = () => {
                 />
               ))}
             </Card>
-          )
+          );
         }}
       />
     </Box>

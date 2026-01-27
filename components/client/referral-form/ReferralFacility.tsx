@@ -17,13 +17,13 @@ import { Input, InputField } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import {
-  useNearbyHealthFacilities,
+  useHealthFacilities,
   useSearchHealthFacility,
 } from "@/hooks/useHealthFacilities";
 import { useScreening } from "@/hooks/useScreenings";
 import { ReferralFormData } from "@/types/screening";
-import { MapPin, Phone } from "lucide-react-native";
-import React, { FC } from "react";
+import { Hospital, Info, MapPin } from "lucide-react-native";
+import React, { FC, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { TouchableOpacity } from "react-native";
 
@@ -34,6 +34,7 @@ type ReferralFacilityProps = {
 const ReferralFacility: FC<ReferralFacilityProps> = ({
   facilitySearchAsync,
 }) => {
+  const [search, setSearch] = useState<string>("");
   const form = useFormContext<ReferralFormData>();
   const screeningId = form.watch("screeningId");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -42,10 +43,12 @@ const ReferralFacility: FC<ReferralFacilityProps> = ({
     healthFacilities: nearbyHealthFacilities,
     error: nearbyError,
     isLoading: nearbyIsLoading,
-  } = useNearbyHealthFacilities({
-    lat: /*screening?.coordinates?.latitude ??*/ -1.2921,
-    lng: /*screening?.coordinates?.longitude ??*/ 36.8219,
-  });
+  } = useHealthFacilities({ search });
+
+  // useNearbyHealthFacilities({
+  //   lat: /*screening?.coordinates?.latitude ??*/ -1.2921,
+  //   lng: /*screening?.coordinates?.longitude ??*/ 36.8219,
+  // });
   return (
     <Controller
       control={form.control}
@@ -102,20 +105,28 @@ const ReferralFacility: FC<ReferralFacilityProps> = ({
             >
               <Card size="md" variant="elevated">
                 <HStack className="items-center" space="sm">
-                  <Image
-                    source={{
-                      uri: item.logo,
-                    }}
-                    alt="Logo"
-                    size="lg"
-                    className="aspect-1 rounded-sm"
-                  />
+                  {item.logo ? (
+                    <Image
+                      source={{
+                        uri: item.logo,
+                      }}
+                      alt="Logo"
+                      size="lg"
+                      className="aspect-1 rounded-sm"
+                    />
+                  ) : (
+                    <Icon
+                      as={Hospital}
+                      className="aspect-1 rounded-sm color-background-200"
+                      size={60 as any}
+                    />
+                  )}
                   <VStack space="md" className="flex-1">
                     <HStack className="items-center justify-between" space="sm">
                       <Heading size="xs">{item.name}</Heading>
                       <Text
                         size="2xs"
-                        className="bg-teal-100 px-2 py-1 rounded-full text-teal-500"
+                        className="bg-teal-100 px-2 py-1 rounded-full text-teal-500 absolute right-2 top-1"
                       >
                         {item.type.name}
                       </Text>
@@ -127,16 +138,20 @@ const ReferralFacility: FC<ReferralFacilityProps> = ({
                         className="text-typography-500"
                       />
                       <Text size="xs">
-                        {item.address} - {item.distanceKm} km
+                        {`${item.ward ? item.ward + ", " : ""} ${
+                          item.subcounty
+                        }, ${item.county}`}
                       </Text>
                     </HStack>
                     <HStack className="items-center" space="sm">
                       <Icon
-                        as={Phone}
+                        as={Info}
                         size="sm"
                         className="text-typography-500"
                       />
-                      <Text size="xs">{`${item.phoneNumber} | ${item.email}`}</Text>
+                      <Text size="xs">{`MFL: ${item.kmflCode} | Owner: ${
+                        item.owner ?? "N/A"
+                      }`}</Text>
                     </HStack>
                   </VStack>
                 </HStack>
@@ -153,10 +168,9 @@ const ReferralFacility: FC<ReferralFacilityProps> = ({
             }
             return <EmptyState message="No nearby facilities found" />;
           }}
-
-          // searchable
-          // searchText={searchValue}
-          // onSearchTextChange={onSearchChange}
+          searchable
+          searchText={search}
+          onSearchTextChange={setSearch}
         />
       )}
     />
