@@ -20,9 +20,9 @@ const ChatBotTabPanel = () => {
   const { chat, conversations, isLoading, clearConversation } = useChatbot()
   const [message, setMessage] = useState("")
   const defaultMessages = [
-    "Screening prosidure",
+    "Screening procedure",
     "Training requirements",
-    "Client cancelling",
+    "Client canceling",
     "Equipment needed",
   ];
 

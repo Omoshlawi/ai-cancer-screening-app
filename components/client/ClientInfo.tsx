@@ -55,7 +55,7 @@ const ClientInfo: FC<ClientInfoProps> = ({ client }) => {
   return (
     <Card size="sm" variant="elevated" className="p-2">
       <HStack className="justify-between items-center">
-        <Heading size="xs">Patient Information</Heading>
+        <Heading size="xs">Client Information</Heading>
         <Button
           action="positive"
           variant="outline"
