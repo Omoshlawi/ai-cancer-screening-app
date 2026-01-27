@@ -4,6 +4,9 @@
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
+    "build:android": "eas build --platform android --profile apkPreview",
+    "build:ios": "eas build --platform ios --profile apkPreview",
+    "build:all": "eas build --platform all --profile apkPreview",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
