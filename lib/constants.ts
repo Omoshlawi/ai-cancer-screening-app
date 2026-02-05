@@ -1,3 +1,5 @@
+import Constants from "expo-constants";
+
 export const BASE_URL = "http://172.238.122.159:8080";
 // export const BASE_URL = "http://localhost:600";
 
@@ -13,6 +15,8 @@ export const SCREENING_FORM_STEPS = [
   "Review And Submit",
   "Screening Results",
 ];
+
+export const STATUS_BAR_HEIGHT = Constants.statusBarHeight;
 
 export const SCREENING_FORM_BOOLEAN_OPTIONS = [
   { label: "Yes", value: "YES" },
