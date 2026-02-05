@@ -1,9 +1,11 @@
+import { useComputedColorScheme } from "@/hooks/use-color-scheme";
 import { Bot, User } from "lucide-react-native";
 import React, { FC } from "react";
+import RenderHtml from "react-native-render-html";
+import { Converter } from "showdown";
 import { Box } from "../ui/box";
 import { HStack } from "../ui/hstack";
 import { Icon } from "../ui/icon";
-import { Text } from "../ui/text";
 
 type ChatBubbleProps = {
   message: string;
@@ -11,6 +13,8 @@ type ChatBubbleProps = {
 };
 
 const ChatBubble: FC<ChatBubbleProps> = ({ message, user }) => {
+  const theme = useComputedColorScheme();
+  const showDown = new Converter();
   return (
     <HStack
       space="md"
@@ -31,14 +35,19 @@ const ChatBubble: FC<ChatBubbleProps> = ({ message, user }) => {
       >
         <Icon as={user === "bot" ? Bot : User} size="xl" color="white" />
       </Box>
-      <Text
-        className={`${user === "bot" ? "text-typography-700" : "text-white"} ${
-          user === "bot" ? "bg-background-50" : "bg-teal-500"
-        } p-2 flex-1`}
-        size="sm"
-      >
-        {message}
-      </Text>
+
+      <RenderHtml //contentWidth={width}
+        source={{ html: showDown.makeHtml(message) }}
+        baseStyle={{
+          color: user === "bot" ? "#334155" : "#fff",
+          backgroundColor: user === "bot" ? "#f3f4f7" : "#14B8A6",
+          padding: 8,
+          flex: 1,
+          borderRadius: 5,
+          fontSize: 12,
+          lineHeight: 22,
+        }}
+      />
     </HStack>
   );
 };
