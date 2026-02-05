@@ -46,7 +46,7 @@ const FacilitiesViewTabs: FC<FacilitiesViewTabsProps> = ({
           }`}
         />
       </Button>
-      <Button
+      {/* <Button
         size="xs"
         action="secondary"
         className={`${
@@ -60,7 +60,7 @@ const FacilitiesViewTabs: FC<FacilitiesViewTabsProps> = ({
           size="md"
           className={`${activeView === "map" ? "text-white" : "text-teal-500"}`}
         />
-      </Button>
+      </Button> */}
     </HStack>
   );
 };
