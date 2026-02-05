@@ -1,4 +1,4 @@
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useComputedColorScheme } from "@/hooks/use-color-scheme";
 import { Pressable, StyleSheet, View } from "react-native";
 
 interface BottomSheetBackdropProps {
@@ -8,12 +8,12 @@ interface BottomSheetBackdropProps {
 
 /**
  * BottomSheetBackdrop Component
- * 
+ *
  * Provides a semi-transparent backdrop overlay for bottom sheet modals.
  * - Theme-aware opacity
  * - Prevents interaction with background content
  * - Can be configured to allow/block dismissal
- * 
+ *
  * @example
  * ```tsx
  * <BottomSheetBackdrop onPress={handleDismiss} />
@@ -22,15 +22,11 @@ interface BottomSheetBackdropProps {
 export default function BottomSheetBackdrop({
   onPress,
 }: BottomSheetBackdropProps) {
-  const colorScheme = useColorScheme();
+  const colorScheme = useComputedColorScheme();
   const isDark = colorScheme === "dark";
 
   return (
-    <Pressable
-      style={styles.backdrop}
-      onPress={onPress}
-      disabled={!onPress}
-    >
+    <Pressable style={styles.backdrop} onPress={onPress} disabled={!onPress}>
       <View
         style={[
           styles.overlay,
@@ -53,4 +49,3 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   },
 });
-

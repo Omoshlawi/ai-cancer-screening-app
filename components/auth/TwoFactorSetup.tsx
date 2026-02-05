@@ -6,7 +6,7 @@ import { Input, InputField } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useComputedColorScheme } from "@/hooks/use-color-scheme";
 import { authClient } from "@/lib/auth-client";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
@@ -36,7 +36,7 @@ export default function TwoFactorSetup({
   const [isLoading, setIsLoading] = useState(false);
   const [isSendingOTP, setIsSendingOTP] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
-  const colorScheme = useColorScheme();
+  const colorScheme = useComputedColorScheme();
   const toast = useToast();
 
   const handleEnable = async () => {

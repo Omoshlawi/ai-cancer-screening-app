@@ -2,7 +2,7 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useComputedColorScheme } from "@/hooks/use-color-scheme";
 
 import LocalAuthModal from "@/components/auth/LocalAuthModal";
 import Toaster from "@/components/toaster";
@@ -23,7 +23,7 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const theme = useColorScheme();
+  const theme = useComputedColorScheme();
 
   const { data, isPending, error } = authClient.useSession();
   const isLoggedIn = !!data?.user?.id;

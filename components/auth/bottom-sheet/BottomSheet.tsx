@@ -1,5 +1,5 @@
 import { Box } from "@/components/ui/box";
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useComputedColorScheme } from "@/hooks/use-color-scheme";
 import { StyleSheet, View } from "react-native";
 
 interface BottomSheetProps {
@@ -11,13 +11,13 @@ interface BottomSheetProps {
 
 /**
  * BottomSheet Container Component
- * 
+ *
  * Provides a reusable bottom sheet container with:
  * - Drag indicator at the top
  * - Rounded top corners
  * - Theme-aware styling
  * - Proper positioning and sizing
- * 
+ *
  * @example
  * ```tsx
  * <BottomSheet>
@@ -29,7 +29,7 @@ export default function BottomSheet({
   children,
   contentClassName,
 }: BottomSheetProps) {
-  const colorScheme = useColorScheme();
+  const colorScheme = useComputedColorScheme();
   const isDark = colorScheme === "dark";
 
   return (
@@ -45,7 +45,9 @@ export default function BottomSheet({
       />
       {/* Content container with rounded top corners */}
       <Box
-        className={`w-full bg-background-0 rounded-t-3xl ${contentClassName || ""}`}
+        className={`w-full bg-background-0 rounded-t-3xl ${
+          contentClassName || ""
+        }`}
       >
         {children}
       </Box>
@@ -73,4 +75,3 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
 });
-

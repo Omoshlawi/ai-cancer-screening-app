@@ -13,7 +13,7 @@ import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { AlertCircleIcon, Icon } from "@/components/ui/icon";
 import { Image } from "@/components/ui/image";
-import { Input, InputField } from "@/components/ui/input";
+import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import {
@@ -22,7 +22,7 @@ import {
 } from "@/hooks/useHealthFacilities";
 import { useScreening } from "@/hooks/useScreenings";
 import { ReferralFormData } from "@/types/screening";
-import { Hospital, Info, MapPin } from "lucide-react-native";
+import { ChevronDown, Hospital, Info, MapPin } from "lucide-react-native";
 import React, { FC, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { TouchableOpacity } from "react-native";
@@ -80,6 +80,16 @@ const ReferralFacility: FC<ReferralFacilityProps> = ({
                   onChangeText={field.onChange}
                   onPress={onPress}
                 />
+                <InputSlot
+                  className="absolute inset-0"
+                  onPress={field.disabled ? undefined : onPress}
+                />
+                <InputSlot
+                  className="px-3"
+                  onPress={field.disabled ? undefined : onPress}
+                >
+                  <InputIcon as={ChevronDown} />
+                </InputSlot>
               </Input>
 
               {error && (

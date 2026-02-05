@@ -22,7 +22,7 @@ import { Switch } from "@/components/ui/switch";
 import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useComputedColorScheme } from "@/hooks/use-color-scheme";
 import { useTwoFactorAuth } from "@/hooks/use-two-factor-auth";
 import { authClient } from "@/lib/auth-client";
 import { getInitials } from "@/lib/helpers";
@@ -34,7 +34,7 @@ import {
   setLocalAuthEnabled,
 } from "@/lib/local-auth";
 import { Theme, useThemeStore } from "@/store/theme";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -48,7 +48,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 const SettingsScreen = () => {
   const { data: userSession } = authClient.useSession();
-  const colorScheme = useColorScheme();
+  const colorScheme = useComputedColorScheme();
   const setTheme = useThemeStore((state) => state.setTheme);
   const router = useRouter();
   const toast = useToast();
@@ -164,7 +164,9 @@ const SettingsScreen = () => {
                 <Heading size="md" className="mb-1">
                   {userSession?.user?.name}
                 </Heading>
-                <Text size="sm">{userSession?.user?.email}</Text>
+                <Text size="sm">
+                  {userSession?.user?.phoneNumber ?? userSession?.user?.email}
+                </Text>
               </VStack>
             </HStack>
           </Card>
@@ -366,8 +368,8 @@ const SettingsScreen = () => {
                               item.value === "light"
                                 ? "weather-sunny"
                                 : item.value === "dark"
-                                  ? "weather-night"
-                                  : "weather-sunny-alert"
+                                ? "weather-night"
+                                : "weather-sunny-alert"
                             }
                             size={20}
                             color={colorScheme === "dark" ? "white" : "black"}

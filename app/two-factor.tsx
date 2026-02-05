@@ -7,7 +7,7 @@ import { Input, InputField } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useComputedColorScheme } from "@/hooks/use-color-scheme";
 import { authClient } from "@/lib/auth-client";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -21,7 +21,7 @@ const TwoFactorScreen = () => {
   const [resendCooldown, setResendCooldown] = useState(0);
   const [otpSent, setOtpSent] = useState(false);
   const toast = useToast();
-  const colorScheme = useColorScheme();
+  const colorScheme = useComputedColorScheme();
   const cooldownIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Auto-send OTP when component mounts

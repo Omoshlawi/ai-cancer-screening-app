@@ -10,7 +10,7 @@ import {
   FormControlLabelText,
 } from "@/components/ui/form-control";
 import { AlertCircleIcon, Icon } from "@/components/ui/icon";
-import { Input, InputField } from "@/components/ui/input";
+import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { useScreenings } from "@/hooks/useScreenings";
@@ -19,7 +19,7 @@ import { Client } from "@/types/client";
 import { ReferralFormData } from "@/types/screening";
 import Color from "color";
 import dayjs from "dayjs";
-import { Calendar } from "lucide-react-native";
+import { Calendar, ChevronDown } from "lucide-react-native";
 import React, { FC } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
@@ -79,6 +79,16 @@ const ReferralScreening: FC<ReferralScreeningProps> = ({ client }) => {
                     onChangeText={field.onChange}
                     onPress={onPress}
                   />
+                  <InputSlot
+                    className="absolute inset-0"
+                    onPress={field.disabled ? undefined : onPress}
+                  />
+                  <InputSlot
+                    className="px-3"
+                    onPress={field.disabled ? undefined : onPress}
+                  >
+                    <InputIcon as={ChevronDown} />
+                  </InputSlot>
                 </Input>
 
                 {error && (
