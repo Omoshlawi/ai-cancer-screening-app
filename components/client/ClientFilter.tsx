@@ -1,6 +1,8 @@
 import { RiskInterpretation } from "@/types/screening";
 import { ChevronDownIcon, FilterIcon, Search } from "lucide-react-native";
 import React, { FC, useMemo } from "react";
+import { TouchableOpacity } from "react-native";
+import { Box } from "../ui/box";
 import { Card } from "../ui/card";
 import { Divider } from "../ui/divider";
 import { HStack } from "../ui/hstack";
@@ -27,6 +29,8 @@ type ClientFilterProps = {
   level?: RiskInterpretation | "";
   onLevelChange?: (level: RiskInterpretation | "") => void;
   count?: number;
+  owner?: "mine" | "all";
+  onOwnerChange?: (owner: "mine" | "all") => void;
 };
 
 const ClientFilter: FC<ClientFilterProps> = ({
@@ -35,6 +39,8 @@ const ClientFilter: FC<ClientFilterProps> = ({
   level,
   onLevelChange,
   count = 0,
+  onOwnerChange,
+  owner,
 }) => {
   const levels = useMemo<
     { label: string; value: RiskInterpretation | "" }[]
@@ -108,9 +114,43 @@ const ClientFilter: FC<ClientFilterProps> = ({
           </Select>
         </HStack>
         <Divider />
-        <Text size="2xs">
-          {count} Found Client{count !== 1 ? "s" : ""}
-        </Text>
+        <HStack className="justify-between items-center">
+          <Text size="2xs">
+            {count} Found Client{count !== 1 ? "s" : ""}
+          </Text>
+          <Box className="flex-row gap-2">
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => onOwnerChange?.("all")}
+            >
+              <Text
+                className={` px-2 py-1 text-nowrap rounded-xs text-teal-500 ${
+                  owner === "all"
+                    ? "bg-teal-500 text-white"
+                    : "bg-teal-50 text-teal-500"
+                }`}
+                size="xs"
+              >
+                All clients
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => onOwnerChange?.("mine")}
+            >
+              <Text
+                className={`px-2 py-1 text-nowrap rounded-xs ${
+                  owner === "mine"
+                    ? "bg-teal-500 text-white"
+                    : "bg-teal-50 text-teal-500"
+                }`}
+                size="xs"
+              >
+                My clients
+              </Text>
+            </TouchableOpacity>
+          </Box>
+        </HStack>
       </VStack>
     </Card>
   );

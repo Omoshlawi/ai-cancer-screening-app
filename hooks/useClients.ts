@@ -1,5 +1,6 @@
 import { apiFetch, APIFetchResponse, APIListResponse } from "@/lib/api";
 import { constructUrl } from "@/lib/api/constructUrl";
+import { authClient } from "@/lib/auth-client";
 import { invalidateCache } from "@/lib/helpers";
 import { Client, ClientFormData } from "@/types/client";
 import { useState } from "react";
@@ -8,8 +9,14 @@ import { useDebouncedValue } from "./useDebouncedValue";
 import { useMergePaginationInfo } from "./usePagination";
 
 export const useClients = (params: Record<string, string> = {}) => {
+  const { data: userSession, isPending } = authClient.useSession();
   const { onPageChange, mergedSearchParams, showPagination } =
-    useMergePaginationInfo(params);
+    useMergePaginationInfo({
+      ...params,
+      createdByUserId: (params.owner === "mine"
+        ? userSession?.user.id
+        : undefined) as string,
+    });
   const url = constructUrl("/clients", mergedSearchParams);
   const { data, error, isLoading } =
     useSWR<APIFetchResponse<APIListResponse<Client>>>(url);
@@ -19,7 +26,7 @@ export const useClients = (params: Record<string, string> = {}) => {
     ...rest,
     clients,
     error,
-    isLoading,
+    isLoading: isLoading || isPending,
     onPageChange,
     showPagination: showPagination(rest.totalCount),
   };

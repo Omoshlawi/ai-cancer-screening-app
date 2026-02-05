@@ -22,6 +22,7 @@ import {
 import React, { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import AddressFieldsInput from "./AddressFieldsInput";
+import ClientExists from "./ClientExists";
 
 type ContactInformationProps = {
   onNext: () => void;
@@ -81,6 +82,9 @@ const ContactInformation = ({
                 </FormControlErrorText>
               </FormControlError>
             )}
+            {field.value.length === 10 && (
+              <ClientExists phoneNumber={field.value} />
+            )}
           </FormControl>
         )}
       />
@@ -100,7 +104,7 @@ const ContactInformation = ({
         name="subcounty"
         label="Subcounty"
         level={2}
-        parentName={selectedCounty}
+        parentName={selectedCounty ?? form.watch("county")}
         onChange={(val) => {
           setSelectedsubCounty(val);
           form.setValue("ward", "");
@@ -111,7 +115,7 @@ const ContactInformation = ({
         name="ward"
         label="Ward"
         level={3}
-        parentName={selectedSubcounty}
+        parentName={selectedSubcounty ?? form.watch("subcounty")}
       />
 
       <HStack space="sm" className="w-full">

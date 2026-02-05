@@ -24,6 +24,7 @@ const SummaryCards = () => {
   });
   const { totalCount: clientsCount } = useClients({
     limit: "1",
+    owner: "mine",
   });
   const { totalCount: highriskClientsCount } = useScreenings({
     screeningDateFrom: dayjs().startOf("day").toISOString(),

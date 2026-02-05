@@ -25,6 +25,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const ClientsScreen = () => {
   const [search, setSearch] = useState("");
   const [level, setLevel] = useState<RiskInterpretation | "">("");
+  const [owner, setOwner] = useState<"all" | "mine">("all");
   const [debouncedSearch] = useDebouncedValue(search, 500);
 
   const params = useMemo(() => {
@@ -35,10 +36,14 @@ const ClientsScreen = () => {
     if (level) {
       p.risk = level;
     }
+
     return p;
   }, [debouncedSearch, level]);
 
-  const { clients, error, isLoading, ...pagination } = useClients(params);
+  const { clients, error, isLoading, ...pagination } = useClients({
+    ...params,
+    owner,
+  });
   return (
     <SafeAreaView className="flex-1 bg-background-0">
       <CHPLandingScreenLayout>
@@ -60,6 +65,8 @@ const ClientsScreen = () => {
               onSearchChange={setSearch}
               onLevelChange={setLevel}
               count={pagination.totalCount}
+              owner={owner}
+              onOwnerChange={setOwner}
             />
             <Box className="flex-1 ">
               <When

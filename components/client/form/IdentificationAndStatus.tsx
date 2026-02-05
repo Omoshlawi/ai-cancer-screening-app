@@ -108,59 +108,68 @@ const IdentificationAndStatus = ({
       <Controller
         control={form.control}
         name="maritalStatus"
-        render={({ field, fieldState: { invalid, error } }) => (
-          <FormControl
-            isInvalid={invalid}
-            size="md"
-            isDisabled={false}
-            isReadOnly={false}
-            isRequired={false}
-            className="w-full"
-          >
-            <FormControlLabel>
-              <FormControlLabelText>Marital Status</FormControlLabelText>
-            </FormControlLabel>
-            <Select
+        render={({ field, fieldState: { invalid, error } }) => {
+          const selectedMaritalStatus = maritalStatuses.find(
+            (m) => m.value === field.value
+          );
+          return (
+            <FormControl
+              isInvalid={invalid}
+              size="md"
+              isDisabled={false}
+              isReadOnly={false}
+              isRequired={false}
               className="w-full"
-              selectedValue={field.value}
-              onValueChange={(value) =>
-                field.onChange(value as ClientFormData["maritalStatus"])
-              }
             >
-              <SelectTrigger variant="outline" size="md">
-                <SelectInput placeholder="Select option" className="flex-1" />
-                <SelectIcon className="mr-3" as={ChevronDownIcon} />
-              </SelectTrigger>
-              <SelectPortal>
-                <SelectBackdrop />
-                <SelectContent>
-                  <SelectDragIndicatorWrapper>
-                    <SelectDragIndicator />
-                  </SelectDragIndicatorWrapper>
-                  {maritalStatuses.map((maritalStatus, i) => (
-                    <SelectItem
-                      label={maritalStatus.label}
-                      value={maritalStatus.value}
-                      key={maritalStatus.value}
-                    />
-                  ))}
-                </SelectContent>
-              </SelectPortal>
-            </Select>
+              <FormControlLabel>
+                <FormControlLabelText>Marital Status</FormControlLabelText>
+              </FormControlLabel>
+              <Select
+                className="w-full"
+                selectedValue={field.value}
+                onValueChange={(value) =>
+                  field.onChange(value as ClientFormData["maritalStatus"])
+                }
+              >
+                <SelectTrigger variant="outline" size="md">
+                  <SelectInput
+                    placeholder="Select option"
+                    className="flex-1"
+                    value={selectedMaritalStatus?.label}
+                  />
+                  <SelectIcon className="mr-3" as={ChevronDownIcon} />
+                </SelectTrigger>
+                <SelectPortal>
+                  <SelectBackdrop />
+                  <SelectContent>
+                    <SelectDragIndicatorWrapper>
+                      <SelectDragIndicator />
+                    </SelectDragIndicatorWrapper>
+                    {maritalStatuses.map((maritalStatus, i) => (
+                      <SelectItem
+                        label={maritalStatus.label}
+                        value={maritalStatus.value}
+                        key={maritalStatus.value}
+                      />
+                    ))}
+                  </SelectContent>
+                </SelectPortal>
+              </Select>
 
-            {error && (
-              <FormControlError>
-                <FormControlErrorIcon
-                  as={AlertCircleIcon}
-                  className="text-red-500"
-                />
-                <FormControlErrorText className="text-red-500">
-                  {error.message}
-                </FormControlErrorText>
-              </FormControlError>
-            )}
-          </FormControl>
-        )}
+              {error && (
+                <FormControlError>
+                  <FormControlErrorIcon
+                    as={AlertCircleIcon}
+                    className="text-red-500"
+                  />
+                  <FormControlErrorText className="text-red-500">
+                    {error.message}
+                  </FormControlErrorText>
+                </FormControlError>
+              )}
+            </FormControl>
+          );
+        }}
       />
       <HStack space="sm" className="w-full">
         <Button

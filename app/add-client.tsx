@@ -25,6 +25,7 @@ const steps: (keyof ClientFormData)[][] = [
   ["firstName", "lastName", "dateOfBirth"],
   ["phoneNumber", "county", "subcounty", "ward"],
   ["nationalId", "maritalStatus"],
+  [],
 ];
 
 const AddClientScreen = () => {
@@ -40,7 +41,6 @@ const AddClientScreen = () => {
       county: "",
       subcounty: "",
       ward: "",
-      nationalId: null,
     },
   });
   const { createClient } = useClientApi();
@@ -85,9 +85,8 @@ const AddClientScreen = () => {
           },
         });
       } else {
-        console.info("Error registering client:", errors);
-
-        // for (let i = 1; i <= steps.length; i++) {
+        // console.info("Error registering client:", errors);
+        // for (let i = 0; i <= steps.length; i++) {
         //   for (const stepField of steps[i]) {
         //     if (stepField in (errors ?? {})) {
         //       setStep(i);
@@ -97,6 +96,25 @@ const AddClientScreen = () => {
         // }
         Object.entries(errors ?? {}).forEach(([field, error]) => {
           form.setError(field as keyof ClientFormData, { message: error });
+          // Reset on error
+          form.setValue("county", "");
+          form.setValue("subcounty", "");
+          form.setValue("ward", "");
+          toast.show({
+            placement: "top",
+            render: ({ id }) => {
+              const uniqueToastId = "toast-" + id;
+              return (
+                <Toaster
+                  uniqueToastId={uniqueToastId}
+                  variant="outline"
+                  title={`${field} Error `}
+                  description={error}
+                  action="error"
+                />
+              );
+            },
+          });
         });
       }
     }

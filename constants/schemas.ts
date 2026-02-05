@@ -48,7 +48,7 @@ export const clientSchema = z.object({
   county: z.string().min(3),
   subcounty: z.string().min(3),
   ward: z.string().min(3),
-  nationalId: z.string().optional().nullable(),
+  nationalId: z.string().optional(),
   maritalStatus: z.enum([
     "SINGLE",
     "MARRIED",
