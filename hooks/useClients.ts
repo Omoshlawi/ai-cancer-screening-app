@@ -29,9 +29,11 @@ const createClient = async (data: ClientFormData) => {
   const url = constructUrl("/clients");
   const response = await apiFetch<Client>(url, {
     method: "POST",
-    data: data,
+    data: {
+      ...data,
+      nationalId: data.nationalId ? data.nationalId : undefined,
+    },
   });
-
   invalidateCache();
   return response.data;
 };

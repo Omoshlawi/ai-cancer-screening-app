@@ -220,7 +220,7 @@ const SettingsScreen = () => {
                     />
                   }
                 />
-                <ListTile
+                {/*<ListTile
                   leading={
                     <MaterialCommunityIcons
                       name="lock-outline"
@@ -245,7 +245,7 @@ const SettingsScreen = () => {
                       ios_backgroundColor="#d4d4d4"
                     />
                   }
-                />
+                />*/}
               </Box>
             </VStack>
           </Card>

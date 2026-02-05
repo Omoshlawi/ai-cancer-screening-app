@@ -43,12 +43,12 @@ export const clientSchema = z.object({
     }
   ),
   phoneNumber: z.string().regex(PHONE_NUMBER_REGEX, {
-    message: "Phone number must be a valid Kenyan phone number",
+    message: "Use formart 07xxx or 01xxx ",
   }),
   county: z.string().min(3),
   subcounty: z.string().min(3),
   ward: z.string().min(3),
-  nationalId: z.string().min(6),
+  nationalId: z.string().optional().nullable(),
   maritalStatus: z.enum([
     "SINGLE",
     "MARRIED",
@@ -148,10 +148,15 @@ export const outreachActionSchema = z
     barriers: z.string().optional(),
     duration: z.coerce.number().optional(),
     location: z.string().optional(),
-    nextPlannedDate: z.coerce.date(),
+    nextPlannedDate: z.coerce.date().optional(),
     notes: z.string().optional(),
   })
-  .refine((data) => data.nextPlannedDate > data.actionDate, {
-    message: "Next planned date must be after action date",
-    path: ["nextPlannedDate"],
-  });
+  .refine(
+    (data) =>
+      data.nextPlannedDate === undefined ||
+      data.nextPlannedDate > data.actionDate,
+    {
+      message: "Next planned date must be after action date",
+      path: ["nextPlannedDate"],
+    }
+  );

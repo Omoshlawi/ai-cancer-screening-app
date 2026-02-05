@@ -48,7 +48,7 @@ const SuccessSubmussion = ({ client }: SuccessSubmussionProps) => {
             pathname: "/screen-client",
             params: {
               client: client.id,
-              search: client.nationalId,
+              search: client.phoneNumber,
             },
           })
         }

@@ -31,7 +31,7 @@ const AddClientScreen = () => {
   const [step, setStep] = useState(1);
   const [cli, setCli] = useState<Client>();
   const toast = useToast();
-  const form = useForm<ClientFormData>({
+  const form = useForm({
     resolver: zodResolver(clientSchema),
     defaultValues: {
       firstName: "",
@@ -40,7 +40,7 @@ const AddClientScreen = () => {
       county: "",
       subcounty: "",
       ward: "",
-      nationalId: "",
+      nationalId: null,
     },
   });
   const { createClient } = useClientApi();
@@ -98,7 +98,6 @@ const AddClientScreen = () => {
         Object.entries(errors ?? {}).forEach(([field, error]) => {
           form.setError(field as keyof ClientFormData, { message: error });
         });
-
       }
     }
   };

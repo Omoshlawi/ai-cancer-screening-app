@@ -17,12 +17,7 @@ import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { useClient } from "@/hooks/useClients";
 import { router, useLocalSearchParams } from "expo-router";
-import {
-  ArrowRightLeft,
-  MoreVertical,
-  Printer,
-  UserPlus,
-} from "lucide-react-native";
+import { ArrowRightLeft, MoreVertical, UserPlus } from "lucide-react-native";
 import React from "react";
 import { ScrollView } from "react-native";
 
@@ -79,7 +74,7 @@ const ClientDetail = () => {
                         pathname: "/screen-client",
                         params: {
                           client: client?.id,
-                          search: client?.nationalId,
+                          search: client?.phoneNumber,
                         },
                       })
                     }
@@ -103,10 +98,10 @@ const ClientDetail = () => {
                     <Icon as={ArrowRightLeft} size="sm" className="mr-2" />
                     <MenuItemLabel size="sm">Refer Client</MenuItemLabel>
                   </MenuItem>
-                  <MenuItem key="Print Summary" textValue="Print Summary">
+                  {/* <MenuItem key="Print Summary" textValue="Print Summary">
                     <Icon as={Printer} size="sm" className="mr-2" />
                     <MenuItemLabel size="sm">Print Summary</MenuItemLabel>
-                  </MenuItem>
+                  </MenuItem> */}
                 </Menu>
               </HStack>
               <ClientInfo client={client!} />

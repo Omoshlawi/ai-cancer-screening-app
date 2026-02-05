@@ -43,7 +43,7 @@ const ScreeningHistory: FC<ScreeningHistoryProps> = ({ client }) => {
           onPress={() =>
             router.push({
               pathname: "/screen-client",
-              params: { client: client?.id, search: client?.nationalId },
+              params: { client: client?.id, search: client?.phoneNumber },
             })
           }
         >

@@ -17,13 +17,7 @@ import { RiskInterpretation } from "@/types/screening";
 import Color from "color";
 import dayjs from "dayjs";
 import { router } from "expo-router";
-import {
-  ArrowRight,
-  Calendar,
-  Dot,
-  Phone,
-  UserPlus,
-} from "lucide-react-native";
+import { ArrowRight, Dot, MapPin, Phone, UserPlus } from "lucide-react-native";
 import React, { useMemo, useState } from "react";
 import { FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -143,10 +137,16 @@ const ClientsScreen = () => {
                                   {item.phoneNumber}
                                 </Text>
                               </HStack>
-                              <HStack className="justify-between">
-                                <HStack className="items-center" space="lg">
+                              <HStack
+                                className="justify-between w-full flex"
+                                space="md"
+                              >
+                                <HStack
+                                  className="items-center flex flex-1"
+                                  space="lg"
+                                >
                                   <Icon
-                                    as={Calendar}
+                                    as={MapPin}
                                     size="xs"
                                     className="text-typography-500"
                                   />
@@ -154,8 +154,10 @@ const ClientsScreen = () => {
                                     size="sm"
                                     className="text-typography-500"
                                   >
-                                    Next follow-up:{" "}
-                                    {dayjs().format("DD/MM/YYYY")}
+                                    Address:{" "}
+                                    {`${item.county}, ${item.subcounty} ${
+                                      item.ward ?? ""
+                                    }`}
                                   </Text>
                                 </HStack>
                                 <Button

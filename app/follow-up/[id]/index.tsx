@@ -299,7 +299,7 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
                         params: {
                           followUpId: followUp.id,
                           client: followUp.clientId,
-                          search: followUp.client?.nationalId,
+                          search: followUp.client?.phoneNumber,
                         },
                       });
                     }}

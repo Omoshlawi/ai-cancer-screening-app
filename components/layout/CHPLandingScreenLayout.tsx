@@ -1,11 +1,11 @@
 import { router } from "expo-router";
-import { Bell, UserCircle } from "lucide-react-native";
+import { UserCircle } from "lucide-react-native";
 import React, { FC } from "react";
+import Logo from "../Logo";
 import { Box } from "../ui/box";
 import { Button } from "../ui/button";
 import { HStack } from "../ui/hstack";
 import { Icon } from "../ui/icon";
-import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 
 type CHPLandingScreenLayoutProps = {
@@ -17,16 +17,24 @@ const CHPLandingScreenLayout: FC<CHPLandingScreenLayoutProps> = ({
   return (
     <VStack className="flex-1 bg-background-50 h-full w-full">
       {/* APP bar */}
-      <HStack className="justify-between items-center p-4 bg-background-0">
-        <Text className="text-2xl font-bold ">LOGO</Text>
+      <HStack
+        className="justify-between items-center p-4 bg-background-0"
+        style={{ height: 56 }}
+      >
+        <Logo
+          size="sm"
+          className="h-full aspect-square"
+          resizeMode="contain"
+          mode="name"
+        />
         <HStack space="xl" className="items-center">
-          <Button
+          {/* <Button
             action="default"
             onPress={() => router.push("/notifications")}
             className="p-0 m-0"
           >
             <Icon as={Bell} size={"xl"} />
-          </Button>
+          </Button> */}
 
           <Button
             action="default"

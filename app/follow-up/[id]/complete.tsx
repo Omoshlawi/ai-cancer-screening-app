@@ -137,7 +137,7 @@ const CompleteFollowUpScreen = () => {
                     >
                       <FormControlLabel>
                         <FormControlLabelText>
-                          Client Date of Visited
+                          Client Date of Visit
                         </FormControlLabelText>
                       </FormControlLabel>
                       <Input className="my-1" size="md">

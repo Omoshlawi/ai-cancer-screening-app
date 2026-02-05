@@ -6,7 +6,7 @@ const flattenZodErrors = (
 ): Record<string, string> => {
   const result: Record<string, string> = {};
 
-  for (const [key, value] of Object.entries(obj)) {
+  for (const [key, value] of Object.entries(obj ?? {})) {
     if (key === "_errors") {
       // Handle _errors at current level
       const errors = value as string[];
@@ -46,21 +46,30 @@ const handleApiErrors = <T extends Record<string, unknown>>(
   error: any
 ): { [field in keyof T]?: string } & { detail?: string } => {
   if (isAxiosError(error)) {
-    if (error.response?.status === 400) {
-      const errorData = error.response?.data ?? {};
-      return flattenZodErrors(errorData?.errors);
+    if (error.response?.status === 400 && error.response?.data?.errors) {
+      return Object.entries((error.response?.data ?? {})?.errors ?? {}).reduce(
+        (prev, [key, value]) => {
+          if (key === "_errors") {
+            return { ...prev, detail: (value as string[]).join(", ") };
+          }
+          return {
+            ...prev,
+            [key]: (value as { _errors: string[] })._errors.join(", "),
+          };
+        },
+        {}
+      );
     }
     return {
       detail:
         error?.response?.data?.detail ??
         error?.response?.data?.message ??
         error.message ??
-        "Unknown error occurred",
+        "Unknown error occured",
     };
   }
   return {
-    detail: error?.message ?? "Unknown error occurred",
+    detail: error?.message ?? "Unknown error occured",
   };
 };
-
 export default handleApiErrors;

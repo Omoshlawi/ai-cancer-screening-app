@@ -5,7 +5,6 @@ import { ErrorState, When } from "@/components/state-full-widgets";
 import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
-import { HStack } from "@/components/ui/hstack";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
@@ -19,7 +18,7 @@ import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import { PlusIcon } from "lucide-react-native";
 import React, { useMemo } from "react";
-import { Linking, Platform, ScrollView } from "react-native";
+import { ScrollView } from "react-native";
 
 const ReferralDetailScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -50,51 +49,6 @@ const ReferralDetailScreen = () => {
                 </Text>
               </Card>
               <ReferralFollowUps referral={referral!} />
-              <HStack space="sm" className="justify-between items-center">
-                <Button
-                  size="sm"
-                  className="flex-1"
-                  action="secondary"
-                  onPress={async () => {
-                    const phoneNumber =
-                      referral?.screening?.client?.phoneNumber;
-                    if (phoneNumber) {
-                      const url = Platform.select({
-                        ios: `telprompt:${phoneNumber}`,
-                        android: `tel:${phoneNumber}`,
-                        default: `tel:${phoneNumber}`,
-                      });
-                      if (url && (await Linking.canOpenURL(url))) {
-                        await Linking.openURL(url);
-                      }
-                    }
-                  }}
-                >
-                  <ButtonText>Call Client</ButtonText>
-                </Button>
-                <Button
-                  size="sm"
-                  className="flex-1"
-                  action="secondary"
-                  onPress={async () => {
-                    const facilityPhoneNumber =
-                      referral?.healthFacility?.phoneNumber;
-                    if (facilityPhoneNumber) {
-                      const url = Platform.select({
-                        ios: `telprompt:${facilityPhoneNumber}`,
-                        android: `tel:${facilityPhoneNumber}`,
-                        default: `tel:${facilityPhoneNumber}`,
-                      });
-                      if (url && (await Linking.canOpenURL(url))) {
-                        await Linking.openURL(url);
-                      }
-                    }
-                  }}
-                >
-                  <ButtonText>Call Facility</ButtonText>
-                </Button>
-              </HStack>
-
               <Button
                 action="primary"
                 size="sm"
