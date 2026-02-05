@@ -199,7 +199,7 @@ const ClientSearch: FC<ClientSearchProps> = ({ onNext, searchClientAsync }) => {
           </ModalHeader>
           <ModalBody>
             <Text size="md">
-              By proceeding, you confirm that you have the Clients{"'"}s          informed consent to complete this screening and store the provided
+              By proceeding, you confirm that you have the Clients{"'"}s informed consent to complete this screening and store the provided
               information
             </Text>
 

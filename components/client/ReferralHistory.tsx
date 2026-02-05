@@ -47,7 +47,7 @@ const ReferralHistory: FC<ReferralHistoryProps> = ({ client }) => {
           onPress={() =>
             router.push({
               pathname: "/add-referral",
-              params: { client: client?.id, search: client?.nationalId },
+              params: { client: client?.id, search: client?.phoneNumber },
             })
           }
         >

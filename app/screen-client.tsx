@@ -33,6 +33,7 @@ import { ActivityIndicator } from "react-native";
 
 const ScreenClientScreen = () => {
   const [step, setStep] = useState(1);
+  const [submitting, setSubmitting] = useState(false);
   const { client, search, followUpId } = useLocalSearchParams<{
     client: string;
     search: string;
@@ -79,6 +80,7 @@ const ScreenClientScreen = () => {
   }, [coordinates, form]);
 
   const onSubmit: SubmitHandler<ScreenClientFormData> = async (data) => {
+    setSubmitting(true);
     try {
       const screening = await createScreening(data);
       toast.show({
@@ -121,6 +123,8 @@ const ScreenClientScreen = () => {
       Object.entries(errors ?? {}).forEach(([field, error]) => {
         form.setError(field as any, { message: error as string });
       });
+    } finally {
+      setSubmitting(false);
     }
   };
   return (
@@ -204,6 +208,7 @@ const ScreenClientScreen = () => {
                     onNext={form.handleSubmit(onSubmit)}
                     onPrevious={() => setStep(8)}
                     clients={seachClientAsync.clients}
+                    submitting={submitting}
                   />
                 )}
 

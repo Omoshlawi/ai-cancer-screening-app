@@ -90,7 +90,7 @@ const ClientDetail = () => {
                         pathname: "/add-referral",
                         params: {
                           client: client?.id,
-                          search: client?.nationalId,
+                          search: client?.phoneNumber,
                         },
                       })
                     }

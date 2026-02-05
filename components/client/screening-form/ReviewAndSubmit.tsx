@@ -34,12 +34,14 @@ type ReviewAndSubmitProps = {
   onNext: () => Promise<void>;
   onPrevious: () => void;
   clients?: Client[];
+  submitting?: boolean;
 };
 
 const ReviewAndSubmit: FC<ReviewAndSubmitProps> = ({
   onNext,
   onPrevious,
   clients = [],
+  submitting = false,
 }) => {
   const form = useFormContext<ScreenClientFormData>();
   const clientId = form.watch("clientId");
@@ -191,7 +193,7 @@ const ReviewAndSubmit: FC<ReviewAndSubmitProps> = ({
             action="primary"
             size="sm"
             className="flex-1 bg-teal-500 justify-between rounded-none"
-            isDisabled={form.formState.isSubmitting}
+            isDisabled={form.formState.isSubmitting || submitting}
             onPress={async () => {
               const isValid = await form.trigger();
               if (isValid) {
@@ -199,11 +201,11 @@ const ReviewAndSubmit: FC<ReviewAndSubmitProps> = ({
               }
             }}
           >
-            {form.formState.isSubmitting && (
+            {(form.formState.isSubmitting || submitting) && (
               <ButtonSpinner color={"white"} size={"small"} />
             )}
             <ButtonText>
-              {form.formState.isSubmitting
+              {form.formState.isSubmitting || submitting
                 ? "Submitting..."
                 : !!followUpId
                 ? "Submit & Complete"

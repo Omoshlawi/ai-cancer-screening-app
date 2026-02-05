@@ -1,4 +1,4 @@
-export const BASE_URL = "http://192.168.1.125:600";
+export const BASE_URL = "http://172.238.122.159:8080";
 // export const BASE_URL = "http://localhost:600";
 
 export const SCREENING_FORM_STEPS = [

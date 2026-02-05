@@ -84,7 +84,7 @@ const Form = ({ client }: { client: Client }) => {
       county: client?.county,
       subcounty: client?.subcounty,
       ward: client?.ward,
-      nationalId: client?.nationalId,
+      nationalId: client?.nationalId ?? undefined,
       maritalStatus: client?.maritalStatus,
     },
   });

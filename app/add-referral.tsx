@@ -8,7 +8,12 @@ import { ScreenLayout } from "@/components/layout";
 import ListTile from "@/components/list-tile";
 import { EmptyState, ErrorState } from "@/components/state-full-widgets";
 import Toaster from "@/components/toaster";
-import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
+import {
+  Button,
+  ButtonIcon,
+  ButtonSpinner,
+  ButtonText,
+} from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   FormControl,
@@ -310,7 +315,11 @@ const AddReferralScreen = () => {
               size="sm"
               className="w-full bg-teal-500 justify-between rounded-none"
               onPress={form.handleSubmit(onSubmit)}
+              disabled={form.formState.isSubmitting}
             >
+              {form.formState.isSubmitting && (
+                <ButtonSpinner className="text-white" />
+              )}
               <ButtonText>Submit</ButtonText>
               <ButtonIcon as={ArrowRightIcon} />
             </Button>

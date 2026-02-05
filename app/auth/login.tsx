@@ -1,7 +1,19 @@
 import Toaster from "@/components/toaster";
 import { Box } from "@/components/ui/box";
-import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
-import { FormControl, FormControlError, FormControlErrorIcon, FormControlErrorText, FormControlLabel, FormControlLabelText } from "@/components/ui/form-control";
+import {
+  Button,
+  ButtonIcon,
+  ButtonSpinner,
+  ButtonText,
+} from "@/components/ui/button";
+import {
+  FormControl,
+  FormControlError,
+  FormControlErrorIcon,
+  FormControlErrorText,
+  FormControlLabel,
+  FormControlLabelText,
+} from "@/components/ui/form-control";
 import { AlertCircleIcon, ArrowRightIcon } from "@/components/ui/icon";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
@@ -23,7 +35,7 @@ const LoginScreen = () => {
       password: "",
     },
   });
-  const [hidePassword, setHidePassword] = useState(true)
+  const [hidePassword, setHidePassword] = useState(true);
   const toast = useToast();
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     try {
@@ -157,7 +169,10 @@ const LoginScreen = () => {
                     secureTextEntry={hidePassword}
                     autoCapitalize="none"
                   />
-                  <InputSlot className="px-3" onPress={() => setHidePassword((p) => !p)}>
+                  <InputSlot
+                    className="px-3"
+                    onPress={() => setHidePassword((p) => !p)}
+                  >
                     <InputIcon as={hidePassword ? EyeOff : Eye} />
                   </InputSlot>
                 </Input>
@@ -187,6 +202,9 @@ const LoginScreen = () => {
             disabled={form.formState.isSubmitting}
             className="w-full bg-teal-500 justify-between rounded-none"
           >
+            {form.formState.isSubmitting && (
+              <ButtonSpinner className="text-white" />
+            )}
             <ButtonText size="lg" className="text-background-100">
               Login
             </ButtonText>

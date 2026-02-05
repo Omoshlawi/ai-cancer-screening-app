@@ -30,6 +30,7 @@ const steps: (keyof ClientFormData)[][] = [
 
 const AddClientScreen = () => {
   const [step, setStep] = useState(1);
+  const [submiting, setSubmiting] = useState(false);
   const [cli, setCli] = useState<Client>();
   const toast = useToast();
   const form = useForm({
@@ -45,6 +46,7 @@ const AddClientScreen = () => {
   });
   const { createClient } = useClientApi();
   const onSubmit: SubmitHandler<ClientFormData> = async (data) => {
+    setSubmiting(true);
     try {
       const _client = await createClient(data);
       if (_client) {
@@ -117,6 +119,8 @@ const AddClientScreen = () => {
           });
         });
       }
+    } finally {
+      setSubmiting(false);
     }
   };
   return (

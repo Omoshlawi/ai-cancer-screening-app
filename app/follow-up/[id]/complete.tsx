@@ -1,7 +1,12 @@
 import DateTimePickerInput from "@/components/date-time-picker";
 import { ScreenLayout } from "@/components/layout";
 import Toaster from "@/components/toaster";
-import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
+import {
+  Button,
+  ButtonIcon,
+  ButtonSpinner,
+  ButtonText,
+} from "@/components/ui/button";
 import {
   FormControl,
   FormControlError,
@@ -329,6 +334,9 @@ const CompleteFollowUpScreen = () => {
               disabled={form.formState.isSubmitting}
               className="w-full bg-teal-500 justify-between rounded-none"
             >
+              {form.formState.isSubmitting && (
+                <ButtonSpinner className="text-white" />
+              )}
               <ButtonText size="lg" className="text-background-100">
                 Complete
               </ButtonText>

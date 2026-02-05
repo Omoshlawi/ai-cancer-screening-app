@@ -1,6 +1,11 @@
 import { ScreenLayout } from "@/components/layout";
 import Toaster from "@/components/toaster";
-import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
+import {
+  Button,
+  ButtonIcon,
+  ButtonSpinner,
+  ButtonText,
+} from "@/components/ui/button";
 import {
   FormControl,
   FormControlError,
@@ -244,6 +249,9 @@ const CancelFollowUpScreen: FC = () => {
             disabled={form.formState.isSubmitting}
             className="w-full bg-red-500 justify-between rounded-none"
           >
+            {form.formState.isSubmitting && (
+              <ButtonSpinner className="text-white" />
+            )}
             <ButtonText size="lg" className="text-background-100">
               Cancel
             </ButtonText>

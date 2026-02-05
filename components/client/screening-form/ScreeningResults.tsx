@@ -174,7 +174,7 @@ const ScreeningResults: FC<ScreeningResultsProps> = ({ screening }) => {
                   facility: "",
                   facilitySearch: "",
                   screening: screening.id,
-                  search: screening.client?.nationalId,
+                  search: screening.client?.phoneNumber,
                 },
               });
             }}

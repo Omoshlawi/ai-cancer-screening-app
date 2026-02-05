@@ -37,11 +37,13 @@ import { Controller, useFormContext } from "react-hook-form";
 type IdentificationAndStatusProps = {
   onNext: () => Promise<void>;
   onPrevious: () => void;
+  submitiing?: boolean;
 };
 
 const IdentificationAndStatus = ({
   onNext,
   onPrevious,
+  submitiing = false,
 }: IdentificationAndStatusProps) => {
   const form = useFormContext<ClientFormData>();
   const maritalStatuses = useMemo<
@@ -185,7 +187,7 @@ const IdentificationAndStatus = ({
           action="primary"
           size="sm"
           className="flex-1 bg-teal-500 justify-between rounded-none"
-          isDisabled={form.formState.isSubmitting}
+          isDisabled={submitiing || form.formState.isSubmitting}
           onPress={async () => {
             const isValid = await form.trigger(["nationalId", "maritalStatus"]);
             if (isValid) {
@@ -193,11 +195,13 @@ const IdentificationAndStatus = ({
             }
           }}
         >
-          {form.formState.isSubmitting && (
+          {(submitiing || form.formState.isSubmitting) && (
             <ButtonSpinner color={"white"} size={"small"} />
           )}
           <ButtonText>
-            {form.formState.isSubmitting ? "Submitting..." : "Register"}
+            {form.formState.isSubmitting || submitiing
+              ? "Submitting..."
+              : "Register"}
           </ButtonText>
           <ButtonIcon as={ArrowRightIcon} />
         </Button>
