@@ -1,4 +1,3 @@
-import { useComputedColorScheme } from "@/hooks/use-color-scheme";
 import { Bot, User } from "lucide-react-native";
 import React, { FC } from "react";
 import RenderHtml from "react-native-render-html";
@@ -13,7 +12,6 @@ type ChatBubbleProps = {
 };
 
 const ChatBubble: FC<ChatBubbleProps> = ({ message, user }) => {
-  const theme = useComputedColorScheme();
   const showDown = new Converter();
   return (
     <HStack
