@@ -39,7 +39,13 @@ import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { clientSchema } from "@/constants/schemas";
-import { useClient, useClientApi } from "@/hooks/useClients";
+import {
+  useClient,
+  useClientApi,
+  useOfflineClient,
+  useOfflineClients,
+} from "@/hooks/useClients";
+import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 import { Client, ClientFormData } from "@/types/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
@@ -55,15 +61,22 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ScrollView } from "react-native";
 
 const EditClient = () => {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { isOnline } = useNetworkStatus();
+  const { id, phoneNumber } = useLocalSearchParams<{
+    id?: string; // Online editing
+    phoneNumber: string; // For offline edit
+  }>();
   const { client, isLoading, error } = useClient(id);
+  const offlineClient = useOfflineClient(phoneNumber);
   return (
     <ScreenLayout title="Edit Client">
       <When
-        asyncState={{ isLoading, error, data: client }}
+        asyncState={{ isLoading, error: isOnline ? error : null, data: client }}
         error={(e) => <ErrorState error={e} />}
         loading={() => <Spinner color="primary" />}
-        success={(client) => <Form client={client!} />}
+        success={(client) => (
+          <Form client={(client ?? offlineClient) as Client} />
+        )}
       />
     </ScreenLayout>
   );
@@ -72,6 +85,8 @@ const EditClient = () => {
 export default EditClient;
 
 const Form = ({ client }: { client: Client }) => {
+  const { isOnline } = useNetworkStatus();
+  const { updateOfflineClient } = useOfflineClients();
   const form = useForm<ClientFormData>({
     resolver: zodResolver(clientSchema),
     defaultValues: {
@@ -102,11 +117,15 @@ const Form = ({ client }: { client: Client }) => {
       { label: "Widowed", value: "WIDOWED" },
       { label: "Separated", value: "SEPARATED" },
     ],
-    []
+    [],
   );
   const onSubmit: SubmitHandler<ClientFormData> = async (data) => {
     try {
-      await updateClient(client.id, data);
+      if (isOnline) {
+        await updateClient(client.id, data);
+      } else {
+        updateOfflineClient(client.phoneNumber, data);
+      }
       toast.show({
         placement: "top",
         render: ({ id }) => {
@@ -262,6 +281,10 @@ const Form = ({ client }: { client: Client }) => {
                             value={formattedDate}
                             onPress={onPress}
                           />
+                          <InputSlot
+                            className="absolute inset-0"
+                            onPress={onPress}
+                          />
                           <InputSlot className="px-3" onPress={onPress}>
                             <InputIcon as={Calendar} />
                           </InputSlot>
@@ -364,7 +387,7 @@ const Form = ({ client }: { client: Client }) => {
                 name="maritalStatus"
                 render={({ field, fieldState: { invalid, error } }) => {
                   const selectedMaritalStatus = maritalStatuses.find(
-                    (m) => m.value === field.value
+                    (m) => m.value === field.value,
                   );
                   return (
                     <FormControl
@@ -385,7 +408,7 @@ const Form = ({ client }: { client: Client }) => {
                         selectedValue={field.value}
                         onValueChange={(value) =>
                           field.onChange(
-                            value as ClientFormData["maritalStatus"]
+                            value as ClientFormData["maritalStatus"],
                           )
                         }
                       >

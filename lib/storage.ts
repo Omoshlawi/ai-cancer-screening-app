@@ -1,5 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createMMKV } from "react-native-mmkv";
 import { StateStorage } from "zustand/middleware";
+
+export const mmkvStorage = createMMKV();
 
 /**
  * AsyncStorage adapter for Zustand persist middleware

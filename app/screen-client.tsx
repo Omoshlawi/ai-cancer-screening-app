@@ -24,6 +24,7 @@ import { useLocation } from "@/hooks/useLocation";
 import { useScreeningsApi } from "@/hooks/useScreenings";
 import { handleApiErrors } from "@/lib/api";
 import { SCREENING_FORM_STEPS } from "@/lib/constants";
+import { Client } from "@/types/client";
 import { ScreenClientFormData, Screening } from "@/types/screening";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocalSearchParams } from "expo-router";
@@ -42,7 +43,7 @@ const ScreenClientScreen = () => {
   const form = useForm({
     resolver: zodResolver(screenClientSchema),
     defaultValues: {
-      clientId: client ?? "",
+      clientId: client ?? search,
       lifeTimePatners: 0,
       firstIntercourseAge: 0,
       everDiagnosedWithHIV: "NOT_SURE",
@@ -207,7 +208,7 @@ const ScreenClientScreen = () => {
                   <ReviewAndSubmit
                     onNext={form.handleSubmit(onSubmit)}
                     onPrevious={() => setStep(8)}
-                    clients={seachClientAsync.clients}
+                    clients={seachClientAsync.clients as Client[]}
                     submitting={submitting}
                   />
                 )}

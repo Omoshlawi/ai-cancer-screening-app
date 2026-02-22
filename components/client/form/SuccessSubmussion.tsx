@@ -4,13 +4,13 @@ import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { Client } from "@/types/client";
+import { Client, ClientFormData } from "@/types/client";
 import { router } from "expo-router";
 import { CheckCircle } from "lucide-react-native";
 import React from "react";
 
 type SuccessSubmussionProps = {
-  client: Client;
+  client: Client | ClientFormData;
 };
 
 const SuccessSubmussion = ({ client }: SuccessSubmussionProps) => {
@@ -28,17 +28,19 @@ const SuccessSubmussion = ({ client }: SuccessSubmussionProps) => {
         {client.firstName} {client.lastName} has been added to your client list
       </Text>
 
-      <VStack
-        space="sm"
-        className="w-full bg-background-100 p-4 items-center justify-center "
-      >
-        <Text size="sm" className="text-typography-500">
-          Client ID:
-        </Text>
-        <Heading size="sm" className="text-typography-500">
-          {client.id}
-        </Heading>
-      </VStack>
+      {(client as Client)?.id && (
+        <VStack
+          space="sm"
+          className="w-full bg-background-100 p-4 items-center justify-center "
+        >
+          <Text size="sm" className="text-typography-500">
+            Client ID:
+          </Text>
+          <Heading size="sm" className="text-typography-500">
+            {(client as Client).id}
+          </Heading>
+        </VStack>
+      )}
       <Button
         action="primary"
         size="sm"
@@ -47,7 +49,7 @@ const SuccessSubmussion = ({ client }: SuccessSubmussionProps) => {
           router.push({
             pathname: "/screen-client",
             params: {
-              client: client.id,
+              client: (client as Client)?.id, // For Online clients
               search: client.phoneNumber,
             },
           })

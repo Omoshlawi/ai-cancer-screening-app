@@ -31,6 +31,7 @@ type ClientFilterProps = {
   count?: number;
   owner?: "mine" | "all";
   onOwnerChange?: (owner: "mine" | "all") => void;
+  mode?: "online" | "offline";
 };
 
 const ClientFilter: FC<ClientFilterProps> = ({
@@ -41,6 +42,7 @@ const ClientFilter: FC<ClientFilterProps> = ({
   count = 0,
   onOwnerChange,
   owner,
+  mode = "online",
 }) => {
   const levels = useMemo<
     { label: string; value: RiskInterpretation | "" }[]
@@ -83,73 +85,79 @@ const ClientFilter: FC<ClientFilterProps> = ({
             onChangeText={onSearchChange}
           />
         </Input>
-        <HStack space="sm" className="w-full justify-between items-center">
-          <Icon as={FilterIcon} size="md" className="text-typography-500" />
-          <Select
-            className="flex-1"
-            selectedValue={level ?? ""}
-            onValueChange={(value) =>
-              onLevelChange?.(value as RiskInterpretation | "")
-            }
-          >
-            <SelectTrigger variant="outline" size="md">
-              <SelectInput placeholder="Select option" className="flex-1" />
-              <SelectIcon className="mr-3" as={ChevronDownIcon} />
-            </SelectTrigger>
-            <SelectPortal>
-              <SelectBackdrop />
-              <SelectContent>
-                <SelectDragIndicatorWrapper>
-                  <SelectDragIndicator />
-                </SelectDragIndicatorWrapper>
-                {levels.map((level, i) => (
-                  <SelectItem
-                    label={level.label}
-                    value={level.value}
-                    key={level.value}
-                  />
-                ))}
-              </SelectContent>
-            </SelectPortal>
-          </Select>
-        </HStack>
-        <Divider />
+        {mode === "online" && (
+          <>
+            <HStack space="sm" className="w-full justify-between items-center">
+              <Icon as={FilterIcon} size="md" className="text-typography-500" />
+              <Select
+                className="flex-1"
+                selectedValue={level ?? ""}
+                onValueChange={(value) =>
+                  onLevelChange?.(value as RiskInterpretation | "")
+                }
+              >
+                <SelectTrigger variant="outline" size="md">
+                  <SelectInput placeholder="Select option" className="flex-1" />
+                  <SelectIcon className="mr-3" as={ChevronDownIcon} />
+                </SelectTrigger>
+                <SelectPortal>
+                  <SelectBackdrop />
+                  <SelectContent>
+                    <SelectDragIndicatorWrapper>
+                      <SelectDragIndicator />
+                    </SelectDragIndicatorWrapper>
+                    {levels.map((level, i) => (
+                      <SelectItem
+                        label={level.label}
+                        value={level.value}
+                        key={level.value}
+                      />
+                    ))}
+                  </SelectContent>
+                </SelectPortal>
+              </Select>
+            </HStack>
+            <Divider />
+          </>
+        )}
         <HStack className="justify-between items-center">
           <Text size="2xs">
             {count} Found Client{count !== 1 ? "s" : ""}
           </Text>
-          <Box className="flex-row gap-2">
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() => onOwnerChange?.("all")}
-            >
-              <Text
-                className={` px-2 py-1 text-nowrap rounded-xs text-teal-500 ${
-                  owner === "all"
-                    ? "bg-teal-500 text-white"
-                    : "bg-teal-50 text-teal-500"
-                }`}
-                size="xs"
+          {mode === "online" && (
+            <Box className="flex-row gap-2">
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => onOwnerChange?.("all")}
               >
-                All clients
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() => onOwnerChange?.("mine")}
-            >
-              <Text
-                className={`px-2 py-1 text-nowrap rounded-xs ${
-                  owner === "mine"
-                    ? "bg-teal-500 text-white"
-                    : "bg-teal-50 text-teal-500"
-                }`}
-                size="xs"
+                <Text
+                  className={` px-2 py-1 text-nowrap rounded-xs text-teal-500 ${
+                    owner === "all"
+                      ? "bg-teal-500 text-white"
+                      : "bg-teal-50 text-teal-500"
+                  }`}
+                  size="xs"
+                >
+                  All clients
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => onOwnerChange?.("mine")}
               >
-                My clients
-              </Text>
-            </TouchableOpacity>
-          </Box>
+                <Text
+                  className={`px-2 py-1 text-nowrap rounded-xs ${
+                    owner === "mine"
+                      ? "bg-teal-500 text-white"
+                      : "bg-teal-50 text-teal-500"
+                  }`}
+                  size="xs"
+                >
+                  My clients
+                </Text>
+              </TouchableOpacity>
+            </Box>
+          )}
         </HStack>
       </VStack>
     </Card>

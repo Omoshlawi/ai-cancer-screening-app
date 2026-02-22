@@ -40,7 +40,7 @@ export const clientSchema = z.object({
     {
       message:
         "Client age must be between 16 and 80 years (DOB must not be a future date)",
-    }
+    },
   ),
   phoneNumber: z.string().regex(PHONE_NUMBER_REGEX, {
     message: "Use formart 07xxx or 01xxx ",
@@ -48,7 +48,7 @@ export const clientSchema = z.object({
   county: z.string().min(3),
   subcounty: z.string().min(3),
   ward: z.string().min(3),
-  nationalId: z.string().optional(),
+  nationalId: z.string().min(6).optional(),
   maritalStatus: z.enum([
     "SINGLE",
     "MARRIED",
@@ -158,5 +158,5 @@ export const outreachActionSchema = z
     {
       message: "Next planned date must be after action date",
       path: ["nextPlannedDate"],
-    }
+    },
   );

@@ -31,7 +31,7 @@ const steps: (keyof ClientFormData)[][] = [
 const AddClientScreen = () => {
   const [step, setStep] = useState(1);
   const [submiting, setSubmiting] = useState(false);
-  const [cli, setCli] = useState<Client>();
+  const [cli, setCli] = useState<Client | ClientFormData>();
   const toast = useToast();
   const form = useForm({
     resolver: zodResolver(clientSchema),

@@ -6,6 +6,8 @@ import {
 } from "@/lib/api";
 import { invalidateCache } from "@/lib/helpers";
 import { ScreenClientFormData, Screening } from "@/types/screening";
+import { useMemo } from "react";
+import { useMMKVString } from "react-native-mmkv";
 import useSWR from "swr";
 import { useMergePaginationInfo } from "./usePagination";
 
@@ -21,7 +23,7 @@ const createScreening = async (data: ScreenClientFormData) => {
 
 const updateScreening = async (
   id: string,
-  data: Partial<ScreenClientFormData>
+  data: Partial<ScreenClientFormData>,
 ) => {
   const url = constructUrl(`/screenings/${id}`);
   const response = await apiFetch<Screening>(url, {
@@ -64,6 +66,40 @@ export const useScreening = (id?: string) => {
   const url = id ? constructUrl(`/screenings/${id}`) : null;
   const { data, error, isLoading } = useSWR<APIFetchResponse<Screening>>(url);
   return { screening: data?.data, error, isLoading };
+};
+export const useOfflineClientScreenings = (phoneNumber: string) => {
+  const [offlineScreenings = JSON.stringify([]), setOfflineScreenings] =
+    useMMKVString(phoneNumber);
+  const screenings = useMemo<(ScreenClientFormData & { timeStamp: number })[]>(
+    () => JSON.parse(offlineScreenings) || [],
+    [offlineScreenings],
+  );
+  return {
+    screenings,
+    setOfflineScreenings,
+    addOfflineScreening: (screening: ScreenClientFormData) => {
+      setOfflineScreenings(
+        JSON.stringify([
+          ...screenings,
+          { ...screening, timeStamp: Date.now() },
+        ]),
+      );
+    },
+    updateOfflineScreening: (
+      index: number,
+      screening: ScreenClientFormData,
+    ) => {
+      const updatedScreenings = screenings.map((s, i) =>
+        i === index ? screening : s,
+      );
+      setOfflineScreenings(JSON.stringify(updatedScreenings));
+    },
+    removeOfflineScreening: (index: number) => {
+      setOfflineScreenings(
+        JSON.stringify(screenings.filter((_, i) => i !== index)),
+      );
+    },
+  };
 };
 
 export const useScreeningsApi = () => {

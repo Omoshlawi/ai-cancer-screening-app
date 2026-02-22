@@ -140,6 +140,12 @@ export default function RootLayout() {
               }}
             />
             <Stack.Screen
+              name="client-screenings"
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
               name="activities"
               options={{
                 headerShown: false,

@@ -21,9 +21,11 @@ import {
 } from "@/components/ui/form-control";
 import { AlertCircleIcon } from "@/components/ui/icon";
 import { Textarea, TextareaInput } from "@/components/ui/textarea";
+import { useNetworkStatus } from "@/hooks/useNetworkStatus";
+import { useOfflineClientScreenings } from "@/hooks/useScreenings";
 import { ScreenClientFormData } from "@/types/screening";
 import dayjs from "dayjs";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { ArrowLeftIcon } from "lucide-react-native";
 import React, { FC, useMemo } from "react";
 import { Controller, useFormContext } from "react-hook-form";
@@ -45,7 +47,11 @@ const ReviewAndSubmit: FC<ReviewAndSubmitProps> = ({
 }) => {
   const form = useFormContext<ScreenClientFormData>();
   const clientId = form.watch("clientId");
-  const client = clients.find((client) => client.id === clientId);
+  const { isOnline } = useNetworkStatus();
+  const { addOfflineScreening } = useOfflineClientScreenings(clientId);
+  const client = clients.find(
+    (client) => client.id === clientId || client.phoneNumber === clientId,
+  );
 
   const values = useMemo<{ variable: string; value: string | number }[]>(() => {
     return [
@@ -87,13 +93,13 @@ const ReviewAndSubmit: FC<ReviewAndSubmitProps> = ({
       {
         variable: "Screened before",
         value: getBooleanDisplayValue(
-          form.watch("everScreenedForCervicalCancer")
+          form.watch("everScreenedForCervicalCancer"),
         ),
       },
       {
         variable: "OCP>5 years",
         value: getBooleanDisplayValue(
-          form.watch("usedOralContraceptivesForMoreThan5Years")
+          form.watch("usedOralContraceptivesForMoreThan5Years"),
         ),
       },
       {
@@ -103,7 +109,7 @@ const ReviewAndSubmit: FC<ReviewAndSubmitProps> = ({
       {
         variable: "Family History",
         value: getBooleanDisplayValue(
-          form.watch("familyMemberDiagnosedWithCervicalCancer")
+          form.watch("familyMemberDiagnosedWithCervicalCancer"),
         ),
       },
     ];
@@ -197,7 +203,15 @@ const ReviewAndSubmit: FC<ReviewAndSubmitProps> = ({
             onPress={async () => {
               const isValid = await form.trigger();
               if (isValid) {
-                await onNext();
+                if (!isOnline) {
+                  addOfflineScreening(form.getValues());
+                  router.replace({
+                    pathname: "/client-screenings",
+                    params: { phoneNumber: clientId },
+                  });
+                } else {
+                  await onNext();
+                }
               }
             }}
           >
@@ -208,8 +222,8 @@ const ReviewAndSubmit: FC<ReviewAndSubmitProps> = ({
               {form.formState.isSubmitting || submitting
                 ? "Submitting..."
                 : !!followUpId
-                ? "Submit & Complete"
-                : "Submit"}
+                  ? "Submit & Complete"
+                  : "Submit"}
             </ButtonText>
           </Button>
         </HStack>

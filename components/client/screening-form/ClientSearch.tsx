@@ -14,7 +14,7 @@ import {
 import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
-import { Input, InputField } from "@/components/ui/input";
+import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import {
   Modal,
   ModalBackdrop,
@@ -27,6 +27,7 @@ import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { useSearchClients } from "@/hooks/useClients";
 import { SCREENING_FORM_STEPS } from "@/lib/constants";
+import { Client } from "@/types/client";
 import { ScreenClientFormData } from "@/types/screening";
 import dayjs from "dayjs";
 import { router } from "expo-router";
@@ -34,6 +35,7 @@ import {
   AlertCircleIcon,
   ArrowRightIcon,
   ChevronRight,
+  Search,
   UserCircle,
   UserPlus,
   UserSearch,
@@ -91,20 +93,30 @@ const ClientSearch: FC<ClientSearchProps> = ({ onNext, searchClientAsync }) => {
                 </FormControlLabel>
                 <Input className="my-1" size="md">
                   <InputField
-                    placeholder="Client"
+                    placeholder="Search client"
                     {...field}
                     value={
                       field.value
-                        ? clients.find((client) => client.id === field.value)
-                          ?.firstName +
-                        " " +
-                        clients.find((client) => client.id === field.value)
-                          ?.lastName
+                        ? clients.find(
+                            (client) =>
+                              (client as Client)?.id === field.value ||
+                              client.phoneNumber === field.value,
+                          )?.firstName +
+                          " " +
+                          clients.find(
+                            (client) =>
+                              (client as Client)?.id === field.value ||
+                              client.phoneNumber === field.value,
+                          )?.lastName
                         : ""
                     }
                     onChangeText={field.onChange}
                     onPress={onPress}
                   />
+                  <InputSlot className="absolute inset-0" onPress={onPress} />
+                  <InputSlot className="px-3" onPress={onPress}>
+                    <InputIcon as={Search} />
+                  </InputSlot>
                 </Input>
 
                 {error && (
@@ -120,14 +132,14 @@ const ClientSearch: FC<ClientSearchProps> = ({ onNext, searchClientAsync }) => {
                 )}
               </FormControl>
             )}
-            data={clients}
+            data={clients as Client[]}
             renderItem={({ item, close }) => (
               <ListTile
                 title={`${item.firstName} ${item.lastName}`}
                 description={`Age: ${dayjs().diff(
                   dayjs(item.dateOfBirth),
                   "years",
-                )} | ID: ${item.nationalId}`}
+                )} | ID: ${item.nationalId ?? "N/A"}`}
                 leading={
                   <Icon
                     as={UserCircle}
@@ -143,7 +155,7 @@ const ClientSearch: FC<ClientSearchProps> = ({ onNext, searchClientAsync }) => {
                   />
                 }
                 onPress={() => {
-                  form.setValue("clientId", item.id);
+                  form.setValue("clientId", item.id ?? item.phoneNumber);
                   close();
                 }}
               />
@@ -199,10 +211,10 @@ const ClientSearch: FC<ClientSearchProps> = ({ onNext, searchClientAsync }) => {
           </ModalHeader>
           <ModalBody>
             <Text size="md">
-              By proceeding, you confirm that you have the Clients{"'"}s informed consent to complete this screening and store the provided
+              By proceeding, you confirm that you have the Clients{"'"}s
+              informed consent to complete this screening and store the provided
               information
             </Text>
-
           </ModalBody>
           <ModalFooter>
             <HStack space="md" className="w-full">
