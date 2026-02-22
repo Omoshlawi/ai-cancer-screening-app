@@ -13,7 +13,7 @@ import { HStack } from "@/components/ui/hstack";
 import { AlertCircleIcon, Icon } from "@/components/ui/icon";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
-import { useAddressHierarchy } from "@/hooks/useAddressHierarchy";
+import { useAddressHierarchyWithOfflineSupport as useAddressHierarchy } from "@/hooks/useAddressHierarchy";
 import { ChevronDown, ChevronRight } from "lucide-react-native";
 import React, { useState } from "react";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";

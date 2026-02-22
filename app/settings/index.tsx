@@ -24,6 +24,7 @@ import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { useComputedColorScheme } from "@/hooks/use-color-scheme";
 import { useTwoFactorAuth } from "@/hooks/use-two-factor-auth";
+import { useSessionWithOfflineSupport } from "@/hooks/useSessionWithOfflineSupport";
 import { authClient } from "@/lib/auth-client";
 import { getInitials } from "@/lib/helpers";
 import {
@@ -47,7 +48,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 const SettingsScreen = () => {
-  const { data: userSession } = authClient.useSession();
+  const { data: userSession } = useSessionWithOfflineSupport();
   const colorScheme = useComputedColorScheme();
   const setTheme = useThemeStore((state) => state.setTheme);
   const router = useRouter();
@@ -368,8 +369,8 @@ const SettingsScreen = () => {
                               item.value === "light"
                                 ? "weather-sunny"
                                 : item.value === "dark"
-                                ? "weather-night"
-                                : "weather-sunny-alert"
+                                  ? "weather-night"
+                                  : "weather-sunny-alert"
                             }
                             size={20}
                             color={colorScheme === "dark" ? "white" : "black"}

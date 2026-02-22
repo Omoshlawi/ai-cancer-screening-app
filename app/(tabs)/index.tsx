@@ -6,11 +6,11 @@ import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { useNetworkStatus } from "@/hooks/useNetworkStatus";
-import { authClient } from "@/lib/auth-client";
+import { useSessionWithOfflineSupport } from "@/hooks/useSessionWithOfflineSupport";
 import { Wifi, WifiOff } from "lucide-react-native";
 import { ScrollView } from "react-native";
 export default function HomeScreen() {
-  const { data: userSession } = authClient.useSession();
+  const { data: userSession } = useSessionWithOfflineSupport();
   const { isOnline } = useNetworkStatus();
   return (
     <CHPLandingScreenLayout>
@@ -25,8 +25,8 @@ export default function HomeScreen() {
               {new Date().getHours() < 12
                 ? "Good Morning"
                 : new Date().getHours() < 18
-                ? "Good Afternoon"
-                : "Good Evening"}
+                  ? "Good Afternoon"
+                  : "Good Evening"}
               , {userSession?.user?.name}
             </Heading>
             <Text size="sm" className="text-teal-200">

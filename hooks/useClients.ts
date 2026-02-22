@@ -1,15 +1,15 @@
 import { apiFetch, APIFetchResponse, APIListResponse } from "@/lib/api";
 import { constructUrl } from "@/lib/api/constructUrl";
-import { authClient } from "@/lib/auth-client";
 import { invalidateCache } from "@/lib/helpers";
 import { Client, ClientFormData } from "@/types/client";
 import { useState } from "react";
 import useSWR from "swr";
 import { useDebouncedValue } from "./useDebouncedValue";
 import { useMergePaginationInfo } from "./usePagination";
+import { useSessionWithOfflineSupport } from "./useSessionWithOfflineSupport";
 
 export const useClients = (params: Record<string, string> = {}) => {
-  const { data: userSession, isPending } = authClient.useSession();
+  const { data: userSession, isPending } = useSessionWithOfflineSupport();
   const { onPageChange, mergedSearchParams, showPagination } =
     useMergePaginationInfo({
       ...params,

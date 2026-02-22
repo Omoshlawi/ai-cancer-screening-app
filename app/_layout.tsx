@@ -9,8 +9,8 @@ import Toaster from "@/components/toaster";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { useToast } from "@/components/ui/toast";
 import "@/global.css";
+import { useSessionWithOfflineSupport } from "@/hooks/useSessionWithOfflineSupport";
 import { ApiConfigProvider } from "@/lib/api";
-import { authClient } from "@/lib/auth-client";
 import { isLocalAuthEnabled } from "@/lib/local-auth";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useRef, useState } from "react";
@@ -25,7 +25,7 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const theme = useComputedColorScheme();
 
-  const { data, isPending, error } = authClient.useSession();
+  const { data, isPending, error } = useSessionWithOfflineSupport();
   const isLoggedIn = !!data?.user?.id;
   const toast = useToast();
   const [showLocalAuth, setShowLocalAuth] = useState(false);
@@ -102,7 +102,7 @@ export default function RootLayout() {
         }
 
         appState.current = nextAppState;
-      }
+      },
     );
 
     return () => {

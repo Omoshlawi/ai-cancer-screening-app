@@ -1,11 +1,11 @@
 import { APIFetchResponse, APIListResponse, constructUrl } from "@/lib/api";
-import { authClient } from "@/lib/auth-client";
 import { Activity } from "@/types/users";
 import useSWR from "swr";
 import { useMergePaginationInfo } from "./usePagination";
+import { useSessionWithOfflineSupport } from "./useSessionWithOfflineSupport";
 
 export const useActivities = (params: Record<string, string> = {}) => {
-  const { data: userSession, isPending } = authClient.useSession();
+  const { data: userSession, isPending } = useSessionWithOfflineSupport();
   const { onPageChange, mergedSearchParams, showPagination } =
     useMergePaginationInfo({
       ...params,
