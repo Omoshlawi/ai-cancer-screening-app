@@ -47,14 +47,23 @@ export const useSyncOfflineData = () => {
     return offlineClients.length + offlineScreeningsCount;
   }, [offlineClients.length, offlineScreeningsCount]);
 
-  const shouldShowOverlay = useMemo(() => {
-    return isOnline && totalItemsToSync > 0 && !isCompleted;
-  }, [isOnline, totalItemsToSync, isCompleted]);
+  const [overlayVisible, setOverlayVisible] = useState(false);
+
+  useEffect(() => {
+    if (isOnline && totalItemsToSync > 0) {
+      setOverlayVisible(true);
+    }
+  }, [isOnline, totalItemsToSync]);
+
+  const acknowledgeOverlay = () => {
+    setOverlayVisible(false);
+  };
 
   useEffect(() => {
     // Reset completion state when we go offline or new items appear
     if (!isOnline) {
       setIsCompleted(false);
+      setOverlayVisible(false);
     }
   }, [isOnline]);
 
@@ -167,18 +176,18 @@ export const useSyncOfflineData = () => {
 
   // Auto-start once when overlay appears after going online
   useEffect(() => {
-    if (shouldShowOverlay && !hasInitialized.current) {
+    if (overlayVisible && !hasInitialized.current) {
       hasInitialized.current = true;
       startSync();
     }
-    if (!shouldShowOverlay) {
+    if (!overlayVisible) {
       hasInitialized.current = false;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shouldShowOverlay]);
+  }, [overlayVisible]);
 
   return {
-    shouldShowOverlay,
+    shouldShowOverlay: overlayVisible,
     isSyncing,
     progress,
     errors,
@@ -187,5 +196,6 @@ export const useSyncOfflineData = () => {
     syncedClientsCount,
     syncedScreeningsCount,
     durationMs,
+    acknowledgeOverlay,
   };
 };
