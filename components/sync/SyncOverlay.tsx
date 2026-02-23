@@ -1,9 +1,15 @@
 import Toaster from "@/components/toaster";
 import { useSyncOfflineData } from "@/hooks/useSyncOfflineData";
 import React, { useEffect, useRef } from "react";
+import {
+  Actionsheet,
+  ActionsheetBackdrop,
+  ActionsheetContent,
+  ActionsheetDragIndicator,
+  ActionsheetDragIndicatorWrapper,
+} from "../ui/actionsheet";
 import { Heading } from "../ui/heading";
 import { HStack } from "../ui/hstack";
-import { Modal, ModalBackdrop, ModalBody, ModalContent } from "../ui/modal";
 import { Progress, ProgressFilledTrack } from "../ui/progress";
 import { Spinner } from "../ui/spinner";
 import { Text } from "../ui/text";
@@ -71,46 +77,52 @@ const SyncOverlay = () => {
   }
 
   return (
-    <Modal isOpen={true} onClose={() => {}} size="full">
-      <ModalBackdrop />
-      <ModalContent>
-        <ModalBody>
-          <VStack space="lg" className="w-full">
-            <Heading size="md">Sync Required</Heading>
-            <Text size="sm" className="color-typography-500">
-              You are back online. We need to sync your offline data before you
-              continue.
-            </Text>
-            <VStack space="sm">
-              <HStack space="sm" className="items-center">
-                {isSyncing ? <Spinner /> : null}
-                <Text size="sm">
-                  {isSyncing ? "Syncing data..." : "Preparing sync..."}
-                </Text>
-              </HStack>
-              <Progress value={percent}>
-                <ProgressFilledTrack />
-              </Progress>
-              <Text size="xs">
-                {progress.completed}/{progress.total} items
+    <Actionsheet
+      isOpen={true}
+      onClose={() => {
+        // Indismissable while syncing: ignore close attempts
+      }}
+    >
+      <ActionsheetBackdrop />
+      <ActionsheetContent style={{ maxHeight: "80%" }}>
+        <ActionsheetDragIndicatorWrapper>
+          <ActionsheetDragIndicator />
+        </ActionsheetDragIndicatorWrapper>
+        <VStack space="lg" className="w-full">
+          <Heading size="md">Sync Required</Heading>
+          <Text size="sm" className="color-typography-500">
+            You are back online. We need to sync your offline data before you
+            continue.
+          </Text>
+          <VStack space="sm">
+            <HStack space="sm" className="items-center">
+              {isSyncing ? <Spinner /> : null}
+              <Text size="sm">
+                {isSyncing ? "Syncing data..." : "Preparing sync..."}
               </Text>
-            </VStack>
-            {errors.length > 0 ? (
-              <VStack space="xs">
-                <Heading size="xs">Issues encountered</Heading>
-                <Text size="xs" className="color-error-500">
-                  {errors.length} item(s) failed to sync. They will remain
-                  offline for retry.
-                </Text>
-              </VStack>
-            ) : null}
-            <Text size="xs" className="color-typography-400">
-              This overlay will close automatically when sync completes.
+            </HStack>
+            <Progress value={percent}>
+              <ProgressFilledTrack />
+            </Progress>
+            <Text size="xs">
+              {progress.completed}/{progress.total} items
             </Text>
           </VStack>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+          {errors.length > 0 ? (
+            <VStack space="xs">
+              <Heading size="xs">Issues encountered</Heading>
+              <Text size="xs" className="color-error-500">
+                {errors.length} item(s) failed to sync. They will remain offline
+                for retry.
+              </Text>
+            </VStack>
+          ) : null}
+          <Text size="xs" className="color-typography-400">
+            This sheet will close automatically when sync completes.
+          </Text>
+        </VStack>
+      </ActionsheetContent>
+    </Actionsheet>
   );
 };
 
