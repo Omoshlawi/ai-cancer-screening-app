@@ -12,6 +12,7 @@ import "@/global.css";
 import { useSessionWithOfflineSupport } from "@/hooks/useSessionWithOfflineSupport";
 import { ApiConfigProvider } from "@/lib/api";
 import { isLocalAuthEnabled } from "@/lib/local-auth";
+import SyncOverlay from "@/components/sync/SyncOverlay";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useRef, useState } from "react";
 import { AppState, AppStateStatus } from "react-native";
@@ -169,6 +170,7 @@ export default function RootLayout() {
             onSuccess={() => setShowLocalAuth(false)}
           />
         )}
+        {isLoggedIn && <SyncOverlay />}
       </GluestackUIProvider>
     </ApiConfigProvider>
   );

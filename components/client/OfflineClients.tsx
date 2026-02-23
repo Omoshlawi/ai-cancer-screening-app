@@ -1,5 +1,6 @@
 import { useOfflineClients } from "@/hooks/useClients";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { mmkvStorage } from "@/lib/storage";
 import { ClientFormData } from "@/types/client";
 import dayjs from "dayjs";
 import { router } from "expo-router";
@@ -67,6 +68,7 @@ const OfflineClients = () => {
 export default OfflineClients;
 
 const Item = (item: ClientFormData) => {
+  const { removeOfflineClient } = useOfflineClients();
   const age = dayjs().diff(dayjs(item.dateOfBirth), "years");
   const [showActionsheet, setShowActionsheet] = React.useState(false);
 
@@ -150,6 +152,15 @@ const Item = (item: ClientFormData) => {
                 }}
               >
                 <ActionsheetItemText>View Screenings</ActionsheetItemText>
+              </ActionsheetItem>
+              <ActionsheetItem
+                onPress={() => {
+                  setShowActionsheet(false);
+                  removeOfflineClient(item.phoneNumber);
+                  mmkvStorage.remove(item.phoneNumber);
+                }}
+              >
+                <ActionsheetItemText>Delete Client</ActionsheetItemText>
               </ActionsheetItem>
             </ActionsheetContent>
           </Actionsheet>
