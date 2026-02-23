@@ -2,9 +2,10 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
-import { useComputedColorScheme } from "@/hooks/use-color-scheme";
+import { useThemeStore } from "@/store/theme";
 
 import LocalAuthModal from "@/components/auth/LocalAuthModal";
+import SyncOverlay from "@/components/sync/SyncOverlay";
 import Toaster from "@/components/toaster";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { useToast } from "@/components/ui/toast";
@@ -12,7 +13,6 @@ import "@/global.css";
 import { useSessionWithOfflineSupport } from "@/hooks/useSessionWithOfflineSupport";
 import { ApiConfigProvider } from "@/lib/api";
 import { isLocalAuthEnabled } from "@/lib/local-auth";
-import SyncOverlay from "@/components/sync/SyncOverlay";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useRef, useState } from "react";
 import { AppState, AppStateStatus } from "react-native";
@@ -24,7 +24,7 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const theme = useComputedColorScheme();
+  const selectedTheme = useThemeStore((state) => state.theme);
 
   const { data, isPending, error } = useSessionWithOfflineSupport();
   const isLoggedIn = !!data?.user?.id;
@@ -113,7 +113,7 @@ export default function RootLayout() {
 
   return (
     <ApiConfigProvider>
-      <GluestackUIProvider mode={theme}>
+      <GluestackUIProvider mode={selectedTheme}>
         <Stack
           screenOptions={{
             headerShown: false,
@@ -122,9 +122,15 @@ export default function RootLayout() {
           <Stack.Protected guard={isLoggedIn}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="settings" options={{ headerShown: false }} />
-            <Stack.Screen name="screenings-today" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="screenings-today"
+              options={{ headerShown: false }}
+            />
             <Stack.Screen name="high-risk" options={{ headerShown: false }} />
-            <Stack.Screen name="pending-followups" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="pending-followups"
+              options={{ headerShown: false }}
+            />
             <Stack.Screen
               name="notifications"
               options={{
