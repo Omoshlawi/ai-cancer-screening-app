@@ -4,6 +4,7 @@ import { useScreenings } from "@/hooks/useScreenings";
 import { RiskInterpretation } from "@/types/screening";
 import { cn } from "@gluestack-ui/utils/nativewind-utils";
 import dayjs from "dayjs";
+import { router } from "expo-router";
 import {
   AlertCircle,
   CheckCircle,
@@ -12,6 +13,7 @@ import {
   Users,
 } from "lucide-react-native";
 import React, { useMemo } from "react";
+import { Pressable } from "react-native";
 import { Box } from "../ui/box";
 import { Card } from "../ui/card";
 import { Icon } from "../ui/icon";
@@ -73,21 +75,31 @@ const SummaryCards = () => {
   return (
     <Box className="w-full flex flex-row flex-wrap gap-2 mt-4">
       {cards.map((card, index) => (
-        <Card
+        <Pressable
           key={index}
-          size="lg"
-          className="flex-1 min-w-[48%] rounded-none bg-background-0 w-[48%] p-3 gap-3"
+          className="flex-1 min-w-[48%] w-[48%]"
+          onPress={() => {
+            if (card.title === "Today's Screenings") {
+              router.push("/screenings-today");
+            } else if (card.title === "Pending Follow-ups") {
+              router.push("/pending-followups");
+            } else if (card.title === "High Risk  cases") {
+              router.push("/high-risk");
+            }
+          }}
         >
-          <Box className="flex-row items-center gap-2 justify-between">
-            <Text className="font-bold text-2xl">{card.value}</Text>
-            <Icon
-              as={card.icon}
-              size="lg"
-              className={cn(card.iconClassName, "font-bold")}
-            />
-          </Box>
-          <Text className="">{card.title}</Text>
-        </Card>
+          <Card size="lg" className="rounded-none p-3 gap-3 bg-background-0">
+            <Box className="flex-row items-center gap-2 justify-between">
+              <Text className="font-bold text-2xl">{card.value}</Text>
+              <Icon
+                as={card.icon}
+                size="lg"
+                className={cn(card.iconClassName, "font-bold")}
+              />
+            </Box>
+            <Text className="">{card.title}</Text>
+          </Card>
+        </Pressable>
       ))}
     </Box>
   );
