@@ -30,7 +30,6 @@ import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { referralSchema } from "@/constants/schemas";
 import { useSearchClients } from "@/hooks/useClients";
-import { useSearchHealthFacility } from "@/hooks/useHealthFacilities";
 import { useReferralApi } from "@/hooks/useReferrals";
 import { handleApiErrors } from "@/lib/api";
 import { ReferralFormData } from "@/types/screening";
@@ -63,7 +62,6 @@ const AddReferralScreen = () => {
     }>();
   const { clients, error, isLoading, onSearchChange, searchValue } =
     useSearchClients(search);
-  const healthFacilitySearchAsync = useSearchHealthFacility(facilitySearch);
   const form = useForm({
     resolver: zodResolver(referralSchema),
     defaultValues: {
@@ -77,8 +75,9 @@ const AddReferralScreen = () => {
   const clientId = form.watch("clientId");
   const client_ = useMemo(
     () => clients.find((client) => client.id === clientId),
-    [clientId, clients]
+    [clientId, clients],
   );
+
   const { referClient } = useReferralApi();
   const toast = useToast();
 
@@ -157,11 +156,11 @@ const AddReferralScreen = () => {
                           value={
                             field.value
                               ? clients.find(
-                                  (client) => client.id === field.value
+                                  (client) => client.id === field.value,
                                 )?.firstName +
                                 " " +
                                 clients.find(
-                                  (client) => client.id === field.value
+                                  (client) => client.id === field.value,
                                 )?.lastName
                               : ""
                           }
@@ -189,7 +188,7 @@ const AddReferralScreen = () => {
                       title={`${item.firstName} ${item.lastName}`}
                       description={`Age: ${dayjs().diff(
                         dayjs(item.dateOfBirth),
-                        "years"
+                        "years",
                       )} | ID: ${item.nationalId}`}
                       leading={
                         <Icon
@@ -228,7 +227,11 @@ const AddReferralScreen = () => {
                 client={clients.find((client) => client.id === clientId)!}
               />
             )}
-            <ReferralFacility facilitySearchAsync={healthFacilitySearchAsync} />
+            {client_ && (
+              <ReferralFacility
+                client={clients.find((client) => client.id === clientId)!}
+              />
+            )}
             <Controller
               control={form.control}
               name="appointmentTime"

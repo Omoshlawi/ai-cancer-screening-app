@@ -13,6 +13,7 @@ import {
 } from "./ui/actionsheet";
 import { Input, InputField, InputIcon, InputSlot } from "./ui/input";
 import { Spinner } from "./ui/spinner";
+import { VStack } from "./ui/vstack";
 
 interface RenderTriggerProps<T> {
   onPress: () => void;
@@ -25,6 +26,7 @@ type ActionSheetWrapperProps<T> = {
   renderPagination?: () => React.ReactNode;
   valueExtractor?: (item: T) => string;
   searchable?: boolean;
+  searchTags?: React.ReactNode;
   renderEmptyState?: () => React.ReactNode;
   renderErrorState?: () => React.ReactNode;
   searchText?: string;
@@ -44,13 +46,14 @@ const ActionSheetWrapper = <T,>({
   onSearchTextChange,
   loading = false,
   maxHeight = "80%",
+  searchTags,
   renderPagination,
 }: ActionSheetWrapperProps<T>) => {
   const [showActionsheet, setShowActionsheet] = React.useState(false);
   const handleOpen = () => setShowActionsheet(true);
   const handleClose = useCallback(
     () => setShowActionsheet(false),
-    [setShowActionsheet]
+    [setShowActionsheet],
   );
 
   const fallbackValueExtractor = React.useCallback(
@@ -62,7 +65,7 @@ const ActionSheetWrapper = <T,>({
       }
       return String(idx);
     },
-    [valueExtractor]
+    [valueExtractor],
   );
 
   const fallbackLabelExtractor = React.useCallback((item: any) => {
@@ -84,7 +87,7 @@ const ActionSheetWrapper = <T,>({
         </ActionsheetItemText>
       </ActionsheetItem>
     ),
-    [fallbackLabelExtractor, handleClose]
+    [fallbackLabelExtractor, handleClose],
   );
 
   const _renderItem = React.useCallback(
@@ -94,12 +97,12 @@ const ActionSheetWrapper = <T,>({
       ) : (
         <DefaultItem item={item} />
       ),
-    [renderItem, handleClose, DefaultItem]
+    [renderItem, handleClose, DefaultItem],
   );
 
   const _keyExtractor = React.useCallback(
     (item: T, idx: number) => fallbackValueExtractor(item, idx),
-    [fallbackValueExtractor]
+    [fallbackValueExtractor],
   );
 
   return (
@@ -112,21 +115,24 @@ const ActionSheetWrapper = <T,>({
             <ActionsheetDragIndicator />
           </ActionsheetDragIndicatorWrapper>
           {searchable && (
-            <Input className="my-4">
-              <InputSlot className="pl-3">
-                <InputIcon as={SearchIcon} />
-              </InputSlot>
-              <InputField
-                placeholder="Search..."
-                value={searchText}
-                onChangeText={onSearchTextChange}
-              />
-              {loading && (
-                <InputSlot className="pr-3">
-                  <Spinner />
+            <VStack className="w-full" space="xs">
+              <Input className="my-4">
+                <InputSlot className="pl-3">
+                  <InputIcon as={SearchIcon} />
                 </InputSlot>
-              )}
-            </Input>
+                <InputField
+                  placeholder="Search..."
+                  value={searchText}
+                  onChangeText={onSearchTextChange}
+                />
+                {loading && (
+                  <InputSlot className="pr-3">
+                    <Spinner />
+                  </InputSlot>
+                )}
+              </Input>
+              {searchTags}
+            </VStack>
           )}
           <ActionsheetFlatList
             data={data}

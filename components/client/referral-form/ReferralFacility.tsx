@@ -1,5 +1,6 @@
 import ActionSheetWrapper from "@/components/actions-sheet-wrapper";
 import { EmptyState, ErrorState } from "@/components/state-full-widgets";
+import { Box } from "@/components/ui/box";
 import { Card } from "@/components/ui/card";
 import {
   FormControl,
@@ -16,11 +17,9 @@ import { Image } from "@/components/ui/image";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import {
-  useHealthFacilities,
-  useSearchHealthFacility,
-} from "@/hooks/useHealthFacilities";
+import { useHealthFacilities } from "@/hooks/useHealthFacilities";
 import { useScreening } from "@/hooks/useScreenings";
+import { Client } from "@/types/client";
 import { ReferralFormData } from "@/types/screening";
 import { ChevronDown, Hospital, Info, MapPin } from "lucide-react-native";
 import React, { FC, useState } from "react";
@@ -28,22 +27,30 @@ import { Controller, useFormContext } from "react-hook-form";
 import { TouchableOpacity } from "react-native";
 
 type ReferralFacilityProps = {
-  facilitySearchAsync: ReturnType<typeof useSearchHealthFacility>;
+  client: Client;
 };
 
-const ReferralFacility: FC<ReferralFacilityProps> = ({
-  facilitySearchAsync,
-}) => {
+const ReferralFacility: FC<ReferralFacilityProps> = ({ client }) => {
   const [search, setSearch] = useState<string>("");
   const form = useFormContext<ReferralFormData>();
   const screeningId = form.watch("screeningId");
+  const [showForLocation, setShowForLocation] = useState<
+    ("county" | "subcounty")[]
+  >(["county", "subcounty"]);
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { screening: _ } = useScreening(screeningId);
   const {
     healthFacilities: nearbyHealthFacilities,
     error: nearbyError,
     isLoading: nearbyIsLoading,
-  } = useHealthFacilities({ search });
+  } = useHealthFacilities({
+    search,
+    county: showForLocation.includes("county") ? client.county : undefined,
+    subcounty: showForLocation.includes("subcounty")
+      ? client.subcounty
+      : undefined,
+  });
 
   // useNearbyHealthFacilities({
   //   lat: /*screening?.coordinates?.latitude ??*/ -1.2921,
@@ -73,7 +80,7 @@ const ReferralFacility: FC<ReferralFacilityProps> = ({
                   value={
                     field.value
                       ? nearbyHealthFacilities.find(
-                          (facility) => facility.id === field.value
+                          (facility) => facility.id === field.value,
                         )?.name
                       : ""
                   }
@@ -181,6 +188,54 @@ const ReferralFacility: FC<ReferralFacilityProps> = ({
           searchable
           searchText={search}
           onSearchTextChange={setSearch}
+          searchTags={
+            client && (
+              <Box className="flex-row gap-2">
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() =>
+                    setShowForLocation((prev) =>
+                      prev.includes("county")
+                        ? prev.filter((item) => item !== "county")
+                        : [...prev, "county"],
+                    )
+                  }
+                >
+                  <Text
+                    className={` px-2 py-1 text-nowrap rounded-xs text-teal-500 ${
+                      showForLocation.includes("county")
+                        ? "bg-teal-500 text-white"
+                        : "bg-teal-50 text-teal-500"
+                    }`}
+                    size="xs"
+                  >
+                    {client.county}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() =>
+                    setShowForLocation((prev) =>
+                      prev.includes("subcounty")
+                        ? prev.filter((item) => item !== "subcounty")
+                        : [...prev, "subcounty"],
+                    )
+                  }
+                >
+                  <Text
+                    className={`px-2 py-1 text-nowrap rounded-xs ${
+                      showForLocation.includes("subcounty")
+                        ? "bg-teal-500 text-white"
+                        : "bg-teal-50 text-teal-500"
+                    }`}
+                    size="xs"
+                  >
+                    {client.subcounty}
+                  </Text>
+                </TouchableOpacity>
+              </Box>
+            )
+          }
         />
       )}
     />

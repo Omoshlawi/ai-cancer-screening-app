@@ -6,7 +6,9 @@ import useSWR from "swr";
 import { useDebouncedValue } from "./useDebouncedValue";
 import { useMergePaginationInfo } from "./usePagination";
 
-export const useHealthFacilities = (params: Record<string, string> = {}) => {
+export const useHealthFacilities = (
+  params: Record<string, string | undefined> = {},
+) => {
   // Build query params - only include non-empty values
   const queryParams: Record<string, string> = {};
 
@@ -24,6 +26,18 @@ export const useHealthFacilities = (params: Record<string, string> = {}) => {
 
   if (params.limit) {
     queryParams.limit = params.limit;
+  }
+
+  if (params.county) {
+    queryParams.county = params.county;
+  }
+
+  if (params.subcounty) {
+    queryParams.subcounty = params.subcounty;
+  }
+
+  if (params.ward) {
+    queryParams.ward = params.ward;
   }
 
   const { onPageChange, mergedSearchParams, showPagination } =
@@ -44,19 +58,38 @@ export const useHealthFacilities = (params: Record<string, string> = {}) => {
   };
 };
 
-export const useSearchHealthFacility = (defaultSearch: string = "") => {
+export const useSearchHealthFacility = (
+  defaultSearch: string = "",
+  defaultLocation?: Partial<
+    Pick<HealthFacility, "county" | "subcounty" | "ward">
+  >,
+) => {
   const [search, setSearch] = useState<string>(defaultSearch);
+
+  const [location, setLocation] =
+    useState<Pick<HealthFacility, "county" | "subcounty" | "ward">>();
+
   const [debounced] = useDebouncedValue(search, 500);
-  const url = constructUrl("/health-facilities", { search: debounced });
+
+  const url = constructUrl("/health-facilities", {
+    search: debounced,
+    ...defaultLocation,
+    ...location,
+  });
+  console.log(url);
+
   const { data, error, isLoading } = useSWR<
     APIFetchResponse<{ results: HealthFacility[] }>
   >(debounced ? url : undefined);
+
   return {
     healthFacilities: data?.data?.results ?? [],
     isLoading,
     error,
     onSearchChange: setSearch,
     searchValue: search,
+    onLocationChange: setLocation,
+    locationValue: location,
   };
 };
 
