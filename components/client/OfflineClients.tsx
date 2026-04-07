@@ -153,7 +153,7 @@ const Item = (item: ClientFormData) => {
               >
                 <ActionsheetItemText>View Screenings</ActionsheetItemText>
               </ActionsheetItem>
-              <ActionsheetItem
+              {/* <ActionsheetItem
                 onPress={() => {
                   setShowActionsheet(false);
                   removeOfflineClient(item.phoneNumber);
@@ -161,7 +161,7 @@ const Item = (item: ClientFormData) => {
                 }}
               >
                 <ActionsheetItemText>Delete Client</ActionsheetItemText>
-              </ActionsheetItem>
+              </ActionsheetItem> */}
             </ActionsheetContent>
           </Actionsheet>
         </HStack>

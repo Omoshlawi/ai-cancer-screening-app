@@ -155,11 +155,11 @@ const ScreeningCard = ({
             variable={value.variable}
           />
         ))}
-        {onDelete && (
+        {/* {onDelete && (
           <Button action="negative" variant="outline" onPress={onDelete}>
             <ButtonText>Remove Screening</ButtonText>
           </Button>
-        )}
+        )} */}
       </VStack>
     </Card>
   );
