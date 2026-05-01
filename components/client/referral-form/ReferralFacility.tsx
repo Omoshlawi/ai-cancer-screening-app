@@ -103,9 +103,9 @@ const ReferralFacility: FC<ReferralFacilityProps> = ({ client }) => {
                 <FormControlError>
                   <FormControlErrorIcon
                     as={AlertCircleIcon}
-                    className="text-red-500"
+                    className="text-error-500"
                   />
-                  <FormControlErrorText className="text-red-500">
+                  <FormControlErrorText className="text-error-500">
                     {error.message}
                   </FormControlErrorText>
                 </FormControlError>
@@ -143,7 +143,7 @@ const ReferralFacility: FC<ReferralFacilityProps> = ({ client }) => {
                       <Heading size="xs">{item.name}</Heading>
                       <Text
                         size="2xs"
-                        className="bg-teal-100 px-2 py-1 rounded-full text-teal-500 absolute right-2 top-1"
+                        className="bg-primary-100 px-2 py-1 rounded-full text-primary-500 absolute right-2 top-1"
                       >
                         {item.type.name}
                       </Text>
@@ -202,10 +202,10 @@ const ReferralFacility: FC<ReferralFacilityProps> = ({ client }) => {
                   }
                 >
                   <Text
-                    className={` px-2 py-1 text-nowrap rounded-xs text-teal-500 ${
+                    className={` px-2 py-1 text-nowrap rounded-xs text-primary-500 ${
                       showForLocation.includes("county")
-                        ? "bg-teal-500 text-white"
-                        : "bg-teal-50 text-teal-500"
+                        ? "bg-primary-500 text-typography-0"
+                        : "bg-primary-50 text-primary-500"
                     }`}
                     size="xs"
                   >
@@ -225,8 +225,8 @@ const ReferralFacility: FC<ReferralFacilityProps> = ({ client }) => {
                   <Text
                     className={`px-2 py-1 text-nowrap rounded-xs ${
                       showForLocation.includes("subcounty")
-                        ? "bg-teal-500 text-white"
-                        : "bg-teal-50 text-teal-500"
+                        ? "bg-primary-500 text-typography-0"
+                        : "bg-primary-50 text-primary-500"
                     }`}
                     size="xs"
                   >

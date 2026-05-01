@@ -35,11 +35,11 @@ const ObstetricHostory: FC<ObstetricHostoryProps> = ({
   const form = useFormContext<ScreenClientFormData>();
   return (
     <VStack space="md" className="flex-1 items-center">
-      <Box className="bg-teal-100 rounded-full p-6 w-fit ">
+      <Box className="bg-primary-100 rounded-full p-6 w-fit ">
         <Icon
           as={UserSearch}
           size="sm"
-          className="text-teal-500 rounded-full p-6 bg-teal-100"
+          className="text-primary-500 rounded-full p-6 bg-primary-100"
         />
       </Box>
       <Heading size="sm">{SCREENING_FORM_STEPS[3]}</Heading>
@@ -76,9 +76,9 @@ const ObstetricHostory: FC<ObstetricHostoryProps> = ({
               <FormControlError>
                 <FormControlErrorIcon
                   as={AlertCircleIcon}
-                  className="text-red-500"
+                  className="text-error-500"
                 />
-                <FormControlErrorText className="text-red-500">
+                <FormControlErrorText className="text-error-500">
                   {error.message}
                 </FormControlErrorText>
               </FormControlError>
@@ -100,7 +100,7 @@ const ObstetricHostory: FC<ObstetricHostoryProps> = ({
         <Button
           action="primary"
           size="sm"
-          className="flex-1 bg-teal-500 justify-between rounded-none"
+          className="flex-1 bg-primary-500 justify-between rounded-none"
           onPress={async () => {
             const isValid = await form.trigger(["totalBirths"]);
             if (isValid) {

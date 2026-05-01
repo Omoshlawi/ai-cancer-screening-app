@@ -38,7 +38,7 @@ const RecentActivity = () => {
           size="sm"
           onPress={() => router.push("/activities")}
         >
-          <ButtonText className="text-teal-600">View All</ButtonText>
+          <ButtonText className="text-primary-600">View All</ButtonText>
         </Button>
       </HStack>
       <When
@@ -70,11 +70,11 @@ const RecentActivity = () => {
                         activity.resource === "screening"
                           ? activity.metadata?.riskInterpretation ===
                             RiskInterpretation.LOW_RISK
-                            ? "text-teal-600"
+                            ? "text-primary-600"
                             : activity.metadata?.riskInterpretation ===
                               RiskInterpretation.MEDIUM_RISK
-                            ? "text-yellow-600"
-                            : "text-red-600"
+                            ? "text-warning-600"
+                            : "text-error-600"
                           : "text-primary-600"
                       }
                       size="xl"

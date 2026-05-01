@@ -274,7 +274,7 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
               <>
                 {followUp.category === "REFERRAL_ADHERENCE" ? (
                   <Button
-                    className={cn("bg-teal-500 justify-between")}
+                    className={cn("bg-primary-500 justify-between")}
                     size="sm"
                     onPress={() => {
                       router.push({
@@ -291,7 +291,7 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
                   </Button>
                 ) : (
                   <Button
-                    className={cn("bg-teal-500 justify-between")}
+                    className={cn("bg-primary-500 justify-between")}
                     size="sm"
                     onPress={() => {
                       router.push({
@@ -312,7 +312,7 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
             )}
             {!followUp.canceledAt && (
               <Button
-                className="bg-red-500 justify-between"
+                className="bg-error-500 justify-between"
                 size="sm"
                 onPress={() => {
                   router.push({

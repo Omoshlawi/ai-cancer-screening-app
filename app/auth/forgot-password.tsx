@@ -48,7 +48,7 @@ const ForgotPasswordScreen = () => {
           />
           <Button
             onPress={form.handleSubmit(onSubmit)}
-            className="w-full bg-teal-500 justify-between rounded-none"
+            className="w-full bg-primary-500 justify-between rounded-none"
           >
             <ButtonText size="lg" className="text-background-100">
               Reset Password

@@ -131,10 +131,10 @@ const ClientFilter: FC<ClientFilterProps> = ({
                 onPress={() => onOwnerChange?.("all")}
               >
                 <Text
-                  className={` px-2 py-1 text-nowrap rounded-xs text-teal-500 ${
+                  className={` px-2 py-1 text-nowrap rounded-xs text-primary-500 ${
                     owner === "all"
-                      ? "bg-teal-500 text-white"
-                      : "bg-teal-50 text-teal-500"
+                      ? "bg-primary-500 text-typography-0"
+                      : "bg-primary-50 text-primary-500"
                   }`}
                   size="xs"
                 >
@@ -148,8 +148,8 @@ const ClientFilter: FC<ClientFilterProps> = ({
                 <Text
                   className={`px-2 py-1 text-nowrap rounded-xs ${
                     owner === "mine"
-                      ? "bg-teal-500 text-white"
-                      : "bg-teal-50 text-teal-500"
+                      ? "bg-primary-500 text-typography-0"
+                      : "bg-primary-50 text-primary-500"
                   }`}
                   size="xs"
                 >

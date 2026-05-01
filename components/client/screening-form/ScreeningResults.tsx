@@ -165,7 +165,7 @@ const ScreeningResults: FC<ScreeningResultsProps> = ({ screening }) => {
           <Button
             action="primary"
             size="sm"
-            className="w-full bg-teal-500 justify-between rounded-none"
+            className="w-full bg-primary-500 justify-between rounded-none"
             onPress={() => {
               router.push({
                 pathname: "/add-referral",
@@ -188,7 +188,7 @@ const ScreeningResults: FC<ScreeningResultsProps> = ({ screening }) => {
           <Button
             action="primary"
             size="sm"
-            className="w-full bg-teal-500 justify-between rounded-none"
+            className="w-full bg-primary-500 justify-between rounded-none"
             onPress={() => {
               router.push({
                 pathname: "/follow-up",
@@ -211,7 +211,7 @@ const ScreeningResults: FC<ScreeningResultsProps> = ({ screening }) => {
           <Button
             action="primary"
             size="sm"
-            className="w-full bg-teal-500 justify-between rounded-none"
+            className="w-full bg-primary-500 justify-between rounded-none"
             onPress={() => {
               router.push({
                 pathname: "/follow-up",

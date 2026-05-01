@@ -64,7 +64,7 @@ const FacilityListView = ({ search, typeId }: FacilityListViewProps) => {
                   <Heading size="xs">{item.name}</Heading>
                   <Text
                     size="2xs"
-                    className="bg-teal-100 px-2 py-1 rounded-full text-teal-500 absolute right-2 top-1"
+                    className="bg-primary-100 px-2 py-1 rounded-full text-primary-500 absolute right-2 top-1"
                   >
                     {item.type.name}
                   </Text>

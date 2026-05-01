@@ -52,7 +52,7 @@ const ReferralDetailScreen = () => {
               <Button
                 action="primary"
                 size="sm"
-                className="bg-teal-500"
+                className="bg-primary-500"
                 onPress={() => {
                   router.push({
                     pathname: "/follow-up",

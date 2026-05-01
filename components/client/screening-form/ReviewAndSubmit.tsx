@@ -171,9 +171,9 @@ const ReviewAndSubmit: FC<ReviewAndSubmitProps> = ({
                       <FormControlError>
                         <FormControlErrorIcon
                           as={AlertCircleIcon}
-                          className="text-red-500"
+                          className="text-error-500"
                         />
-                        <FormControlErrorText className="text-red-500">
+                        <FormControlErrorText className="text-error-500">
                           {error.message}
                         </FormControlErrorText>
                       </FormControlError>
@@ -198,7 +198,7 @@ const ReviewAndSubmit: FC<ReviewAndSubmitProps> = ({
           <Button
             action="primary"
             size="sm"
-            className="flex-1 bg-teal-500 justify-between rounded-none"
+            className="flex-1 bg-primary-500 justify-between rounded-none"
             isDisabled={form.formState.isSubmitting || submitting}
             onPress={async () => {
               const isValid = await form.trigger();

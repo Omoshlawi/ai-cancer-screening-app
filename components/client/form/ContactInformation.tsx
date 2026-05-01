@@ -42,7 +42,7 @@ const ContactInformation = ({
       <Icon
         as={Phone}
         size="sm"
-        className="text-teal-500 rounded-full p-6 bg-teal-100"
+        className="text-primary-500 rounded-full p-6 bg-primary-100"
       />
       <Heading size="sm" className="text-typography-500">
         Contact Information
@@ -75,9 +75,9 @@ const ContactInformation = ({
               <FormControlError>
                 <FormControlErrorIcon
                   as={AlertCircleIcon}
-                  className="text-red-500"
+                  className="text-error-500"
                 />
-                <FormControlErrorText className="text-red-500">
+                <FormControlErrorText className="text-error-500">
                   {error.message}
                 </FormControlErrorText>
               </FormControlError>
@@ -131,7 +131,7 @@ const ContactInformation = ({
         <Button
           action="primary"
           size="sm"
-          className="flex-1 bg-teal-500 justify-between rounded-none"
+          className="flex-1 bg-primary-500 justify-between rounded-none"
           onPress={async () => {
             const isValid = await form.trigger([
               "phoneNumber",

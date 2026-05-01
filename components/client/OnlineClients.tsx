@@ -149,7 +149,7 @@ const OnlineClients = () => {
                           <Button
                             action="positive"
                             size="sm"
-                            className="bg-teal-500"
+                            className="bg-primary-500"
                             onPress={() =>
                               router.push({
                                 pathname: "/client-detail",

@@ -18,7 +18,7 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
         tabBarLabel: ({ focused, children }) => (
           <Text
-            className={cn(focused ? "text-teal-700" : "text-typography-500")}
+            className={cn(focused ? "text-primary-700" : "text-typography-500")}
             size="sm"
           >
             {children}
@@ -37,7 +37,7 @@ export default function TabLayout() {
             <Icon
               as={Home}
               size={"xl"}
-              className={cn(focused ? "text-teal-700" : "text-typography-500")}
+              className={cn(focused ? "text-primary-700" : "text-typography-500")}
             />
           ),
         }}
@@ -50,7 +50,7 @@ export default function TabLayout() {
             <Icon
               as={Users}
               size={"xl"}
-              className={cn(focused ? "text-teal-700" : "text-typography-500")}
+              className={cn(focused ? "text-primary-700" : "text-typography-500")}
             />
           ),
         }}
@@ -71,7 +71,7 @@ export default function TabLayout() {
             <Icon
               as={BotMessageSquareIcon}
               size={"xl"}
-              className={cn(focused ? "text-teal-700" : "text-typography-500")}
+              className={cn(focused ? "text-primary-700" : "text-typography-500")}
             />
           ),
         }}
@@ -84,7 +84,7 @@ export default function TabLayout() {
             <Icon
               as={Hospital}
               size={"xl"}
-              className={cn(focused ? "text-teal-700" : "text-typography-500")}
+              className={cn(focused ? "text-primary-700" : "text-typography-500")}
             />
           ),
         }}

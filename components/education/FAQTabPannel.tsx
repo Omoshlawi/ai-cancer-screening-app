@@ -66,8 +66,8 @@ const FAQTabPannel = () => {
             size="xs"
             className={`${
               selectedCategory === category.id
-                ? "bg-teal-500"
-                : "bg-teal-100 text-teal-500"
+                ? "bg-primary-500"
+                : "bg-primary-100 text-primary-500"
             } mr-2`}
             onPress={() => setSelectedCategory(category.id)}
           >
@@ -75,8 +75,8 @@ const FAQTabPannel = () => {
               size="xs"
               className={
                 selectedCategory === category.id
-                  ? "text-white"
-                  : "text-teal-500"
+                  ? "text-typography-0"
+                  : "text-primary-500"
               }
             >
               {category.name}

@@ -103,7 +103,7 @@ const Item = (item: ClientFormData) => {
           <Button
             action="positive"
             size="sm"
-            className="bg-teal-500"
+            className="bg-primary-500"
             onPress={() => {
               setShowActionsheet(true);
             }}

@@ -134,8 +134,8 @@ const AddClientScreen = () => {
                 size="sm"
                 className={
                   step <= 1
-                    ? "bg-teal-500 text-white rounded-full p-4"
-                    : "bg-gray-200 text-gray-500 p-4 rounded-full"
+                    ? "bg-primary-500 text-typography-0 rounded-full p-4"
+                    : "bg-secondary-200 text-secondary-500 p-4 rounded-full"
                 }
               />
               <Icon
@@ -143,8 +143,8 @@ const AddClientScreen = () => {
                 size="sm"
                 className={
                   step === 2
-                    ? "bg-teal-500 text-white rounded-full p-4"
-                    : "bg-gray-200 text-gray-500 p-4 rounded-full"
+                    ? "bg-primary-500 text-typography-0 rounded-full p-4"
+                    : "bg-secondary-200 text-secondary-500 p-4 rounded-full"
                 }
               />
               <Icon
@@ -152,8 +152,8 @@ const AddClientScreen = () => {
                 size="sm"
                 className={
                   step === 3
-                    ? "bg-teal-500 text-white rounded-full p-4"
-                    : "bg-gray-200 text-gray-500 p-4 rounded-full"
+                    ? "bg-primary-500 text-typography-0 rounded-full p-4"
+                    : "bg-secondary-200 text-secondary-500 p-4 rounded-full"
                 }
               />
               <Icon
@@ -161,8 +161,8 @@ const AddClientScreen = () => {
                 size="sm"
                 className={
                   step === 4
-                    ? "bg-teal-500 text-white rounded-full p-4"
-                    : "bg-gray-200 text-gray-500 p-4 rounded-full"
+                    ? "bg-primary-500 text-typography-0 rounded-full p-4"
+                    : "bg-secondary-200 text-secondary-500 p-4 rounded-full"
                 }
               />
             </HStack>

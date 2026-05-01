@@ -17,7 +17,7 @@ const FacilitiesViewTabs: FC<FacilitiesViewTabsProps> = ({
       <Button
         size="xs"
         action="secondary"
-        className={`${activeView === "list" ? "bg-teal-500" : "bg-teal-100"}`}
+        className={`${activeView === "list" ? "bg-primary-500" : "bg-primary-100"}`}
         onPress={() => onViewChange?.("list")}
         style={{ aspectRatio: 1 }}
       >
@@ -25,7 +25,7 @@ const FacilitiesViewTabs: FC<FacilitiesViewTabsProps> = ({
           as={ListIcon}
           size="md"
           className={`${
-            activeView === "list" ? "text-white" : "text-teal-500"
+            activeView === "list" ? "text-typography-0" : "text-primary-500"
           }`}
         />
       </Button>
@@ -33,7 +33,7 @@ const FacilitiesViewTabs: FC<FacilitiesViewTabsProps> = ({
         size="xs"
         action="secondary"
         className={`${
-          activeView === "grid" ? "bg-teal-500" : "bg-teal-100 text-teal-500"
+          activeView === "grid" ? "bg-primary-500" : "bg-primary-100 text-primary-500"
         }`}
         onPress={() => onViewChange?.("grid")}
         style={{ aspectRatio: 1 }}
@@ -42,7 +42,7 @@ const FacilitiesViewTabs: FC<FacilitiesViewTabsProps> = ({
           as={GridIcon}
           size="md"
           className={`${
-            activeView === "grid" ? "text-white" : "text-teal-500"
+            activeView === "grid" ? "text-typography-0" : "text-primary-500"
           }`}
         />
       </Button>
@@ -50,7 +50,7 @@ const FacilitiesViewTabs: FC<FacilitiesViewTabsProps> = ({
         size="xs"
         action="secondary"
         className={`${
-          activeView === "map" ? "bg-teal-500" : "bg-teal-100 text-teal-500"
+          activeView === "map" ? "bg-primary-500" : "bg-primary-100 text-primary-500"
         }`}
         onPress={() => onViewChange?.("map")}
         style={{ aspectRatio: 1 }}
@@ -58,7 +58,7 @@ const FacilitiesViewTabs: FC<FacilitiesViewTabsProps> = ({
         <ButtonIcon
           as={MapIcon}
           size="md"
-          className={`${activeView === "map" ? "text-white" : "text-teal-500"}`}
+          className={`${activeView === "map" ? "text-typography-0" : "text-primary-500"}`}
         />
       </Button> */}
     </HStack>

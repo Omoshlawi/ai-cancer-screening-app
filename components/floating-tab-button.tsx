@@ -61,7 +61,9 @@ export function FloatingTabButton(props: BottomTabBarButtonProps) {
           }}
           style={[styles.button, pressed && styles.buttonPressed]}
         >
-          <Icon as={Plus} size="xl" className="text-white" />
+          <View className="w-14 h-14 rounded-full bg-primary-500 items-center justify-center">
+            <Icon as={Plus} size="xl" className="text-typography-0" />
+          </View>
         </PlatformPressable>
       </View>
       <Actionsheet
@@ -131,7 +133,6 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28, // Makes it perfectly circular
-    backgroundColor: "#14b8a6", // teal-500
     alignItems: "center",
     justifyContent: "center",
     marginTop: -20, // Raise it above the baseline

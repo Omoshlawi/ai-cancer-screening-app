@@ -95,9 +95,9 @@ const ReferralScreening: FC<ReferralScreeningProps> = ({ client }) => {
                   <FormControlError>
                     <FormControlErrorIcon
                       as={AlertCircleIcon}
-                      className="text-red-500"
+                      className="text-error-500"
                     />
-                    <FormControlErrorText className="text-red-500">
+                    <FormControlErrorText className="text-error-500">
                       {error.message}
                     </FormControlErrorText>
                   </FormControlError>

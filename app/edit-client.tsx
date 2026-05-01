@@ -164,11 +164,11 @@ const Form = ({ client }: { client: Client }) => {
   return (
     <VStack className="flex-1 items-center" space="md">
       <Box className="w-full items-center">
-        <Box className="bg-teal-100 rounded-full p-6 w-fit ">
+        <Box className="bg-primary-100 rounded-full p-6 w-fit ">
           <Icon
             as={Edit}
             size="sm"
-            className="text-teal-500 rounded-full p-6 "
+            className="text-primary-500 rounded-full p-6 "
           />
         </Box>
         <Heading>
@@ -207,9 +207,9 @@ const Form = ({ client }: { client: Client }) => {
                       <FormControlError>
                         <FormControlErrorIcon
                           as={AlertCircleIcon}
-                          className="text-red-500"
+                          className="text-error-500"
                         />
-                        <FormControlErrorText className="text-red-500">
+                        <FormControlErrorText className="text-error-500">
                           {error.message}
                         </FormControlErrorText>
                       </FormControlError>
@@ -244,9 +244,9 @@ const Form = ({ client }: { client: Client }) => {
                       <FormControlError>
                         <FormControlErrorIcon
                           as={AlertCircleIcon}
-                          className="text-red-500"
+                          className="text-error-500"
                         />
-                        <FormControlErrorText className="text-red-500">
+                        <FormControlErrorText className="text-error-500">
                           {error.message}
                         </FormControlErrorText>
                       </FormControlError>
@@ -294,9 +294,9 @@ const Form = ({ client }: { client: Client }) => {
                           <FormControlError>
                             <FormControlErrorIcon
                               as={AlertCircleIcon}
-                              className="text-red-500"
+                              className="text-error-500"
                             />
-                            <FormControlErrorText className="text-red-500">
+                            <FormControlErrorText className="text-error-500">
                               {error.message}
                             </FormControlErrorText>
                           </FormControlError>
@@ -334,9 +334,9 @@ const Form = ({ client }: { client: Client }) => {
                       <FormControlError>
                         <FormControlErrorIcon
                           as={AlertCircleIcon}
-                          className="text-red-500"
+                          className="text-error-500"
                         />
-                        <FormControlErrorText className="text-red-500">
+                        <FormControlErrorText className="text-error-500">
                           {error.message}
                         </FormControlErrorText>
                       </FormControlError>
@@ -372,9 +372,9 @@ const Form = ({ client }: { client: Client }) => {
                       <FormControlError>
                         <FormControlErrorIcon
                           as={AlertCircleIcon}
-                          className="text-red-500"
+                          className="text-error-500"
                         />
-                        <FormControlErrorText className="text-red-500">
+                        <FormControlErrorText className="text-error-500">
                           {error.message}
                         </FormControlErrorText>
                       </FormControlError>
@@ -441,9 +441,9 @@ const Form = ({ client }: { client: Client }) => {
                         <FormControlError>
                           <FormControlErrorIcon
                             as={AlertCircleIcon}
-                            className="text-red-500"
+                            className="text-error-500"
                           />
-                          <FormControlErrorText className="text-red-500">
+                          <FormControlErrorText className="text-error-500">
                             {error.message}
                           </FormControlErrorText>
                         </FormControlError>
@@ -483,7 +483,7 @@ const Form = ({ client }: { client: Client }) => {
               <Button
                 action="primary"
                 size="sm"
-                className="w-full bg-teal-500 justify-between rounded-none mt-4"
+                className="w-full bg-primary-500 justify-between rounded-none mt-4"
                 onPress={form.handleSubmit(onSubmit)}
                 disabled={form.formState.isSubmitting}
               >

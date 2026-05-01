@@ -33,7 +33,7 @@ const PersonalInformation = ({ onNext }: PersonalInformationProps) => {
       <Icon
         as={UserCircle}
         size="sm"
-        className="text-teal-500 rounded-full p-6 bg-teal-100"
+        className="text-primary-500 rounded-full p-6 bg-primary-100"
       />
       <Heading size="sm" className="text-typography-500">
         Personal Information
@@ -65,9 +65,9 @@ const PersonalInformation = ({ onNext }: PersonalInformationProps) => {
               <FormControlError>
                 <FormControlErrorIcon
                   as={AlertCircleIcon}
-                  className="text-red-500"
+                  className="text-error-500"
                 />
-                <FormControlErrorText className="text-red-500">
+                <FormControlErrorText className="text-error-500">
                   {error.message}
                 </FormControlErrorText>
               </FormControlError>
@@ -102,9 +102,9 @@ const PersonalInformation = ({ onNext }: PersonalInformationProps) => {
               <FormControlError>
                 <FormControlErrorIcon
                   as={AlertCircleIcon}
-                  className="text-red-500"
+                  className="text-error-500"
                 />
-                <FormControlErrorText className="text-red-500">
+                <FormControlErrorText className="text-error-500">
                   {error.message}
                 </FormControlErrorText>
               </FormControlError>
@@ -146,9 +146,9 @@ const PersonalInformation = ({ onNext }: PersonalInformationProps) => {
                   <FormControlError>
                     <FormControlErrorIcon
                       as={AlertCircleIcon}
-                      className="text-red-500"
+                      className="text-error-500"
                     />
-                    <FormControlErrorText className="text-red-500">
+                    <FormControlErrorText className="text-error-500">
                       {error.message}
                     </FormControlErrorText>
                   </FormControlError>
@@ -161,7 +161,7 @@ const PersonalInformation = ({ onNext }: PersonalInformationProps) => {
       <Button
         action="primary"
         size="sm"
-        className="w-full bg-teal-500 justify-between rounded-none"
+        className="w-full bg-primary-500 justify-between rounded-none"
         onPress={async () => {
           const isValid = await form.trigger([
             "firstName",

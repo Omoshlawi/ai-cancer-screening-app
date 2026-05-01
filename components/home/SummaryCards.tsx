@@ -50,25 +50,25 @@ const SummaryCards = () => {
         title: "Today's Screenings",
         value: screeningsCount,
         icon: CheckCircle,
-        iconClassName: "text-teal-200",
+        iconClassName: "text-primary-200",
       },
       {
         title: "Pending Follow-ups",
         value: followUpCount,
         icon: Clock,
-        iconClassName: "text-yellow-200",
+        iconClassName: "text-warning-200",
       },
       {
         title: "High Risk  cases",
         value: highriskClientsCount,
         icon: AlertCircle,
-        iconClassName: "text-red-200",
+        iconClassName: "text-error-200",
       },
       {
         title: "My Clients",
         value: clientsCount,
         icon: Users,
-        iconClassName: "text-blue-200",
+        iconClassName: "text-info-200",
       },
     ];
   }, [clientsCount, screeningsCount, highriskClientsCount, followUpCount]);

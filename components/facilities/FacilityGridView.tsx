@@ -71,7 +71,7 @@ const FacilityGridView = ({ search, typeId }: FacilityGridViewProps) => {
                 )}
                 <Text
                   size="2xs"
-                  className="bg-teal-100 px-2 py-1 rounded-full text-teal-500 absolute top-2 right-2"
+                  className="bg-primary-100 px-2 py-1 rounded-full text-primary-500 absolute top-2 right-2"
                 >
                   {item.type.name}
                 </Text>

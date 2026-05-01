@@ -64,7 +64,7 @@ const IdentificationAndStatus = ({
       <Icon
         as={IdCard}
         size="sm"
-        className="text-teal-500 rounded-full p-6 bg-teal-100"
+        className="text-primary-500 rounded-full p-6 bg-primary-100"
       />
       <Heading size="sm" className="text-typography-500">
         Identification and Status
@@ -97,9 +97,9 @@ const IdentificationAndStatus = ({
               <FormControlError>
                 <FormControlErrorIcon
                   as={AlertCircleIcon}
-                  className="text-red-500"
+                  className="text-error-500"
                 />
-                <FormControlErrorText className="text-red-500">
+                <FormControlErrorText className="text-error-500">
                   {error.message}
                 </FormControlErrorText>
               </FormControlError>
@@ -162,9 +162,9 @@ const IdentificationAndStatus = ({
                 <FormControlError>
                   <FormControlErrorIcon
                     as={AlertCircleIcon}
-                    className="text-red-500"
+                    className="text-error-500"
                   />
-                  <FormControlErrorText className="text-red-500">
+                  <FormControlErrorText className="text-error-500">
                     {error.message}
                   </FormControlErrorText>
                 </FormControlError>
@@ -186,7 +186,7 @@ const IdentificationAndStatus = ({
         <Button
           action="primary"
           size="sm"
-          className="flex-1 bg-teal-500 justify-between rounded-none"
+          className="flex-1 bg-primary-500 justify-between rounded-none"
           isDisabled={submitiing || form.formState.isSubmitting}
           onPress={async () => {
             const isValid = await form.trigger(["nationalId", "maritalStatus"]);

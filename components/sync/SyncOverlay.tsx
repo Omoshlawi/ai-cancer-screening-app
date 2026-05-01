@@ -161,7 +161,7 @@ const SyncOverlay = () => {
               </VStack>
               <Button
                 action="primary"
-                className="bg-teal-500"
+                className="bg-primary-500"
                 onPress={() => {
                   acknowledgeOverlay();
                   router.push("/screenings-today");

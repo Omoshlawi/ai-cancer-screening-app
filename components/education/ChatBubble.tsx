@@ -20,7 +20,7 @@ const ChatBubble: FC<ChatBubbleProps> = ({ message, user }) => {
     >
       <Box
         className={`p-2 rounded-full ${
-          user === "bot" ? "bg-teal-500" : "bg-gray-600"
+          user === "bot" ? "bg-primary-500" : "bg-secondary-600"
         }`}
         style={{
           width: 40,

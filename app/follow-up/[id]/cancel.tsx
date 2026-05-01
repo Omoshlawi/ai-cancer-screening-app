@@ -190,9 +190,9 @@ const CancelFollowUpScreen: FC = () => {
                     <FormControlError>
                       <FormControlErrorIcon
                         as={AlertCircleIcon}
-                        className="text-red-500"
+                        className="text-error-500"
                       />
-                      <FormControlErrorText className="text-red-500">
+                      <FormControlErrorText className="text-error-500">
                         {error.message}
                       </FormControlErrorText>
                     </FormControlError>
@@ -234,9 +234,9 @@ const CancelFollowUpScreen: FC = () => {
                   <FormControlError>
                     <FormControlErrorIcon
                       as={AlertCircleIcon}
-                      className="text-red-500"
+                      className="text-error-500"
                     />
-                    <FormControlErrorText className="text-red-500">
+                    <FormControlErrorText className="text-error-500">
                       {error.message}
                     </FormControlErrorText>
                   </FormControlError>
@@ -247,10 +247,10 @@ const CancelFollowUpScreen: FC = () => {
           <Button
             onPress={form.handleSubmit(onSubmit)}
             disabled={form.formState.isSubmitting}
-            className="w-full bg-red-500 justify-between rounded-none"
+            className="w-full bg-error-500 justify-between rounded-none"
           >
             {form.formState.isSubmitting && (
-              <ButtonSpinner className="text-white" />
+              <ButtonSpinner className="text-typography-0" />
             )}
             <ButtonText size="lg" className="text-background-100">
               Cancel

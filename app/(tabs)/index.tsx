@@ -19,9 +19,9 @@ export default function HomeScreen() {
           <Card
             size="lg"
             variant="elevated"
-            className="rounded-none bg-teal-500 p-4 gap-2"
+            className="rounded-none bg-primary-500 p-4 gap-2"
           >
-            <Heading size="md" className="mb-1 text-white">
+            <Heading size="md" className="mb-1 text-typography-0">
               {new Date().getHours() < 12
                 ? "Good Morning"
                 : new Date().getHours() < 18
@@ -29,7 +29,7 @@ export default function HomeScreen() {
                   : "Good Evening"}
               , {userSession?.user?.name}
             </Heading>
-            <Text size="sm" className="text-teal-200">
+            <Text size="sm" className="text-primary-200">
               {new Date().toLocaleString()}
             </Text>
             <Badge
@@ -37,7 +37,7 @@ export default function HomeScreen() {
               variant="solid"
               action={isOnline ? "success" : "error"}
               className={`rounded-full w-[100px] gap-2 ${
-                isOnline ? "bg-teal-200" : "bg-red-200"
+                isOnline ? "bg-primary-200" : "bg-error-200"
               }`}
             >
               <BadgeIcon as={isOnline ? Wifi : WifiOff} className="ml-2" />

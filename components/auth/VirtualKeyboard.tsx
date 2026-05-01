@@ -1,4 +1,5 @@
 import { Box } from "@/components/ui/box";
+import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { StyleSheet, TouchableOpacity } from "react-native";
@@ -102,10 +103,11 @@ export default function VirtualKeyboard({
             className="bg-success-50 active:bg-success-100"
             activeOpacity={0.7}
           >
-            <MaterialCommunityIcons
+            <Icon
+              as={MaterialCommunityIcons}
               name="fingerprint"
               size={32}
-              color="#14b8a6"
+              className="text-primary-500"
             />
           </TouchableOpacity>
         ) : (
@@ -131,7 +133,12 @@ export default function VirtualKeyboard({
           className="bg-error-50 active:bg-error-100"
           activeOpacity={0.7}
         >
-          <MaterialCommunityIcons name="backspace" size={24} color="#dc2626" />
+          <Icon
+            as={MaterialCommunityIcons}
+            name="backspace"
+            size={24}
+            className="text-error-600"
+          />
         </TouchableOpacity>
       </Box>
     </Box>

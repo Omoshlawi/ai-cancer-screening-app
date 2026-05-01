@@ -277,7 +277,7 @@ const TwoFactorScreen = () => {
             <Button
               onPress={handleVerify}
               disabled={isLoading || code.length !== 6}
-              className="w-full bg-teal-500 justify-between rounded-none"
+              className="w-full bg-primary-500 justify-between rounded-none"
             >
               <ButtonText size="lg" className="text-background-100">
                 {isLoading ? "Verifying..." : "Verify Code"}

@@ -19,7 +19,7 @@ const SuccessSubmussion = ({ client }: SuccessSubmussionProps) => {
       <Icon
         as={CheckCircle}
         size="sm"
-        className="text-teal-500 rounded-full p-6 bg-teal-100"
+        className="text-primary-500 rounded-full p-6 bg-primary-100"
       />
       <Heading size="sm" className="text-typography-500">
         Client Successfully Registered
@@ -44,7 +44,7 @@ const SuccessSubmussion = ({ client }: SuccessSubmussionProps) => {
       <Button
         action="primary"
         size="sm"
-        className="w-full bg-teal-500 rounded-none"
+        className="w-full bg-primary-500 rounded-none"
         onPress={() =>
           router.push({
             pathname: "/screen-client",

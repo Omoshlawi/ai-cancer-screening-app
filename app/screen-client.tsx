@@ -142,7 +142,7 @@ const ScreenClientScreen = () => {
                 size="md"
                 orientation="horizontal"
               >
-                <ProgressFilledTrack className="bg-teal-500" />
+                <ProgressFilledTrack className="bg-primary-500" />
               </Progress>
               <Text size="sm">{SCREENING_FORM_STEPS[step - 1]}</Text>
             </VStack>
@@ -253,14 +253,14 @@ const LocationCaptureBlock = ({
       ) : (
         <>
           {error && (
-            <Text size="sm" className="text-center text-red-500">
+            <Text size="sm" className="text-center text-error-500">
               {error}
             </Text>
           )}
           <Button
             action="primary"
             size="sm"
-            className="bg-teal-500 rounded-none w-full"
+            className="bg-primary-500 rounded-none w-full"
             onPress={onRetry}
           >
             <ButtonText>Try Again</ButtonText>

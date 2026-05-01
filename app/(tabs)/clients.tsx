@@ -17,7 +17,7 @@ const ClientsScreen = () => {
         <VStack space="md" className="flex-1">
           <Button
             action="default"
-            className="border border-dashed border-teal-500 bg-background-0"
+            className="border border-dashed border-primary-500 bg-background-0"
             onPress={() => router.push("/add-client")}
           >
             <Icon as={UserPlus} size="sm" className="text-typography-500" />

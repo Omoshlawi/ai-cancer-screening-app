@@ -57,7 +57,7 @@ const ChatBotTabPanel = () => {
                         onPress={() => chat(message)}
                       >
                         <Text
-                          className="bg-teal-50 px-2 py-1 text-nowrap rounded-xs text-teal-500"
+                          className="bg-primary-50 px-2 py-1 text-nowrap rounded-xs text-primary-500"
                           size="xs"
                         >
                           {message}
@@ -92,7 +92,7 @@ const ChatBotTabPanel = () => {
               </Textarea>
               <Button
                 size="sm"
-                className="bg-teal-500 text-white rounded-full w-12 h-12"
+                className="bg-primary-500 text-typography-0 rounded-full w-12 h-12"
                 onPress={() => {
                   chat(message);
                   setMessage("");
