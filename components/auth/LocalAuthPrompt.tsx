@@ -3,7 +3,10 @@ import { Button, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { storeCredentials, setupPin, setBiometricEnabled, checkBiometricAvailability } from "@/lib/local-auth";
+import {
+  checkBiometricAvailability,
+  storeCredentials,
+} from "@/lib/local-auth";
 import { useState, useEffect } from "react";
 import PinSetup from "./PinSetup";
 
@@ -83,4 +86,3 @@ export default function LocalAuthPrompt({
     </Box>
   );
 }
-

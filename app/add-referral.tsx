@@ -52,15 +52,14 @@ import {
 } from "react-hook-form";
 
 const AddReferralScreen = () => {
-  const { client, search, facility, facilitySearch, screening } =
+  const { client, search, facility, screening } =
     useLocalSearchParams<{
       client: string;
       search: string;
       facility: string;
-      facilitySearch: string;
       screening: string;
     }>();
-  const { clients, error, isLoading, onSearchChange, searchValue } =
+  const { clients, isLoading, onSearchChange, searchValue } =
     useSearchClients(search);
   const form = useForm({
     resolver: zodResolver(referralSchema),

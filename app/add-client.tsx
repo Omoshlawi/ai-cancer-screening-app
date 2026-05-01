@@ -21,16 +21,8 @@ import { CheckCircle, IdCard, Phone, UserCircle } from "lucide-react-native";
 import React, { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
-const steps: (keyof ClientFormData)[][] = [
-  ["firstName", "lastName", "dateOfBirth"],
-  ["phoneNumber", "county", "subcounty", "ward"],
-  ["nationalId", "maritalStatus"],
-  [],
-];
-
 const AddClientScreen = () => {
   const [step, setStep] = useState(1);
-  const [submiting, setSubmiting] = useState(false);
   const [cli, setCli] = useState<Client | ClientFormData>();
   const toast = useToast();
   const form = useForm({
@@ -46,7 +38,6 @@ const AddClientScreen = () => {
   });
   const { createClient } = useClientApi();
   const onSubmit: SubmitHandler<ClientFormData> = async (data) => {
-    setSubmiting(true);
     try {
       const _client = await createClient(data);
       if (_client) {
@@ -119,8 +110,6 @@ const AddClientScreen = () => {
           });
         });
       }
-    } finally {
-      setSubmiting(false);
     }
   };
   return (

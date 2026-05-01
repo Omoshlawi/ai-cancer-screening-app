@@ -62,14 +62,11 @@ const SettingsScreen = () => {
 
   // 2FA hook handles all 2FA-related state and logic
   const {
-    twoFactorEnabled,
-    isChecking2FA,
     show2FASetup,
     showDisable2FA,
     disablePassword,
     setShowDisable2FA,
     setDisablePassword,
-    handle2FAToggle,
     handleDisable2FA,
     handle2FASetupComplete,
     handle2FASetupCancel,

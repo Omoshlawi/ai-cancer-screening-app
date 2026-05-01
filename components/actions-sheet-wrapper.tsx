@@ -15,12 +15,12 @@ import { Input, InputField, InputIcon, InputSlot } from "./ui/input";
 import { Spinner } from "./ui/spinner";
 import { VStack } from "./ui/vstack";
 
-interface RenderTriggerProps<T> {
+interface RenderTriggerProps {
   onPress: () => void;
 }
 
 type ActionSheetWrapperProps<T> = {
-  renderTrigger: (props: RenderTriggerProps<T>) => React.ReactNode;
+  renderTrigger: (props: RenderTriggerProps) => React.ReactNode;
   data: T[];
   renderItem?: (args: { item: T; close: () => void }) => React.ReactNode;
   renderPagination?: () => React.ReactNode;

@@ -2,7 +2,7 @@ import { Box } from "@/components/ui/box";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { PIN_LENGTH, PIN_MIN_LENGTH } from "@/constants/schemas";
+import { PIN_LENGTH } from "@/constants/schemas";
 import PinInputSection from "../pin/PinInputSection";
 import VirtualKeyboard from "../VirtualKeyboard";
 
@@ -129,4 +129,3 @@ export default function PinConfirmStep({
     </VStack>
   );
 }
-

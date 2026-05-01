@@ -11,7 +11,7 @@ import { useComputedColorScheme } from "@/hooks/use-color-scheme";
 import { authClient } from "@/lib/auth-client";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const TwoFactorScreen = () => {
@@ -24,47 +24,7 @@ const TwoFactorScreen = () => {
   const colorScheme = useComputedColorScheme();
   const cooldownIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Auto-send OTP when component mounts
-  useEffect(() => {
-    sendOTP();
-
-    // Cleanup interval on unmount
-    return () => {
-      if (cooldownIntervalRef.current) {
-        clearInterval(cooldownIntervalRef.current);
-      }
-    };
-  }, []);
-
-  // Handle countdown timer
-  useEffect(() => {
-    if (resendCooldown > 0) {
-      cooldownIntervalRef.current = setInterval(() => {
-        setResendCooldown((prev) => {
-          if (prev <= 1) {
-            if (cooldownIntervalRef.current) {
-              clearInterval(cooldownIntervalRef.current);
-            }
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    } else {
-      if (cooldownIntervalRef.current) {
-        clearInterval(cooldownIntervalRef.current);
-        cooldownIntervalRef.current = null;
-      }
-    }
-
-    return () => {
-      if (cooldownIntervalRef.current) {
-        clearInterval(cooldownIntervalRef.current);
-      }
-    };
-  }, [resendCooldown]);
-
-  const sendOTP = async () => {
+  const sendOTP = useCallback(async () => {
     setIsSendingOTP(true);
     try {
       const result = await authClient.twoFactor.sendOtp();
@@ -129,7 +89,47 @@ const TwoFactorScreen = () => {
     } finally {
       setIsSendingOTP(false);
     }
-  };
+  }, [toast]);
+
+  // Auto-send OTP when component mounts
+  useEffect(() => {
+    sendOTP();
+
+    // Cleanup interval on unmount
+    return () => {
+      if (cooldownIntervalRef.current) {
+        clearInterval(cooldownIntervalRef.current);
+      }
+    };
+  }, [sendOTP]);
+
+  // Handle countdown timer
+  useEffect(() => {
+    if (resendCooldown > 0) {
+      cooldownIntervalRef.current = setInterval(() => {
+        setResendCooldown((prev) => {
+          if (prev <= 1) {
+            if (cooldownIntervalRef.current) {
+              clearInterval(cooldownIntervalRef.current);
+            }
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else {
+      if (cooldownIntervalRef.current) {
+        clearInterval(cooldownIntervalRef.current);
+        cooldownIntervalRef.current = null;
+      }
+    }
+
+    return () => {
+      if (cooldownIntervalRef.current) {
+        clearInterval(cooldownIntervalRef.current);
+      }
+    };
+  }, [resendCooldown]);
 
   const handleResend = async () => {
     if (resendCooldown > 0) return;

@@ -1,6 +1,5 @@
 import { useOfflineClients } from "@/hooks/useClients";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
-import { mmkvStorage } from "@/lib/storage";
 import { ClientFormData } from "@/types/client";
 import dayjs from "dayjs";
 import { router } from "expo-router";
@@ -68,7 +67,6 @@ const OfflineClients = () => {
 export default OfflineClients;
 
 const Item = (item: ClientFormData) => {
-  const { removeOfflineClient } = useOfflineClients();
   const age = dayjs().diff(dayjs(item.dateOfBirth), "years");
   const [showActionsheet, setShowActionsheet] = React.useState(false);
 

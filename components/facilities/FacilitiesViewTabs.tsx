@@ -1,4 +1,4 @@
-import { GridIcon, ListIcon, MapIcon } from "lucide-react-native";
+import { GridIcon, ListIcon } from "lucide-react-native";
 import React, { FC } from "react";
 import { Button, ButtonIcon } from "../ui/button";
 import { HStack } from "../ui/hstack";

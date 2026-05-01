@@ -4,7 +4,7 @@ import {
   default as CommunityDateTimePicker,
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import { default as React, useCallback, useState } from "react";
+import { default as React, useCallback, useMemo, useState } from "react";
 
 type DateTimePickerTriggerProps = {
   onPress: () => void;
@@ -29,7 +29,7 @@ const DateTimePickerInput: React.FC<DateTimePickerProps> = ({
   renderTrigger,
 }) => {
   const [isPickerShow, setIsPickerShow] = useState<boolean>(false);
-  const now = new Date();
+  const now = useMemo(() => new Date(), []);
   const [androidDateTime, setAndroidDateTime] = useState<{
     date: Date;
     time: Date;
@@ -88,7 +88,7 @@ const DateTimePickerInput: React.FC<DateTimePickerProps> = ({
         setIsPickerShow(false);
       }
     },
-    [mode, androidDateTime, onDateChanged, date]
+    [mode, androidDateTime, onDateChanged, date, now]
   );
 
   const handleIosChange = useCallback(
