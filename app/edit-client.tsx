@@ -1,6 +1,6 @@
 import AddressFieldsInput from "@/components/client/form/AddressFieldsInput";
 import DateTimePickerInput from "@/components/date-time-picker";
-import { ScreenLayout } from "@/components/layout";
+import { KeyboardAvoidingLayout, ScreenLayout } from "@/components/layout";
 import { ErrorState, When } from "@/components/state-full-widgets";
 import Toaster from "@/components/toaster";
 import { Box } from "@/components/ui/box";
@@ -56,8 +56,6 @@ import {
 } from "lucide-react-native";
 import React, { useMemo } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { ScrollView } from "react-native";
-
 import FormStepHeader from "@/components/ui/form-step-header";
 
 const EditClient = () => {
@@ -169,8 +167,8 @@ const Form = ({ client }: { client: Client }) => {
         description="Update client details for registration"
       />
       <Box className="flex-1 w-full">
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <Card>
+        <KeyboardAvoidingLayout>
+          <Card className="flex-1">
             <VStack space="xs">
               <Controller
                 control={form.control}
@@ -490,7 +488,7 @@ const Form = ({ client }: { client: Client }) => {
               </Button>
             </VStack>
           </Card>
-        </ScrollView>
+        </KeyboardAvoidingLayout>
       </Box>
     </VStack>
   );

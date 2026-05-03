@@ -10,7 +10,7 @@ import {
   SexualHealthHistory,
   SmokingHistory,
 } from "@/components/client/screening-form";
-import { ScreenLayout } from "@/components/layout";
+import { KeyboardAvoidingLayout, ScreenLayout } from "@/components/layout";
 import Toaster from "@/components/toaster";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -29,7 +29,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { ActivityIndicator, ScrollView } from "react-native";
+import { ActivityIndicator } from "react-native";
 import { FormStepper } from "@/components/ui/form-stepper";
 import { Box } from "@/components/ui/box";
 import {
@@ -166,11 +166,7 @@ const ScreenClientScreen = () => {
             </Text>
           </Card>
           <Card size="md" variant="elevated" className="flex-1 p-0 overflow-hidden">
-            <ScrollView 
-              contentContainerStyle={{ flexGrow: 1 }} 
-              showsVerticalScrollIndicator={false}
-              keyboardShouldPersistTaps="handled"
-            >
+            <KeyboardAvoidingLayout>
               <Box className="p-4 flex-1">
                 {!hasLocation ? (
                   <LocationCaptureBlock
@@ -243,7 +239,7 @@ const ScreenClientScreen = () => {
                   </>
                 )}
               </Box>
-            </ScrollView>
+            </KeyboardAvoidingLayout>
           </Card>
         </VStack>
       </FormProvider>

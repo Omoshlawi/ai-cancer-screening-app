@@ -1,5 +1,5 @@
 import DateTimePickerInput from "@/components/date-time-picker";
-import { ScreenLayout } from "@/components/layout";
+import { KeyboardAvoidingLayout, ScreenLayout } from "@/components/layout";
 import Toaster from "@/components/toaster";
 import {
   Button,
@@ -144,40 +144,157 @@ const FollowUpScreen = () => {
   };
   return (
     <ScreenLayout title="Add Followup">
-      <FormControl className="p-4 w-full bg-background-50">
-        <VStack space="lg">
-          <Controller
-            control={form.control}
-            name="startDate"
-            render={({ field, fieldState: { invalid, error } }) => (
-              <DateTimePickerInput
-                date={field.value instanceof Date ? field.value : undefined}
-                onDateChanged={field.onChange}
-                renderTrigger={({ onPress, formattedDate }) => (
+      <KeyboardAvoidingLayout>
+        <FormControl className="p-4 w-full bg-background-50">
+          <VStack space="lg">
+            <Controller
+              control={form.control}
+              name="startDate"
+              render={({ field, fieldState: { invalid, error } }) => (
+                <DateTimePickerInput
+                  date={field.value instanceof Date ? field.value : undefined}
+                  onDateChanged={field.onChange}
+                  renderTrigger={({ onPress, formattedDate }) => (
+                    <FormControl
+                      isInvalid={invalid}
+                      size="md"
+                      isDisabled={false}
+                      isReadOnly={true}
+                      isRequired={false}
+                      className="w-full"
+                    >
+                      <FormControlLabel>
+                        <FormControlLabelText>StartDate</FormControlLabelText>
+                      </FormControlLabel>
+                      <Input className="my-1">
+                        <InputField
+                          placeholder="Start date"
+                          value={formattedDate}
+                        />
+                        <InputSlot
+                          className="absolute inset-0"
+                          onPress={onPress}
+                        />
+                        <InputSlot className="px-3" onPress={onPress}>
+                          <InputIcon as={Calendar} />
+                        </InputSlot>
+                      </Input>
+
+                      {error && (
+                        <FormControlError>
+                          <FormControlErrorIcon
+                            as={AlertCircleIcon}
+                            className="text-error-500"
+                          />
+                          <FormControlErrorText className="text-error-500">
+                            {error.message}
+                          </FormControlErrorText>
+                        </FormControlError>
+                      )}
+                    </FormControl>
+                  )}
+                />
+              )}
+            />
+            <Controller
+              control={form.control}
+              name="dueDate"
+              render={({ field, fieldState: { invalid, error } }) => (
+                <DateTimePickerInput
+                  date={field.value instanceof Date ? field.value : undefined}
+                  onDateChanged={field.onChange}
+                  renderTrigger={({ onPress, formattedDate }) => (
+                    <FormControl
+                      isInvalid={invalid}
+                      size="md"
+                      isDisabled={false}
+                      isReadOnly={true}
+                      isRequired={false}
+                      className="w-full"
+                    >
+                      <FormControlLabel>
+                        <FormControlLabelText>Due date</FormControlLabelText>
+                      </FormControlLabel>
+                      <Input className="my-1">
+                        <InputField
+                          placeholder="Due date"
+                          value={formattedDate}
+                        />
+                        <InputSlot
+                          className="absolute inset-0"
+                          onPress={onPress}
+                        />
+                        <InputSlot className="px-3" onPress={onPress}>
+                          <InputIcon as={Calendar} />
+                        </InputSlot>
+                      </Input>
+
+                      {error && (
+                        <FormControlError>
+                          <FormControlErrorIcon
+                            as={AlertCircleIcon}
+                            className="text-error-500"
+                          />
+                          <FormControlErrorText className="text-error-500">
+                            {error.message}
+                          </FormControlErrorText>
+                        </FormControlError>
+                      )}
+                    </FormControl>
+                  )}
+                />
+              )}
+            />
+            <Controller
+              control={form.control}
+              name="priority"
+              render={({ field, fieldState: { invalid, error } }) => {
+                const selectedPriority = priorities.find(
+                  (c) => c.value === field.value,
+                );
+                return (
                   <FormControl
                     isInvalid={invalid}
                     size="md"
                     isDisabled={false}
-                    isReadOnly={true}
+                    isReadOnly={false}
                     isRequired={false}
                     className="w-full"
                   >
                     <FormControlLabel>
-                      <FormControlLabelText>StartDate</FormControlLabelText>
+                      <FormControlLabelText>Priority</FormControlLabelText>
                     </FormControlLabel>
-                    <Input className="my-1">
-                      <InputField
-                        placeholder="Start date"
-                        value={formattedDate}
-                      />
-                      <InputSlot
-                        className="absolute inset-0"
-                        onPress={onPress}
-                      />
-                      <InputSlot className="px-3" onPress={onPress}>
-                        <InputIcon as={Calendar} />
-                      </InputSlot>
-                    </Input>
+                    <Select
+                      className="w-full"
+                      selectedValue={field.value}
+                      onValueChange={(value) =>
+                        field.onChange(value as FollowUpFormData["priority"])
+                      }
+                    >
+                      <SelectTrigger variant="outline">
+                        <SelectInput
+                          placeholder="Select option"
+                          className="flex-1"
+                          value={selectedPriority?.label}
+                        />
+                        <SelectIcon className="mr-3" as={ChevronDownIcon} />
+                      </SelectTrigger>
+                      <SelectPortal>
+                        <SelectBackdrop />
+                        <SelectContent>
+                          <SelectDragIndicatorWrapper>
+                            <SelectDragIndicator />
+                          </SelectDragIndicatorWrapper>
+                          {priorities.map((maritalStatus, i) => (
+                            <SelectItem
+                              label={maritalStatus.label}
+                              value={maritalStatus.value}
+                              key={maritalStatus.value}
+                            />
+                          ))}
+                        </SelectContent>
+                      </SelectPortal>
+                    </Select>
 
                     {error && (
                       <FormControlError>
@@ -191,42 +308,61 @@ const FollowUpScreen = () => {
                       </FormControlError>
                     )}
                   </FormControl>
-                )}
-              />
-            )}
-          />
-          <Controller
-            control={form.control}
-            name="dueDate"
-            render={({ field, fieldState: { invalid, error } }) => (
-              <DateTimePickerInput
-                date={field.value instanceof Date ? field.value : undefined}
-                onDateChanged={field.onChange}
-                renderTrigger={({ onPress, formattedDate }) => (
+                );
+              }}
+            />
+            <Controller
+              control={form.control}
+              name="category"
+              render={({ field, fieldState: { invalid, error } }) => {
+                const selectedCategory = categories.find(
+                  (c) => c.value === field.value,
+                );
+                return (
                   <FormControl
                     isInvalid={invalid}
                     size="md"
-                    isDisabled={false}
-                    isReadOnly={true}
+                    isDisabled={!!referralId}
+                    isReadOnly={false}
                     isRequired={false}
                     className="w-full"
                   >
                     <FormControlLabel>
-                      <FormControlLabelText>Due date</FormControlLabelText>
+                      <FormControlLabelText>
+                        FollowUp Category
+                      </FormControlLabelText>
                     </FormControlLabel>
-                    <Input className="my-1">
-                      <InputField
-                        placeholder="Due date"
-                        value={formattedDate}
-                      />
-                      <InputSlot
-                        className="absolute inset-0"
-                        onPress={onPress}
-                      />
-                      <InputSlot className="px-3" onPress={onPress}>
-                        <InputIcon as={Calendar} />
-                      </InputSlot>
-                    </Input>
+                    <Select
+                      className="w-full"
+                      selectedValue={field.value}
+                      onValueChange={(value) =>
+                        field.onChange(value as FollowUpFormData["priority"])
+                      }
+                    >
+                      <SelectTrigger variant="outline">
+                        <SelectInput
+                          placeholder="Select option"
+                          className="flex-1"
+                          value={selectedCategory?.label}
+                        />
+                        <SelectIcon className="mr-3" as={ChevronDownIcon} />
+                      </SelectTrigger>
+                      <SelectPortal>
+                        <SelectBackdrop />
+                        <SelectContent>
+                          <SelectDragIndicatorWrapper>
+                            <SelectDragIndicator />
+                          </SelectDragIndicatorWrapper>
+                          {categories.map((category, i) => (
+                            <SelectItem
+                              label={category.label}
+                              value={category.value}
+                              key={category.value}
+                            />
+                          ))}
+                        </SelectContent>
+                      </SelectPortal>
+                    </Select>
 
                     {error && (
                       <FormControlError>
@@ -240,159 +376,25 @@ const FollowUpScreen = () => {
                       </FormControlError>
                     )}
                   </FormControl>
-                )}
-              />
-            )}
-          />
-          <Controller
-            control={form.control}
-            name="priority"
-            render={({ field, fieldState: { invalid, error } }) => {
-              const selectedPriority = priorities.find(
-                (c) => c.value === field.value,
-              );
-              return (
-                <FormControl
-                  isInvalid={invalid}
-                  size="md"
-                  isDisabled={false}
-                  isReadOnly={false}
-                  isRequired={false}
-                  className="w-full"
-                >
-                  <FormControlLabel>
-                    <FormControlLabelText>Priority</FormControlLabelText>
-                  </FormControlLabel>
-                  <Select
-                    className="w-full"
-                    selectedValue={field.value}
-                    onValueChange={(value) =>
-                      field.onChange(value as FollowUpFormData["priority"])
-                    }
-                  >
-                    <SelectTrigger variant="outline">
-                      <SelectInput
-                        placeholder="Select option"
-                        className="flex-1"
-                        value={selectedPriority?.label}
-                      />
-                      <SelectIcon className="mr-3" as={ChevronDownIcon} />
-                    </SelectTrigger>
-                    <SelectPortal>
-                      <SelectBackdrop />
-                      <SelectContent>
-                        <SelectDragIndicatorWrapper>
-                          <SelectDragIndicator />
-                        </SelectDragIndicatorWrapper>
-                        {priorities.map((maritalStatus, i) => (
-                          <SelectItem
-                            label={maritalStatus.label}
-                            value={maritalStatus.value}
-                            key={maritalStatus.value}
-                          />
-                        ))}
-                      </SelectContent>
-                    </SelectPortal>
-                  </Select>
-
-                  {error && (
-                    <FormControlError>
-                      <FormControlErrorIcon
-                        as={AlertCircleIcon}
-                        className="text-error-500"
-                      />
-                      <FormControlErrorText className="text-error-500">
-                        {error.message}
-                      </FormControlErrorText>
-                    </FormControlError>
-                  )}
-                </FormControl>
-              );
-            }}
-          />
-          <Controller
-            control={form.control}
-            name="category"
-            render={({ field, fieldState: { invalid, error } }) => {
-              const selectedCategory = categories.find(
-                (c) => c.value === field.value,
-              );
-              return (
-                <FormControl
-                  isInvalid={invalid}
-                  size="md"
-                  isDisabled={!!referralId}
-                  isReadOnly={false}
-                  isRequired={false}
-                  className="w-full"
-                >
-                  <FormControlLabel>
-                    <FormControlLabelText>
-                      FollowUp Category
-                    </FormControlLabelText>
-                  </FormControlLabel>
-                  <Select
-                    className="w-full"
-                    selectedValue={field.value}
-                    onValueChange={(value) =>
-                      field.onChange(value as FollowUpFormData["priority"])
-                    }
-                  >
-                    <SelectTrigger variant="outline">
-                      <SelectInput
-                        placeholder="Select option"
-                        className="flex-1"
-                        value={selectedCategory?.label}
-                      />
-                      <SelectIcon className="mr-3" as={ChevronDownIcon} />
-                    </SelectTrigger>
-                    <SelectPortal>
-                      <SelectBackdrop />
-                      <SelectContent>
-                        <SelectDragIndicatorWrapper>
-                          <SelectDragIndicator />
-                        </SelectDragIndicatorWrapper>
-                        {categories.map((category, i) => (
-                          <SelectItem
-                            label={category.label}
-                            value={category.value}
-                            key={category.value}
-                          />
-                        ))}
-                      </SelectContent>
-                    </SelectPortal>
-                  </Select>
-
-                  {error && (
-                    <FormControlError>
-                      <FormControlErrorIcon
-                        as={AlertCircleIcon}
-                        className="text-error-500"
-                      />
-                      <FormControlErrorText className="text-error-500">
-                        {error.message}
-                      </FormControlErrorText>
-                    </FormControlError>
-                  )}
-                </FormControl>
-              );
-            }}
-          />
-          <Button
-            onPress={form.handleSubmit(onSubmit)}
-            disabled={form.formState.isSubmitting}
-            className="w-full bg-primary-500 justify-between rounded-none"
-          >
-            {form.formState.isSubmitting && (
-              <ButtonSpinner className="text-typography-0" />
-            )}
-            <ButtonText size="lg" className="text-background-100">
-              Submit follow Up
-            </ButtonText>
-            <ButtonIcon as={ArrowRightIcon} />
-          </Button>
-        </VStack>
-      </FormControl>
+                );
+              }}
+            />
+            <Button
+              onPress={form.handleSubmit(onSubmit)}
+              disabled={form.formState.isSubmitting}
+              className="w-full bg-primary-500 justify-between rounded-none"
+            >
+              {form.formState.isSubmitting && (
+                <ButtonSpinner className="text-typography-0" />
+              )}
+              <ButtonText size="lg" className="text-background-100">
+                Submit follow Up
+              </ButtonText>
+              <ButtonIcon as={ArrowRightIcon} />
+            </Button>
+          </VStack>
+        </FormControl>
+      </KeyboardAvoidingLayout>
     </ScreenLayout>
   );
 };

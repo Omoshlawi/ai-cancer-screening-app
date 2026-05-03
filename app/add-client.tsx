@@ -4,7 +4,7 @@ import {
   PersonalInformation,
   SuccessSubmussion,
 } from "@/components/client/form";
-import { ScreenLayout } from "@/components/layout";
+import { KeyboardAvoidingLayout, ScreenLayout } from "@/components/layout";
 import Toaster from "@/components/toaster";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/toast";
@@ -17,7 +17,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle, IdCard, Phone, UserCircle } from "lucide-react-native";
 import React, { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { ScrollView } from "react-native";
 import { FormStepper } from "@/components/ui/form-stepper";
 import { Box } from "@/components/ui/box";
 
@@ -119,11 +118,7 @@ const AddClientScreen = () => {
              <FormStepper steps={steps} currentStep={step} />
           </Card>
           <Card size="md" variant="elevated" className="flex-1 p-0 overflow-hidden">
-            <ScrollView 
-              contentContainerStyle={{ flexGrow: 1 }} 
-              showsVerticalScrollIndicator={false}
-              keyboardShouldPersistTaps="handled"
-            >
+            <KeyboardAvoidingLayout>
               <Box className="p-4 flex-1">
                 {step === 1 && <PersonalInformation onNext={() => setStep(2)} />}
                 {step === 2 && (
@@ -140,7 +135,7 @@ const AddClientScreen = () => {
                 )}
                 {step === 4 && cli && <SuccessSubmussion client={cli} />}
               </Box>
-            </ScrollView>
+            </KeyboardAvoidingLayout>
           </Card>
         </VStack>
       </FormProvider>

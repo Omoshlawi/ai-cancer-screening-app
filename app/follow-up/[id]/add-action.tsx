@@ -1,5 +1,5 @@
 import DateTimePickerInput from "@/components/date-time-picker";
-import { ScreenLayout } from "@/components/layout";
+import { KeyboardAvoidingLayout, ScreenLayout } from "@/components/layout";
 import Toaster from "@/components/toaster";
 import {
   Button,
@@ -50,7 +50,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Calendar } from "lucide-react-native";
 import React, { useMemo } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { ScrollView } from "react-native";
 
 const AddAction = () => {
   const toast = useToast();
@@ -175,7 +174,7 @@ const AddAction = () => {
   };
   return (
     <ScreenLayout title="Add Outreach Action">
-      <ScrollView>
+      <KeyboardAvoidingLayout>
         <FormControl className="p-4 w-full bg-background-50">
           <VStack space="lg">
             <Controller
@@ -600,7 +599,7 @@ const AddAction = () => {
             </Button>
           </VStack>
         </FormControl>
-      </ScrollView>
+      </KeyboardAvoidingLayout>
     </ScreenLayout>
   );
 };

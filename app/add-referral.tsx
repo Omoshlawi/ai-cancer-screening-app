@@ -4,7 +4,7 @@ import {
   ReferralScreening,
 } from "@/components/client/referral-form";
 import DateTimePickerInput from "@/components/date-time-picker";
-import { ScreenLayout } from "@/components/layout";
+import { KeyboardAvoidingLayout, ScreenLayout } from "@/components/layout";
 import ListTile from "@/components/list-tile";
 import { EmptyState, ErrorState } from "@/components/state-full-widgets";
 import Toaster from "@/components/toaster";
@@ -129,201 +129,203 @@ const AddReferralScreen = () => {
   return (
     <ScreenLayout title="Refer Client">
       <FormProvider {...form}>
-        <Card size="md" variant="elevated" className="flex-1">
-          <VStack space="md" className="flex-1 items-center">
-            <Controller
-              control={form.control}
-              name="clientId"
-              render={({ field, fieldState: { invalid, error } }) => (
-                <ActionSheetWrapper
-                  loading={isLoading}
-                  renderTrigger={({ onPress }) => (
-                    <FormControl
-                      isInvalid={invalid}
-                      size="md"
-                      isReadOnly
-                      className="w-full"
-                    >
-                      <FormControlLabel>
-                        <FormControlLabelText>Client</FormControlLabelText>
-                      </FormControlLabel>
-                      <Input className="my-1">
-                        <InputField
-                          placeholder="Client"
-                          {...field}
-                          value={
-                            field.value
-                              ? clients.find(
-                                  (client) => client.id === field.value,
-                                )?.firstName +
-                                " " +
-                                clients.find(
-                                  (client) => client.id === field.value,
-                                )?.lastName
-                              : ""
-                          }
-                          onChangeText={field.onChange}
-                          onPress={onPress}
-                        />
-                      </Input>
-
-                      {error && (
-                        <FormControlError>
-                          <FormControlErrorIcon
-                            as={AlertCircleIcon}
-                            className="text-error-500"
+        <Card size="md" variant="elevated" className="flex-1 p-0 overflow-hidden">
+          <KeyboardAvoidingLayout>
+            <VStack space="md" className="flex-1 items-center p-4">
+              <Controller
+                control={form.control}
+                name="clientId"
+                render={({ field, fieldState: { invalid, error } }) => (
+                  <ActionSheetWrapper
+                    loading={isLoading}
+                    renderTrigger={({ onPress }) => (
+                      <FormControl
+                        isInvalid={invalid}
+                        size="md"
+                        isReadOnly
+                        className="w-full"
+                      >
+                        <FormControlLabel>
+                          <FormControlLabelText>Client</FormControlLabelText>
+                        </FormControlLabel>
+                        <Input className="my-1">
+                          <InputField
+                            placeholder="Client"
+                            {...field}
+                            value={
+                              field.value
+                                ? clients.find(
+                                    (client) => client.id === field.value,
+                                  )?.firstName +
+                                  " " +
+                                  clients.find(
+                                    (client) => client.id === field.value,
+                                  )?.lastName
+                                : ""
+                            }
+                            onChangeText={field.onChange}
+                            onPress={onPress}
                           />
-                          <FormControlErrorText className="text-error-500">
-                            {error.message}
-                          </FormControlErrorText>
-                        </FormControlError>
-                      )}
-                    </FormControl>
-                  )}
-                  data={clients}
-                  renderItem={({ item, close }) => (
-                    <ListTile
-                      title={`${item.firstName} ${item.lastName}`}
-                      description={`Age: ${dayjs().diff(
-                        dayjs(item.dateOfBirth),
-                        "years",
-                      )} | ID: ${item.nationalId}`}
-                      leading={
-                        <Icon
-                          as={UserCircle}
-                          size="lg"
-                          className="text-typography-500"
-                        />
-                      }
-                      trailing={
-                        <Icon
-                          as={ChevronRight}
-                          size="lg"
-                          className="text-typography-500"
-                        />
-                      }
-                      onPress={() => {
-                        form.setValue("clientId", item.id);
-                        close();
-                      }}
-                    />
-                  )}
-                  renderEmptyState={() => {
-                    if (error) {
-                      return <ErrorState error={error as any} />;
-                    }
-                    return <EmptyState message="No clients found" />;
-                  }}
-                  searchable
-                  searchText={searchValue}
-                  onSearchTextChange={onSearchChange}
-                />
-              )}
-            />
-            {client_ && (
-              <ReferralScreening
-                client={clients.find((client) => client.id === clientId)!}
-              />
-            )}
-            {client_ && (
-              <ReferralFacility
-                client={clients.find((client) => client.id === clientId)!}
-              />
-            )}
-            <Controller
-              control={form.control}
-              name="appointmentTime"
-              render={({ field, fieldState: { invalid, error } }) => (
-                <DateTimePickerInput
-                  date={field.value instanceof Date ? field.value : undefined}
-                  mode="datetime"
-                  onDateChanged={field.onChange}
-                  renderTrigger={({ onPress, formattedDate }) => (
-                    <FormControl
-                      isInvalid={invalid}
-                      size="md"
-                      isDisabled={false}
-                      isReadOnly={true}
-                      isRequired={false}
-                      className="w-full"
-                    >
-                      <FormControlLabel>
-                        <FormControlLabelText>
-                          Appointment Time
-                        </FormControlLabelText>
-                      </FormControlLabel>
-                      <Input className="my-1">
-                        <InputField
-                          placeholder="Date of Birth"
-                          value={formattedDate}
-                          onPress={onPress}
-                        />
-                        <InputSlot className="px-3" onPress={onPress}>
-                          <InputIcon as={Calendar} />
-                        </InputSlot>
-                      </Input>
+                        </Input>
 
-                      {error && (
-                        <FormControlError>
-                          <FormControlErrorIcon
-                            as={AlertCircleIcon}
-                            className="text-error-500"
+                        {error && (
+                          <FormControlError>
+                            <FormControlErrorIcon
+                              as={AlertCircleIcon}
+                              className="text-error-500"
+                            />
+                            <FormControlErrorText className="text-error-500">
+                              {error.message}
+                            </FormControlErrorText>
+                          </FormControlError>
+                        )}
+                      </FormControl>
+                    )}
+                    data={clients}
+                    renderItem={({ item, close }) => (
+                      <ListTile
+                        title={`${item.firstName} ${item.lastName}`}
+                        description={`Age: ${dayjs().diff(
+                          dayjs(item.dateOfBirth),
+                          "years",
+                        )} | ID: ${item.nationalId}`}
+                        leading={
+                          <Icon
+                            as={UserCircle}
+                            size="lg"
+                            className="text-typography-500"
                           />
-                          <FormControlErrorText className="text-error-500">
-                            {error.message}
-                          </FormControlErrorText>
-                        </FormControlError>
-                      )}
-                    </FormControl>
-                  )}
-                />
-              )}
-            />
-            <Controller
-              control={form.control}
-              name="additionalNotes"
-              render={({ field, fieldState: { invalid, error } }) => (
-                <FormControl isInvalid={invalid} size="md" className="w-full">
-                  <FormControlLabel>
-                    <FormControlLabelText>
-                      Additional Notes
-                    </FormControlLabelText>
-                  </FormControlLabel>
-                  <Textarea isReadOnly={false}>
-                    <TextareaInput
-                      placeholder="Additional Notes"
-                      {...field}
-                      onChangeText={field.onChange}
-                      value={field.value}
-                    />
-                  </Textarea>
-                  {error && (
-                    <FormControlError>
-                      <FormControlErrorIcon
-                        as={AlertCircleIcon}
-                        className="text-error-500"
+                        }
+                        trailing={
+                          <Icon
+                            as={ChevronRight}
+                            size="lg"
+                            className="text-typography-500"
+                          />
+                        }
+                        onPress={() => {
+                          form.setValue("clientId", item.id);
+                          close();
+                        }}
                       />
-                      <FormControlErrorText className="text-error-500">
-                        {error.message}
-                      </FormControlErrorText>
-                    </FormControlError>
-                  )}
-                </FormControl>
+                    )}
+                    renderEmptyState={() => {
+                      if (error) {
+                        return <ErrorState error={error as any} />;
+                      }
+                      return <EmptyState message="No clients found" />;
+                    }}
+                    searchable
+                    searchText={searchValue}
+                    onSearchTextChange={onSearchChange}
+                  />
+                )}
+              />
+              {client_ && (
+                <ReferralScreening
+                  client={clients.find((client) => client.id === clientId)!}
+                />
               )}
-            />
-            <Button
-              action="primary"
-              className="w-full bg-primary-500 justify-between"
-              onPress={form.handleSubmit(onSubmit)}
-              disabled={form.formState.isSubmitting}
-            >
-              {form.formState.isSubmitting && (
-                <ButtonSpinner className="text-typography-0" />
+              {client_ && (
+                <ReferralFacility
+                  client={clients.find((client) => client.id === clientId)!}
+                />
               )}
-              <ButtonText>Submit</ButtonText>
-              <ButtonIcon as={ArrowRightIcon} />
-            </Button>
-          </VStack>
+              <Controller
+                control={form.control}
+                name="appointmentTime"
+                render={({ field, fieldState: { invalid, error } }) => (
+                  <DateTimePickerInput
+                    date={field.value instanceof Date ? field.value : undefined}
+                    mode="datetime"
+                    onDateChanged={field.onChange}
+                    renderTrigger={({ onPress, formattedDate }) => (
+                      <FormControl
+                        isInvalid={invalid}
+                        size="md"
+                        isDisabled={false}
+                        isReadOnly={true}
+                        isRequired={false}
+                        className="w-full"
+                      >
+                        <FormControlLabel>
+                          <FormControlLabelText>
+                            Appointment Time
+                          </FormControlLabelText>
+                        </FormControlLabel>
+                        <Input className="my-1">
+                          <InputField
+                            placeholder="Date of Birth"
+                            value={formattedDate}
+                            onPress={onPress}
+                          />
+                          <InputSlot className="px-3" onPress={onPress}>
+                            <InputIcon as={Calendar} />
+                          </InputSlot>
+                        </Input>
+
+                        {error && (
+                          <FormControlError>
+                            <FormControlErrorIcon
+                              as={AlertCircleIcon}
+                              className="text-error-500"
+                            />
+                            <FormControlErrorText className="text-error-500">
+                              {error.message}
+                            </FormControlErrorText>
+                          </FormControlError>
+                        )}
+                      </FormControl>
+                    )}
+                  />
+                )}
+              />
+              <Controller
+                control={form.control}
+                name="additionalNotes"
+                render={({ field, fieldState: { invalid, error } }) => (
+                  <FormControl isInvalid={invalid} size="md" className="w-full">
+                    <FormControlLabel>
+                      <FormControlLabelText>
+                        Additional Notes
+                      </FormControlLabelText>
+                    </FormControlLabel>
+                    <Textarea isReadOnly={false}>
+                      <TextareaInput
+                        placeholder="Additional Notes"
+                        {...field}
+                        onChangeText={field.onChange}
+                        value={field.value}
+                      />
+                    </Textarea>
+                    {error && (
+                      <FormControlError>
+                        <FormControlErrorIcon
+                          as={AlertCircleIcon}
+                          className="text-error-500"
+                        />
+                        <FormControlErrorText className="text-error-500">
+                          {error.message}
+                        </FormControlErrorText>
+                      </FormControlError>
+                    )}
+                  </FormControl>
+                )}
+              />
+              <Button
+                action="primary"
+                className="w-full bg-primary-500 justify-between"
+                onPress={form.handleSubmit(onSubmit)}
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting && (
+                  <ButtonSpinner className="text-typography-0" />
+                )}
+                <ButtonText>Submit</ButtonText>
+                <ButtonIcon as={ArrowRightIcon} />
+              </Button>
+            </VStack>
+          </KeyboardAvoidingLayout>
         </Card>
       </FormProvider>
     </ScreenLayout>
