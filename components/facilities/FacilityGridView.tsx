@@ -1,7 +1,8 @@
 import { useHealthFacilities } from "@/hooks/useHealthFacilities";
+import { useResponsive } from "@/hooks/use-responsive";
 import { Hospital, Info, MapPin, User } from "lucide-react-native";
 import React from "react";
-import { Dimensions, FlatList } from "react-native";
+import { FlatList } from "react-native";
 import Pagination from "../Pagination";
 import { EmptyState, ErrorState } from "../state-full-widgets";
 import { Box } from "../ui/box";
@@ -14,11 +15,7 @@ import { Spinner } from "../ui/spinner";
 import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
-const CARD_PADDING = 16; // Padding from parent container
-const GAP = 8; // Gap between cards
-const NUM_COLUMNS = 2;
-const CARD_WIDTH = (SCREEN_WIDTH - CARD_PADDING * 2 - GAP) / NUM_COLUMNS;
+const GAP = 12;
 
 type FacilityGridViewProps = {
   search?: string;
@@ -26,11 +23,16 @@ type FacilityGridViewProps = {
 };
 
 const FacilityGridView = ({ search, typeId }: FacilityGridViewProps) => {
+  const { width, isLargeTablet, isTablet } = useResponsive();
   const { healthFacilities, error, isLoading, ...pagination } =
     useHealthFacilities({
       search: search || "",
       typeId: typeId || "",
     });
+
+  const numColumns = isLargeTablet ? 4 : isTablet ? 3 : 2;
+  const horizontalChrome = isLargeTablet ? 72 : isTablet ? 56 : 40;
+  const cardWidth = (width - horizontalChrome - GAP * (numColumns - 1)) / numColumns;
 
   if (isLoading) {
     return <Spinner />;
@@ -44,7 +46,8 @@ const FacilityGridView = ({ search, typeId }: FacilityGridViewProps) => {
       <FlatList
         data={healthFacilities}
         keyExtractor={(item) => item.id}
-        numColumns={NUM_COLUMNS}
+        key={numColumns}
+        numColumns={numColumns}
         columnWrapperStyle={{
           justifyContent: "space-between",
           marginBottom: GAP,
@@ -52,9 +55,16 @@ const FacilityGridView = ({ search, typeId }: FacilityGridViewProps) => {
         contentContainerStyle={{ paddingBottom: GAP }}
         ListEmptyComponent={<EmptyState message="No facilities found" />}
         renderItem={({ item }) => (
-          <Card size="md" variant="elevated" style={{ width: CARD_WIDTH }}>
+          <Card
+            size="md"
+            variant="elevated"
+            style={{ width: cardWidth, minHeight: isTablet ? 220 : undefined }}
+          >
             <VStack space="sm" className="flex-1">
-              <Box className="w-full h-24 rounded-sm relative">
+              <Box
+                className="w-full rounded-sm relative"
+                style={{ height: isTablet ? 110 : 96 }}
+              >
                 {item?.logo ? (
                   <Image
                     source={{

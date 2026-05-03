@@ -1,6 +1,7 @@
 import { router } from "expo-router";
 import { UserCircle } from "lucide-react-native";
 import React, { FC } from "react";
+import { useResponsive } from "@/hooks/use-responsive";
 import Logo from "../Logo";
 import { Box } from "../ui/box";
 import { Button } from "../ui/button";
@@ -15,17 +16,24 @@ type CHPLandingScreenLayoutProps = {
 const CHPLandingScreenLayout: FC<CHPLandingScreenLayoutProps> = ({
   children,
 }) => {
+  const { contentMaxWidth, horizontalPadding, isTablet } = useResponsive();
+
   return (
     <SafeAreaScreen mode="padded">
       <VStack className="flex-1 bg-background-50 h-full w-full">
         {/* APP bar */}
         <HStack
-          className="justify-between items-center p-4 bg-background-0"
-          style={{ height: 56 }}
+          className="justify-between items-center bg-background-0 w-full self-center"
+          style={{
+            height: isTablet ? 72 : 56,
+            maxWidth: contentMaxWidth,
+            paddingHorizontal: horizontalPadding,
+            paddingVertical: isTablet ? 16 : 12,
+          }}
         >
           <Logo
             size="sm"
-            className="h-full aspect-square"
+            className="h-full aspect-square max-w-[180px]"
             resizeMode="contain"
             mode="name"
           />
@@ -47,7 +55,12 @@ const CHPLandingScreenLayout: FC<CHPLandingScreenLayoutProps> = ({
             </Button>
           </HStack>
         </HStack>
-        <Box className="flex-1 w-full">{children}</Box>
+        <Box
+          className="flex-1 w-full self-center"
+          style={{ maxWidth: contentMaxWidth }}
+        >
+          {children}
+        </Box>
       </VStack>
     </SafeAreaScreen>
   );

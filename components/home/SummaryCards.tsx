@@ -14,11 +14,13 @@ import {
 } from "lucide-react-native";
 import React, { useMemo } from "react";
 import { Pressable } from "react-native";
+import { useResponsive } from "@/hooks/use-responsive";
 import { Box } from "../ui/box";
 import { Card } from "../ui/card";
 import { Icon } from "../ui/icon";
 import { Text } from "../ui/text";
 const SummaryCards = () => {
+  const { isLargeTablet, isTablet } = useResponsive();
   const { totalCount: screeningsCount } = useScreenings({
     screeningDateFrom: dayjs().startOf("day").toISOString(),
     screeningDateTo: dayjs().endOf("day").toISOString(),
@@ -72,12 +74,21 @@ const SummaryCards = () => {
       },
     ];
   }, [clientsCount, screeningsCount, highriskClientsCount, followUpCount]);
+
+  const columns = isLargeTablet ? 4 : isTablet ? 2 : 2;
+  const gap = 8;
+  const widthPercent = `calc(${100 / columns}% - ${gap}px)`;
+
   return (
     <Box className="w-full flex flex-row flex-wrap gap-2 mt-4">
       {cards.map((card, index) => (
         <Pressable
           key={index}
-          className="flex-1 min-w-[48%] w-[48%]"
+          className="flex-1"
+          style={{
+            minWidth: isLargeTablet ? 0 : isTablet ? 240 : 150,
+            width: widthPercent as never,
+          }}
           onPress={() => {
             if (card.title === "Today's Screenings") {
               router.push("/screenings-today");
@@ -88,7 +99,11 @@ const SummaryCards = () => {
             }
           }}
         >
-          <Card size="lg" className="rounded-none p-3 gap-3 bg-background-0">
+          <Card
+            size="lg"
+            className="rounded-none gap-3 bg-background-0"
+            style={{ padding: isTablet ? 20 : 12, minHeight: isTablet ? 132 : 0 }}
+          >
             <Box className="flex-row items-center gap-2 justify-between">
               <Text className="font-bold text-2xl">{card.value}</Text>
               <Icon

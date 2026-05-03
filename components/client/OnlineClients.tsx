@@ -8,6 +8,7 @@ import { router } from "expo-router";
 import { ArrowRight, Dot, MapPin, Phone } from "lucide-react-native";
 import { useMemo, useState } from "react";
 import { FlatList } from "react-native";
+import { useResponsive } from "@/hooks/use-responsive";
 import Pagination from "../Pagination";
 import { EmptyState, ErrorState, When } from "../state-full-widgets";
 import { Box } from "../ui/box";
@@ -21,6 +22,7 @@ import { VStack } from "../ui/vstack";
 import ClientFilter from "./ClientFilter";
 
 const OnlineClients = () => {
+  const { isTablet } = useResponsive();
   const [search, setSearch] = useState("");
   const [level, setLevel] = useState<RiskInterpretation | "">("");
   const [owner, setOwner] = useState<"all" | "mine">("all");
@@ -70,7 +72,11 @@ const OnlineClients = () => {
                 renderItem={({ item }) => {
                   const age = dayjs().diff(dayjs(item.dateOfBirth), "years");
                   return (
-                    <Card size="md" variant="elevated">
+                    <Card
+                      size="md"
+                      variant="elevated"
+                      style={{ padding: isTablet ? 20 : undefined }}
+                    >
                       <VStack space="md">
                         <HStack className="justify-between items-center">
                           <Heading size="sm">
@@ -129,10 +135,15 @@ const OnlineClients = () => {
                         <HStack
                           className="justify-between w-full flex"
                           space="md"
+                          style={{
+                            alignItems: isTablet ? "center" : "flex-start",
+                            flexWrap: isTablet ? "nowrap" : "wrap",
+                          }}
                         >
                           <HStack
                             className="items-center flex flex-1"
                             space="lg"
+                            style={{ minWidth: 0 }}
                           >
                             <Icon
                               as={MapPin}
@@ -150,6 +161,9 @@ const OnlineClients = () => {
                             action="positive"
                             size="sm"
                             className="bg-primary-500"
+                            style={{
+                              alignSelf: isTablet ? "center" : "flex-start",
+                            }}
                             onPress={() =>
                               router.push({
                                 pathname: "/client-detail",

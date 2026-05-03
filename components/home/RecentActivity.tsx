@@ -1,4 +1,5 @@
 import { useActivities } from "@/hooks/useActivities";
+import { useResponsive } from "@/hooks/use-responsive";
 import {
   getFollowUpCategoryDisply,
   getPriorityDisplay,
@@ -25,6 +26,7 @@ import { Center } from "../ui/center";
 dayjs.extend(relativeTime);
 
 const RecentActivity = () => {
+  const { isTablet } = useResponsive();
   const { activities, error, isLoading } = useActivities({
     limit: "5",
   });
@@ -59,7 +61,10 @@ const RecentActivity = () => {
             );
 
           return (
-            <Card className="bg-background-0 flex-col gap-2 mt-2">
+            <Card
+              className="bg-background-0 flex-col gap-2 mt-2"
+              style={{ padding: isTablet ? 20 : undefined }}
+            >
               {activities?.map((activity) => (
                 <ListTile
                   key={activity.id}

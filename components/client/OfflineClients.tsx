@@ -6,6 +6,7 @@ import { router } from "expo-router";
 import { ArrowRight, Dot, MapPin, Phone } from "lucide-react-native";
 import React, { useMemo, useState } from "react";
 import { FlatList } from "react-native";
+import { useResponsive } from "@/hooks/use-responsive";
 import { EmptyState } from "../state-full-widgets";
 import {
   Actionsheet,
@@ -27,6 +28,7 @@ import { VStack } from "../ui/vstack";
 import ClientFilter from "./ClientFilter";
 
 const OfflineClients = () => {
+  const { isTablet } = useResponsive();
   const [search, setSearch] = useState("");
   const [debouncedSearch] = useDebouncedValue(search, 500);
   const { clients } = useOfflineClients();
@@ -56,7 +58,7 @@ const OfflineClients = () => {
           ItemSeparatorComponent={() => <Box className="h-2" />}
           ListEmptyComponent={() => <EmptyState message="No clients found" />}
           renderItem={({ item }) => {
-            return <Item {...item} />;
+            return <Item {...item} isTablet={isTablet} />;
           }}
         />
       </Box>
@@ -66,12 +68,20 @@ const OfflineClients = () => {
 
 export default OfflineClients;
 
-const Item = (item: ClientFormData) => {
+const Item = (
+  item: ClientFormData & {
+    isTablet: boolean;
+  },
+) => {
   const age = dayjs().diff(dayjs(item.dateOfBirth), "years");
   const [showActionsheet, setShowActionsheet] = React.useState(false);
 
   return (
-    <Card size="md" variant="elevated">
+    <Card
+      size="md"
+      variant="elevated"
+      style={{ padding: item.isTablet ? 20 : undefined }}
+    >
       <VStack space="md">
         <Heading size="sm">
           {item.firstName} {item.lastName}
@@ -91,7 +101,14 @@ const Item = (item: ClientFormData) => {
             {item.phoneNumber}
           </Text>
         </HStack>
-        <HStack className="justify-between w-full flex" space="md">
+        <HStack
+          className="justify-between w-full flex"
+          space="md"
+          style={{
+            alignItems: item.isTablet ? "center" : "flex-start",
+            flexWrap: item.isTablet ? "nowrap" : "wrap",
+          }}
+        >
           <HStack className="items-center flex flex-1" space="lg">
             <Icon as={MapPin} size="xs" className="text-typography-500" />
             <Text size="sm" className="text-typography-500">
@@ -102,6 +119,7 @@ const Item = (item: ClientFormData) => {
             action="positive"
             size="sm"
             className="bg-primary-500"
+            style={{ alignSelf: item.isTablet ? "center" : "flex-start" }}
             onPress={() => {
               setShowActionsheet(true);
             }}

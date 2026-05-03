@@ -1,4 +1,5 @@
 import { RiskInterpretation } from "@/types/screening";
+import { useResponsive } from "@/hooks/use-responsive";
 import { ChevronDownIcon, FilterIcon, Search } from "lucide-react-native";
 import React, { FC, useMemo } from "react";
 import { TouchableOpacity } from "react-native";
@@ -44,6 +45,7 @@ const ClientFilter: FC<ClientFilterProps> = ({
   owner,
   mode = "online",
 }) => {
+  const { isTablet } = useResponsive();
   const levels = useMemo<
     { label: string; value: RiskInterpretation | "" }[]
   >(() => {
@@ -87,7 +89,11 @@ const ClientFilter: FC<ClientFilterProps> = ({
         </Input>
         {mode === "online" && (
           <>
-            <HStack space="sm" className="w-full justify-between items-center">
+            <HStack
+              space="sm"
+              className="w-full justify-between items-center"
+              style={{ alignItems: isTablet ? "center" : "flex-start" }}
+            >
               <Icon as={FilterIcon} size="md" className="text-typography-500" />
               <Select
                 className="flex-1"
@@ -125,7 +131,7 @@ const ClientFilter: FC<ClientFilterProps> = ({
             {count} Found Client{count !== 1 ? "s" : ""}
           </Text>
           {mode === "online" && (
-            <Box className="flex-row gap-2">
+            <Box className="flex-row gap-2" style={{ flexWrap: "wrap" }}>
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => onOwnerChange?.("all")}
