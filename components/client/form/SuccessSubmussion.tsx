@@ -21,10 +21,10 @@ const SuccessSubmussion = ({ client }: SuccessSubmussionProps) => {
         size="sm"
         className="text-primary-500 rounded-full p-6 bg-primary-100"
       />
-      <Heading size="sm" className="text-typography-500">
+      <Heading size="md" className="text-typography-500">
         Client Successfully Registered
       </Heading>
-      <Text size="sm" className="text-typography-500">
+      <Text size="md" className="text-typography-500">
         {client.firstName} {client.lastName} has been added to your client list
       </Text>
 
@@ -33,18 +33,17 @@ const SuccessSubmussion = ({ client }: SuccessSubmussionProps) => {
           space="sm"
           className="w-full bg-background-100 p-4 items-center justify-center "
         >
-          <Text size="sm" className="text-typography-500">
+          <Text size="md" className="text-typography-500">
             Client ID:
           </Text>
-          <Heading size="sm" className="text-typography-500">
+          <Heading size="md" className="text-typography-500">
             {(client as Client).id}
           </Heading>
         </VStack>
       )}
       <Button
         action="primary"
-        size="sm"
-        className="w-full bg-primary-500 rounded-none"
+        className="w-full bg-primary-500"
         onPress={() =>
           router.push({
             pathname: "/screen-client",
@@ -60,16 +59,14 @@ const SuccessSubmussion = ({ client }: SuccessSubmussionProps) => {
       <HStack space="sm" className="w-full">
         <Button
           action="secondary"
-          size="sm"
-          className="flex-1  rounded-none"
+          className="flex-1"
           onPress={() => router.push("/(tabs)/clients")}
         >
           <ButtonText>View All Clients</ButtonText>
         </Button>
         <Button
           action="secondary"
-          size="sm"
-          className="flex-1 rounded-none"
+          className="flex-1"
           onPress={() => router.push("/add-client")}
         >
           <ButtonText>Add Another Client</ButtonText>

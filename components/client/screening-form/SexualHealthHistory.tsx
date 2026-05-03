@@ -1,4 +1,3 @@
-import { Box } from "@/components/ui/box";
 import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
 import {
   FormControl,
@@ -10,9 +9,9 @@ import {
 } from "@/components/ui/form-control";
 import { Input, InputField } from "@/components/ui/input";
 
-import { Heading } from "@/components/ui/heading";
+import FormStepHeader from "@/components/ui/form-step-header";
 import { HStack } from "@/components/ui/hstack";
-import { AlertCircleIcon, Icon } from "@/components/ui/icon";
+import { AlertCircleIcon } from "@/components/ui/icon";
 import { VStack } from "@/components/ui/vstack";
 import { SCREENING_FORM_STEPS } from "@/lib/constants";
 import { ScreenClientFormData } from "@/types/screening";
@@ -32,26 +31,19 @@ const SexualHealthHistory: FC<SexualHealthHistoryProps> = ({
   const form = useFormContext<ScreenClientFormData>();
   return (
     <VStack space="md" className="flex-1 items-center">
-      <Box className="bg-primary-100 rounded-full p-6 w-fit ">
-        <Icon
-          as={UserSearch}
-          size="sm"
-          className="text-primary-500 rounded-full p-6 bg-primary-100"
-        />
-      </Box>
-      <Heading size="sm">{SCREENING_FORM_STEPS[1]}</Heading>
+      <FormStepHeader icon={UserSearch} title={SCREENING_FORM_STEPS[1]} />
 
       <Controller
         control={form.control}
         name="lifeTimePatners"
         render={({ field, fieldState: { invalid, error } }) => (
-          <FormControl isInvalid={invalid} size="md" className="w-full" >
+          <FormControl isInvalid={invalid} size="md" className="w-full">
             <FormControlLabel>
               <FormControlLabelText>
                 How many lifetime patners have you had (Optional)
               </FormControlLabelText>
             </FormControlLabel>
-            <Input className="my-1" size="md">
+            <Input className="my-1">
               <InputField
                 placeholder="Total Patners"
                 {...field}
@@ -80,13 +72,13 @@ const SexualHealthHistory: FC<SexualHealthHistoryProps> = ({
         control={form.control}
         name="firstIntercourseAge"
         render={({ field, fieldState: { invalid, error } }) => (
-          <FormControl isInvalid={invalid} size="md" className="w-full" >
+          <FormControl isInvalid={invalid} size="md" className="w-full">
             <FormControlLabel>
               <FormControlLabelText>
                 At what age did you have your first intercourse (Optional)
               </FormControlLabelText>
             </FormControlLabel>
-            <Input className="my-1" size="md">
+            <Input className="my-1">
               <InputField
                 placeholder="Total Patners"
                 {...field}
@@ -115,8 +107,7 @@ const SexualHealthHistory: FC<SexualHealthHistoryProps> = ({
       <HStack space="sm" className="w-full">
         <Button
           action="secondary"
-          size="sm"
-          className="flex-1 justify-between rounded-none"
+          className="flex-1 justify-between"
           onPress={onPrevious}
         >
           <ButtonIcon as={ArrowLeftIcon} />
@@ -124,8 +115,7 @@ const SexualHealthHistory: FC<SexualHealthHistoryProps> = ({
         </Button>
         <Button
           action="primary"
-          size="sm"
-          className="flex-1 bg-primary-500 justify-between rounded-none"
+          className="flex-1 bg-primary-500 justify-between"
           onPress={async () => {
             const isValid = await form.trigger([
               "lifeTimePatners",

@@ -33,6 +33,7 @@ import { ClientFormData } from "@/types/client";
 import { ArrowRightIcon, ChevronDownIcon, IdCard } from "lucide-react-native";
 import React, { useMemo } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import FormStepHeader from "@/components/ui/form-step-header";
 
 type IdentificationAndStatusProps = {
   onNext: () => Promise<void>;
@@ -56,19 +57,12 @@ const IdentificationAndStatus = ({
       { label: "Widowed", value: "WIDOWED" },
       { label: "Separated", value: "SEPARATED" },
     ],
-    []
+    [],
   );
 
   return (
     <VStack space="md" className="flex-1 items-center">
-      <Icon
-        as={IdCard}
-        size="sm"
-        className="text-primary-500 rounded-full p-6 bg-primary-100"
-      />
-      <Heading size="sm" className="text-typography-500">
-        Identification and Status
-      </Heading>
+      <FormStepHeader icon={IdCard} title="Identification and Status" />
       <Controller
         control={form.control}
         name="nationalId"
@@ -84,7 +78,7 @@ const IdentificationAndStatus = ({
             <FormControlLabel>
               <FormControlLabelText>National ID</FormControlLabelText>
             </FormControlLabel>
-            <Input className="my-1" size="md">
+            <Input className="my-1">
               <InputField
                 placeholder="National ID"
                 {...field}
@@ -112,7 +106,7 @@ const IdentificationAndStatus = ({
         name="maritalStatus"
         render={({ field, fieldState: { invalid, error } }) => {
           const selectedMaritalStatus = maritalStatuses.find(
-            (m) => m.value === field.value
+            (m) => m.value === field.value,
           );
           return (
             <FormControl
@@ -133,7 +127,7 @@ const IdentificationAndStatus = ({
                   field.onChange(value as ClientFormData["maritalStatus"])
                 }
               >
-                <SelectTrigger variant="outline" size="md">
+                <SelectTrigger variant="outline">
                   <SelectInput
                     placeholder="Select option"
                     className="flex-1"
@@ -176,8 +170,7 @@ const IdentificationAndStatus = ({
       <HStack space="sm" className="w-full">
         <Button
           action="secondary"
-          size="sm"
-          className="flex-1 justify-between rounded-none"
+          className="flex-1 justify-between"
           onPress={onPrevious}
         >
           <ButtonIcon as={ArrowLeftIcon} />
@@ -185,8 +178,7 @@ const IdentificationAndStatus = ({
         </Button>
         <Button
           action="primary"
-          size="sm"
-          className="flex-1 bg-primary-500 justify-between rounded-none"
+          className="flex-1 bg-primary-500 justify-between"
           isDisabled={submitiing || form.formState.isSubmitting}
           onPress={async () => {
             const isValid = await form.trigger(["nationalId", "maritalStatus"]);

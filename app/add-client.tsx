@@ -7,9 +7,6 @@ import {
 import { ScreenLayout } from "@/components/layout";
 import Toaster from "@/components/toaster";
 import { Card } from "@/components/ui/card";
-import { Heading } from "@/components/ui/heading";
-import { HStack } from "@/components/ui/hstack";
-import { Icon } from "@/components/ui/icon";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { clientSchema } from "@/constants/schemas";
@@ -20,6 +17,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle, IdCard, Phone, UserCircle } from "lucide-react-native";
 import React, { useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { ScrollView } from "react-native";
+import { FormStepper } from "@/components/ui/form-stepper";
+import { Box } from "@/components/ui/box";
 
 const AddClientScreen = () => {
   const [step, setStep] = useState(1);
@@ -36,6 +36,14 @@ const AddClientScreen = () => {
       ward: "",
     },
   });
+
+  const steps = [
+    { icon: UserCircle, label: "Profile" },
+    { icon: Phone, label: "Contact" },
+    { icon: IdCard, label: "Status" },
+    { icon: CheckCircle, label: "Finish" },
+  ];
+
   const { createClient } = useClientApi();
   const onSubmit: SubmitHandler<ClientFormData> = async (data) => {
     try {
@@ -78,18 +86,8 @@ const AddClientScreen = () => {
           },
         });
       } else {
-        // console.info("Error registering client:", errors);
-        // for (let i = 0; i <= steps.length; i++) {
-        //   for (const stepField of steps[i]) {
-        //     if (stepField in (errors ?? {})) {
-        //       setStep(i);
-        //       return;
-        //     }
-        //   }
-        // }
         Object.entries(errors ?? {}).forEach(([field, error]) => {
           form.setError(field as keyof ClientFormData, { message: error });
-          // Reset on error
           form.setValue("county", "");
           form.setValue("subcounty", "");
           form.setValue("ward", "");
@@ -112,71 +110,37 @@ const AddClientScreen = () => {
       }
     }
   };
+
   return (
     <ScreenLayout title="Add New Client">
       <FormProvider {...form}>
         <VStack space="lg" className="flex-1">
-          <Card size="md" variant="elevated">
-            <HStack className="justify-between items-center">
-              <Icon
-                as={UserCircle}
-                size="sm"
-                className={
-                  step <= 1
-                    ? "bg-primary-500 text-typography-0 rounded-full p-4"
-                    : "bg-secondary-200 text-secondary-500 p-4 rounded-full"
-                }
-              />
-              <Icon
-                as={Phone}
-                size="sm"
-                className={
-                  step === 2
-                    ? "bg-primary-500 text-typography-0 rounded-full p-4"
-                    : "bg-secondary-200 text-secondary-500 p-4 rounded-full"
-                }
-              />
-              <Icon
-                as={IdCard}
-                size="sm"
-                className={
-                  step === 3
-                    ? "bg-primary-500 text-typography-0 rounded-full p-4"
-                    : "bg-secondary-200 text-secondary-500 p-4 rounded-full"
-                }
-              />
-              <Icon
-                as={CheckCircle}
-                size="sm"
-                className={
-                  step === 4
-                    ? "bg-primary-500 text-typography-0 rounded-full p-4"
-                    : "bg-secondary-200 text-secondary-500 p-4 rounded-full"
-                }
-              />
-            </HStack>
-            <Heading size="sm" className="text-center mt-4">
-              {step === 1 && "Personal Information"}
-              {step === 2 && "Contact Information"}
-              {step === 3 && "Identification and Status"}
-              {step === 4 && "Success"}
-            </Heading>
+          <Card size="md" variant="elevated" className="px-0 pt-0 pb-4 overflow-hidden">
+             <FormStepper steps={steps} currentStep={step} />
           </Card>
-          <Card size="md" variant="elevated" className="flex-1">
-            {step === 1 && <PersonalInformation onNext={() => setStep(2)} />}
-            {step === 2 && (
-              <ContactInformation
-                onNext={() => setStep(3)}
-                onPrevious={() => setStep(1)}
-              />
-            )}
-            {step === 3 && (
-              <IdentificationAndStatus
-                onNext={form.handleSubmit(onSubmit)}
-                onPrevious={() => setStep(2)}
-              />
-            )}
-            {step === 4 && cli && <SuccessSubmussion client={cli} />}
+          <Card size="md" variant="elevated" className="flex-1 p-0 overflow-hidden">
+            <ScrollView 
+              contentContainerStyle={{ flexGrow: 1 }} 
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+            >
+              <Box className="p-4 flex-1">
+                {step === 1 && <PersonalInformation onNext={() => setStep(2)} />}
+                {step === 2 && (
+                  <ContactInformation
+                    onNext={() => setStep(3)}
+                    onPrevious={() => setStep(1)}
+                  />
+                )}
+                {step === 3 && (
+                  <IdentificationAndStatus
+                    onNext={form.handleSubmit(onSubmit)}
+                    onPrevious={() => setStep(2)}
+                  />
+                )}
+                {step === 4 && cli && <SuccessSubmussion client={cli} />}
+              </Box>
+            </ScrollView>
           </Card>
         </VStack>
       </FormProvider>

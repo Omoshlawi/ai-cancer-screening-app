@@ -91,7 +91,7 @@ const ClientSearch: FC<ClientSearchProps> = ({ onNext, searchClientAsync }) => {
                 <FormControlLabel>
                   <FormControlLabelText>Client</FormControlLabelText>
                 </FormControlLabel>
-                <Input className="my-1" size="md">
+                <Input className="my-1">
                   <InputField
                     placeholder="Search client"
                     {...field}
@@ -186,8 +186,7 @@ const ClientSearch: FC<ClientSearchProps> = ({ onNext, searchClientAsync }) => {
 
       <Button
         action="primary"
-        size="sm"
-        className="w-full bg-primary-500 justify-between rounded-none"
+        className="w-full bg-primary-500 justify-between"
         onPress={handleNextPress}
       >
         <ButtonText>Next</ButtonText>

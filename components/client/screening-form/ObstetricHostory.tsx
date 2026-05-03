@@ -61,7 +61,7 @@ const ObstetricHostory: FC<ObstetricHostoryProps> = ({
                 How many times have you given birth?
               </FormControlLabelText>
             </FormControlLabel>
-            <Input className="my-1" size="md">
+            <Input className="my-1">
               <InputField
                 placeholder="Total Births"
                 {...field}
@@ -90,8 +90,7 @@ const ObstetricHostory: FC<ObstetricHostoryProps> = ({
       <HStack space="sm" className="w-full">
         <Button
           action="secondary"
-          size="sm"
-          className="flex-1 justify-between rounded-none"
+          className="flex-1 justify-between"
           onPress={onPrevious}
         >
           <ButtonIcon as={ArrowLeftIcon} />
@@ -99,8 +98,7 @@ const ObstetricHostory: FC<ObstetricHostoryProps> = ({
         </Button>
         <Button
           action="primary"
-          size="sm"
-          className="flex-1 bg-primary-500 justify-between rounded-none"
+          className="flex-1 bg-primary-500 justify-between"
           onPress={async () => {
             const isValid = await form.trigger(["totalBirths"]);
             if (isValid) {

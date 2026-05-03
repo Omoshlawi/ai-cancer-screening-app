@@ -21,6 +21,7 @@ import {
 } from "lucide-react-native";
 import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import FormStepHeader from "@/components/ui/form-step-header";
 
 type PersonalInformationProps = {
   onNext: () => void;
@@ -30,14 +31,7 @@ const PersonalInformation = ({ onNext }: PersonalInformationProps) => {
   const form = useFormContext<ClientFormData>();
   return (
     <VStack space="md" className="flex-1 items-center">
-      <Icon
-        as={UserCircle}
-        size="sm"
-        className="text-primary-500 rounded-full p-6 bg-primary-100"
-      />
-      <Heading size="sm" className="text-typography-500">
-        Personal Information
-      </Heading>
+      <FormStepHeader icon={UserCircle} title="Personal Information" />
       <Controller
         control={form.control}
         name="firstName"
@@ -53,7 +47,7 @@ const PersonalInformation = ({ onNext }: PersonalInformationProps) => {
             <FormControlLabel>
               <FormControlLabelText>First Name</FormControlLabelText>
             </FormControlLabel>
-            <Input className="my-1" size="md">
+            <Input className="my-1">
               <InputField
                 placeholder="First Name"
                 {...field}
@@ -90,7 +84,7 @@ const PersonalInformation = ({ onNext }: PersonalInformationProps) => {
             <FormControlLabel>
               <FormControlLabelText>Last Name</FormControlLabelText>
             </FormControlLabel>
-            <Input className="my-1" size="md">
+            <Input className="my-1">
               <InputField
                 placeholder="Last Name"
                 {...field}
@@ -131,7 +125,7 @@ const PersonalInformation = ({ onNext }: PersonalInformationProps) => {
                 <FormControlLabel>
                   <FormControlLabelText>Date of Birth</FormControlLabelText>
                 </FormControlLabel>
-                <Input className="my-1" size="md">
+                <Input className="my-1">
                   <InputField
                     placeholder="Date of Birth"
                     value={formattedDate}
@@ -160,8 +154,7 @@ const PersonalInformation = ({ onNext }: PersonalInformationProps) => {
       />
       <Button
         action="primary"
-        size="sm"
-        className="w-full bg-primary-500 justify-between rounded-none"
+        className="w-full bg-primary-500 justify-between"
         onPress={async () => {
           const isValid = await form.trigger([
             "firstName",

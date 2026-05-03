@@ -1,4 +1,3 @@
-import { Box } from "@/components/ui/box";
 import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
 import {
   FormControl,
@@ -8,13 +7,12 @@ import {
   FormControlLabel,
   FormControlLabelText,
 } from "@/components/ui/form-control";
-import { Heading } from "@/components/ui/heading";
+import FormStepHeader from "@/components/ui/form-step-header";
 import { HStack } from "@/components/ui/hstack";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
   CircleIcon,
-  Icon,
 } from "@/components/ui/icon";
 import {
   Radio,
@@ -29,7 +27,7 @@ import {
   SCREENING_FORM_STEPS,
 } from "@/lib/constants";
 import { ScreenClientFormData } from "@/types/screening";
-import { AlertCircleIcon, UserSearch } from "lucide-react-native";
+import { AlertCircleIcon, Stethoscope } from "lucide-react-native";
 import React, { FC } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
@@ -45,14 +43,7 @@ const DiagnosisHistory: FC<DiagnosisHistoryProps> = ({
   const form = useFormContext<ScreenClientFormData>();
   return (
     <VStack space="md" className="flex-1 items-center">
-      <Box className="bg-primary-100 rounded-full p-6 w-fit ">
-        <Icon
-          as={UserSearch}
-          size="sm"
-          className="text-primary-500 rounded-full p-6 bg-primary-100"
-        />
-      </Box>
-      <Heading size="sm">{SCREENING_FORM_STEPS[2]}</Heading>
+      <FormStepHeader icon={Stethoscope} title={SCREENING_FORM_STEPS[2]} />
 
       <Controller
         control={form.control}
@@ -190,8 +181,7 @@ const DiagnosisHistory: FC<DiagnosisHistoryProps> = ({
       <HStack space="sm" className="w-full">
         <Button
           action="secondary"
-          size="sm"
-          className="flex-1 justify-between rounded-none"
+          className="flex-1 justify-between"
           onPress={onPrevious}
         >
           <ButtonIcon as={ArrowLeftIcon} />
@@ -199,8 +189,7 @@ const DiagnosisHistory: FC<DiagnosisHistoryProps> = ({
         </Button>
         <Button
           action="primary"
-          size="sm"
-          className="flex-1 bg-primary-500 justify-between rounded-none"
+          className="flex-1 bg-primary-500 justify-between"
           onPress={async () => {
             const isValid = await form.trigger([
               "everDiagnosedWithHIV",

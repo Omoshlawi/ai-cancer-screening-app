@@ -97,8 +97,7 @@ const SmokingHistory: FC<SmokingHistoryProps> = ({ onNext, onPrevious }) => {
       <HStack space="sm" className="w-full">
         <Button
           action="secondary"
-          size="sm"
-          className="flex-1 justify-between rounded-none"
+          className="flex-1 justify-between"
           onPress={onPrevious}
         >
           <ButtonIcon as={ArrowLeftIcon} />
@@ -106,8 +105,7 @@ const SmokingHistory: FC<SmokingHistoryProps> = ({ onNext, onPrevious }) => {
         </Button>
         <Button
           action="primary"
-          size="sm"
-          className="flex-1 bg-primary-500 justify-between rounded-none"
+          className="flex-1 bg-primary-500 justify-between"
           onPress={async () => {
             const isValid = await form.trigger(["smoking"]);
             if (isValid) {

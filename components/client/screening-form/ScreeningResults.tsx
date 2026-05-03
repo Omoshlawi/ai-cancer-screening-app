@@ -75,7 +75,7 @@ const ScreeningResults: FC<ScreeningResultsProps> = ({ screening }) => {
       {
         variable: "OCP>5 years",
         value: getBooleanDisplayValue(
-          screening.usedOralContraceptivesForMoreThan5Years
+          screening.usedOralContraceptivesForMoreThan5Years,
         ),
         factor: RiskFactor.ORAL_CONTRACEPTIVES,
       },
@@ -87,7 +87,7 @@ const ScreeningResults: FC<ScreeningResultsProps> = ({ screening }) => {
       {
         variable: "Family History",
         value: getBooleanDisplayValue(
-          screening.familyMemberDiagnosedWithCervicalCancer
+          screening.familyMemberDiagnosedWithCervicalCancer,
         ),
         factor: RiskFactor.FAMILY_HISTORY,
       },
@@ -102,7 +102,7 @@ const ScreeningResults: FC<ScreeningResultsProps> = ({ screening }) => {
       <VStack space="sm">
         {values.map((value, i) => {
           const score = screening.scoringResult?.breakdown.find(
-            (factor) => factor.factor === value.factor
+            (factor) => factor.factor === value.factor,
           )?.score;
           return (
             <VariableValue
@@ -139,7 +139,7 @@ const ScreeningResults: FC<ScreeningResultsProps> = ({ screening }) => {
           className="p-4 gap-2 bg-background-0 items-center justify-center flex-row"
           style={{
             backgroundColor: Color(
-              getRiskColor(screening.scoringResult?.interpretation)
+              getRiskColor(screening.scoringResult?.interpretation),
             )
               .alpha(0.1)
               .toString(),
@@ -164,8 +164,7 @@ const ScreeningResults: FC<ScreeningResultsProps> = ({ screening }) => {
           RiskInterpretation.HIGH_RISK && (
           <Button
             action="primary"
-            size="sm"
-            className="w-full bg-primary-500 justify-between rounded-none"
+            className="w-full bg-primary-500 justify-between"
             onPress={() => {
               router.push({
                 pathname: "/add-referral",
@@ -187,8 +186,7 @@ const ScreeningResults: FC<ScreeningResultsProps> = ({ screening }) => {
           RiskInterpretation.MEDIUM_RISK && (
           <Button
             action="primary"
-            size="sm"
-            className="w-full bg-primary-500 justify-between rounded-none"
+            className="w-full bg-primary-500 justify-between"
             onPress={() => {
               router.push({
                 pathname: "/follow-up",
@@ -210,8 +208,7 @@ const ScreeningResults: FC<ScreeningResultsProps> = ({ screening }) => {
           RiskInterpretation.LOW_RISK && (
           <Button
             action="primary"
-            size="sm"
-            className="w-full bg-primary-500 justify-between rounded-none"
+            className="w-full bg-primary-500 justify-between"
             onPress={() => {
               router.push({
                 pathname: "/follow-up",

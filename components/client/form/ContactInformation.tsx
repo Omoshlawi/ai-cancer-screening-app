@@ -7,9 +7,8 @@ import {
   FormControlLabel,
   FormControlLabelText,
 } from "@/components/ui/form-control";
-import { Heading } from "@/components/ui/heading";
+import FormStepHeader from "@/components/ui/form-step-header";
 import { HStack } from "@/components/ui/hstack";
-import { Icon } from "@/components/ui/icon";
 import { Input, InputField } from "@/components/ui/input";
 import { VStack } from "@/components/ui/vstack";
 import { ClientFormData } from "@/types/client";
@@ -39,14 +38,7 @@ const ContactInformation = ({
 
   return (
     <VStack space="md" className="flex-1 items-center">
-      <Icon
-        as={Phone}
-        size="sm"
-        className="text-primary-500 rounded-full p-6 bg-primary-100"
-      />
-      <Heading size="sm" className="text-typography-500">
-        Contact Information
-      </Heading>
+      <FormStepHeader icon={Phone} title="Contact Information" />
       <Controller
         control={form.control}
         name="phoneNumber"
@@ -62,7 +54,7 @@ const ContactInformation = ({
             <FormControlLabel>
               <FormControlLabelText>Phone Number</FormControlLabelText>
             </FormControlLabel>
-            <Input className="my-1" size="md">
+            <Input className="my-1">
               <InputField
                 placeholder="Phone Number"
                 {...field}
@@ -121,8 +113,7 @@ const ContactInformation = ({
       <HStack space="sm" className="w-full">
         <Button
           action="secondary"
-          size="sm"
-          className="flex-1 justify-between rounded-none"
+          className="flex-1 justify-between"
           onPress={onPrevious}
         >
           <ButtonIcon as={ArrowLeftIcon} />
@@ -130,8 +121,7 @@ const ContactInformation = ({
         </Button>
         <Button
           action="primary"
-          size="sm"
-          className="flex-1 bg-primary-500 justify-between rounded-none"
+          className="flex-1 bg-primary-500 justify-between"
           onPress={async () => {
             const isValid = await form.trigger([
               "phoneNumber",

@@ -102,8 +102,7 @@ const ContraceptiveUse: FC<ContraceptiveUseProps> = ({
       <HStack space="sm" className="w-full">
         <Button
           action="secondary"
-          size="sm"
-          className="flex-1 justify-between rounded-none"
+          className="flex-1 justify-between"
           onPress={onPrevious}
         >
           <ButtonIcon as={ArrowLeftIcon} />
@@ -111,8 +110,7 @@ const ContraceptiveUse: FC<ContraceptiveUseProps> = ({
         </Button>
         <Button
           action="primary"
-          size="sm"
-          className="flex-1 bg-primary-500 justify-between rounded-none"
+          className="flex-1 bg-primary-500 justify-between"
           onPress={async () => {
             const isValid = await form.trigger([
               "usedOralContraceptivesForMoreThan5Years",

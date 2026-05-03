@@ -59,7 +59,7 @@ const AddressFieldsInput = <T extends FieldValues>({
               <FormControlLabel>
                 <FormControlLabelText>{label}</FormControlLabelText>
               </FormControlLabel>
-              <Input className="my-1" size="md">
+              <Input className="my-1">
                 <InputField
                   placeholder="Select option"
                   value={field.value || ""}

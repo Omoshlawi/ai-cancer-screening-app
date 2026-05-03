@@ -14,10 +14,9 @@ import { ScreenLayout } from "@/components/layout";
 import Toaster from "@/components/toaster";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Progress, ProgressFilledTrack } from "@/components/ui/progress";
-import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
+import { Text } from "@/components/ui/text";
 import { screenClientSchema } from "@/constants/schemas";
 import { useSearchClients } from "@/hooks/useClients";
 import { useLocation } from "@/hooks/useLocation";
@@ -30,7 +29,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, ScrollView } from "react-native";
+import { FormStepper } from "@/components/ui/form-stepper";
+import { Box } from "@/components/ui/box";
+import {
+  Search,
+  Stethoscope,
+  ClipboardList,
+  ShieldPlus,
+  CheckCircle,
+} from "lucide-react-native";
 
 const ScreenClientScreen = () => {
   const [step, setStep] = useState(1);
@@ -58,6 +66,7 @@ const ScreenClientScreen = () => {
       followUpId,
     },
   });
+
   const { createScreening } = useScreeningsApi();
   const seachClientAsync = useSearchClients(search);
   const toast = useToast();
@@ -69,6 +78,22 @@ const ScreenClientScreen = () => {
     retry: retryLocationCapture,
   } = useLocation();
   const hasLocation = Boolean(coordinates);
+
+  // Group 10 steps into 5 visual milestones
+  const steps = [
+    { icon: Search, label: "Client" },
+    { icon: Stethoscope, label: "Health" },
+    { icon: ClipboardList, label: "History" },
+    { icon: ShieldPlus, label: "Lifestyle" },
+    { icon: CheckCircle, label: "Result" },
+  ];
+
+  // Map 1-10 steps to 1-5 milestones
+  const milestoneStep = 
+    step === 1 ? 1 :
+    step <= 3 ? 2 :
+    step <= 5 ? 3 :
+    step <= 8 ? 4 : 5;
 
   useEffect(() => {
     if (coordinates) {
@@ -134,90 +159,91 @@ const ScreenClientScreen = () => {
     >
       <FormProvider {...form}>
         <VStack space="lg" className="flex-1">
-          <Card size="md" variant="elevated">
-            <VStack space="md">
-              <Text size="sm">{`Step ${step} of ${SCREENING_FORM_STEPS.length}`}</Text>
-              <Progress
-                value={(step / SCREENING_FORM_STEPS.length) * 100}
-                size="md"
-                orientation="horizontal"
-              >
-                <ProgressFilledTrack className="bg-primary-500" />
-              </Progress>
-              <Text size="sm">{SCREENING_FORM_STEPS[step - 1]}</Text>
-            </VStack>
+          <Card size="md" variant="elevated" className="px-0 pt-0 pb-4 overflow-hidden">
+            <FormStepper steps={steps} currentStep={milestoneStep} />
+            <Text size="xs" className="text-center text-typography-500 font-medium -mt-2">
+              {`Step ${step} of ${SCREENING_FORM_STEPS.length}: ${SCREENING_FORM_STEPS[step - 1]}`}
+            </Text>
           </Card>
-          <Card size="md" variant="elevated" className="flex-1">
-            {!hasLocation ? (
-              <LocationCaptureBlock
-                isLoading={isCapturingLocation}
-                error={locationError}
-                onRetry={retryLocationCapture}
-              />
-            ) : (
-              <>
-                {step === 1 && (
-                  <ClientSearch
-                    onNext={() => setStep(2)}
-                    searchClientAsync={seachClientAsync}
+          <Card size="md" variant="elevated" className="flex-1 p-0 overflow-hidden">
+            <ScrollView 
+              contentContainerStyle={{ flexGrow: 1 }} 
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+            >
+              <Box className="p-4 flex-1">
+                {!hasLocation ? (
+                  <LocationCaptureBlock
+                    isLoading={isCapturingLocation}
+                    error={locationError}
+                    onRetry={retryLocationCapture}
                   />
-                )}
-                {step === 2 && (
-                  <SexualHealthHistory
-                    onNext={() => setStep(3)}
-                    onPrevious={() => setStep(1)}
-                  />
-                )}
-                {step === 3 && (
-                  <DiagnosisHistory
-                    onNext={() => setStep(4)}
-                    onPrevious={() => setStep(2)}
-                  />
-                )}
-                {step === 4 && (
-                  <ObstetricHostory
-                    onNext={() => setStep(5)}
-                    onPrevious={() => setStep(3)}
-                  />
-                )}
-                {step === 5 && (
-                  <ScreeningHistory
-                    onNext={() => setStep(6)}
-                    onPrevious={() => setStep(4)}
-                  />
-                )}
-                {step === 6 && (
-                  <ContraceptiveUse
-                    onNext={() => setStep(7)}
-                    onPrevious={() => setStep(5)}
-                  />
-                )}
-                {step === 7 && (
-                  <SmokingHistory
-                    onNext={() => setStep(8)}
-                    onPrevious={() => setStep(6)}
-                  />
-                )}
-                {step === 8 && (
-                  <FamilyHistory
-                    onNext={() => setStep(9)}
-                    onPrevious={() => setStep(7)}
-                  />
-                )}
-                {step === 9 && (
-                  <ReviewAndSubmit
-                    onNext={form.handleSubmit(onSubmit)}
-                    onPrevious={() => setStep(8)}
-                    clients={seachClientAsync.clients as Client[]}
-                    submitting={submitting}
-                  />
-                )}
+                ) : (
+                  <>
+                    {step === 1 && (
+                      <ClientSearch
+                        onNext={() => setStep(2)}
+                        searchClientAsync={seachClientAsync}
+                      />
+                    )}
+                    {step === 2 && (
+                      <SexualHealthHistory
+                        onNext={() => setStep(3)}
+                        onPrevious={() => setStep(1)}
+                      />
+                    )}
+                    {step === 3 && (
+                      <DiagnosisHistory
+                        onNext={() => setStep(4)}
+                        onPrevious={() => setStep(2)}
+                      />
+                    )}
+                    {step === 4 && (
+                      <ObstetricHostory
+                        onNext={() => setStep(5)}
+                        onPrevious={() => setStep(3)}
+                      />
+                    )}
+                    {step === 5 && (
+                      <ScreeningHistory
+                        onNext={() => setStep(6)}
+                        onPrevious={() => setStep(4)}
+                      />
+                    )}
+                    {step === 6 && (
+                      <ContraceptiveUse
+                        onNext={() => setStep(7)}
+                        onPrevious={() => setStep(5)}
+                      />
+                    )}
+                    {step === 7 && (
+                      <SmokingHistory
+                        onNext={() => setStep(8)}
+                        onPrevious={() => setStep(6)}
+                      />
+                    )}
+                    {step === 8 && (
+                      <FamilyHistory
+                        onNext={() => setStep(9)}
+                        onPrevious={() => setStep(7)}
+                      />
+                    )}
+                    {step === 9 && (
+                      <ReviewAndSubmit
+                        onNext={form.handleSubmit(onSubmit)}
+                        onPrevious={() => setStep(8)}
+                        clients={seachClientAsync.clients as Client[]}
+                        submitting={submitting}
+                      />
+                    )}
 
-                {step === 10 && screening && (
-                  <ScreeningResults screening={screening} />
+                    {step === 10 && screening && (
+                      <ScreeningResults screening={screening} />
+                    )}
+                  </>
                 )}
-              </>
-            )}
+              </Box>
+            </ScrollView>
           </Card>
         </VStack>
       </FormProvider>

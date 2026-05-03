@@ -60,6 +60,8 @@ import React, { useMemo } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ScrollView } from "react-native";
 
+import FormStepHeader from "@/components/ui/form-step-header";
+
 const EditClient = () => {
   const { isOnline } = useNetworkStatus();
   const { id, phoneNumber } = useLocalSearchParams<{
@@ -163,19 +165,11 @@ const Form = ({ client }: { client: Client }) => {
   };
   return (
     <VStack className="flex-1 items-center" space="md">
-      <Box className="w-full items-center">
-        <Box className="bg-primary-100 rounded-full p-6 w-fit ">
-          <Icon
-            as={Edit}
-            size="sm"
-            className="text-primary-500 rounded-full p-6 "
-          />
-        </Box>
-        <Heading>
-          Edit {client?.firstName} {client?.lastName} Details
-        </Heading>
-        <Text size="xs">Update client details for registration</Text>
-      </Box>
+      <FormStepHeader 
+        icon={Edit} 
+        title={`Edit ${client?.firstName} ${client?.lastName} Details`} 
+        description="Update client details for registration"
+      />
       <Box className="flex-1 w-full">
         <ScrollView showsVerticalScrollIndicator={false}>
           <Card>
@@ -195,7 +189,7 @@ const Form = ({ client }: { client: Client }) => {
                     <FormControlLabel>
                       <FormControlLabelText>First Name</FormControlLabelText>
                     </FormControlLabel>
-                    <Input className="my-1" size="md">
+                    <Input className="my-1">
                       <InputField
                         placeholder="First Name"
                         {...field}
@@ -232,7 +226,7 @@ const Form = ({ client }: { client: Client }) => {
                     <FormControlLabel>
                       <FormControlLabelText>Last Name</FormControlLabelText>
                     </FormControlLabel>
-                    <Input className="my-1" size="md">
+                    <Input className="my-1">
                       <InputField
                         placeholder="Last Name"
                         {...field}
@@ -275,7 +269,7 @@ const Form = ({ client }: { client: Client }) => {
                             Date of Birth
                           </FormControlLabelText>
                         </FormControlLabel>
-                        <Input className="my-1" size="md">
+                        <Input className="my-1">
                           <InputField
                             placeholder="Date of Birth"
                             value={formattedDate}
@@ -321,7 +315,7 @@ const Form = ({ client }: { client: Client }) => {
                     <FormControlLabel>
                       <FormControlLabelText>Phone Number</FormControlLabelText>
                     </FormControlLabel>
-                    <Input className="my-1" size="md">
+                    <Input className="my-1">
                       <InputField
                         placeholder="Phone Number"
                         {...field}
@@ -359,7 +353,7 @@ const Form = ({ client }: { client: Client }) => {
                     <FormControlLabel>
                       <FormControlLabelText>National ID</FormControlLabelText>
                     </FormControlLabel>
-                    <Input className="my-1" size="md">
+                    <Input className="my-1">
                       <InputField
                         placeholder="National ID"
                         {...field}
@@ -412,7 +406,7 @@ const Form = ({ client }: { client: Client }) => {
                           )
                         }
                       >
-                        <SelectTrigger variant="outline" size="md">
+                        <SelectTrigger variant="outline">
                           <SelectInput
                             placeholder="Select option"
                             className="flex-1"
@@ -482,8 +476,7 @@ const Form = ({ client }: { client: Client }) => {
 
               <Button
                 action="primary"
-                size="sm"
-                className="w-full bg-primary-500 justify-between rounded-none mt-4"
+                className="w-full bg-primary-500 justify-between mt-4"
                 onPress={form.handleSubmit(onSubmit)}
                 disabled={form.formState.isSubmitting}
               >

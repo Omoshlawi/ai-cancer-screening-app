@@ -63,7 +63,10 @@ const screenBoolean = z.enum(["YES", "NO", "NOT_SURE"]);
 export const screenClientSchema = z.object({
   clientId: z.string().nonempty(),
   lifeTimePatners: z.coerce.number(),
-  firstIntercourseAge: z.coerce.number(),
+  firstIntercourseAge: z.coerce
+    .number()
+    .min(10, "Age must be at least 10")
+    .max(100, "Age must be less than 100"),
   everDiagnosedWithHIV: screenBoolean,
   everDiagnosedWithHPV: screenBoolean,
   everDiagnosedWithSTI: screenBoolean,

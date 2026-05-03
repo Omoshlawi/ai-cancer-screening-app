@@ -188,8 +188,7 @@ const ReviewAndSubmit: FC<ReviewAndSubmitProps> = ({
         <HStack space="sm" className="w-full">
           <Button
             action="secondary"
-            size="sm"
-            className="flex-1 justify-between rounded-none"
+            className="flex-1 justify-between"
             onPress={onPrevious}
           >
             <ButtonIcon as={ArrowLeftIcon} />
@@ -197,8 +196,7 @@ const ReviewAndSubmit: FC<ReviewAndSubmitProps> = ({
           </Button>
           <Button
             action="primary"
-            size="sm"
-            className="flex-1 bg-primary-500 justify-between rounded-none"
+            className="flex-1 bg-primary-500 justify-between"
             isDisabled={form.formState.isSubmitting || submitting}
             onPress={async () => {
               const isValid = await form.trigger();
