@@ -24,7 +24,7 @@ const ScreeningDetail = () => {
             variant="elevated"
             className="gap-3 bg-background-0 flex-1"
           >
-            <VStack space="md">
+            <VStack space="md" className="flex-1">
               <Heading size="md" className="text-typography-500">
                 {`${screening?.client?.firstName} ${screening?.client?.lastName}`}{" "}
                 Screening Results

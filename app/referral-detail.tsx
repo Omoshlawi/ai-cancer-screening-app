@@ -51,7 +51,6 @@ const ReferralDetailScreen = () => {
               <ReferralFollowUps referral={referral!} />
               <Button
                 action="primary"
-                size="sm"
                 className="bg-primary-500"
                 onPress={() => {
                   router.push({

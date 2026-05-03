@@ -52,13 +52,12 @@ import {
 } from "react-hook-form";
 
 const AddReferralScreen = () => {
-  const { client, search, facility, screening } =
-    useLocalSearchParams<{
-      client: string;
-      search: string;
-      facility: string;
-      screening: string;
-    }>();
+  const { client, search, facility, screening } = useLocalSearchParams<{
+    client: string;
+    search: string;
+    facility: string;
+    screening: string;
+  }>();
   const { clients, isLoading, onSearchChange, searchValue } =
     useSearchClients(search);
   const form = useForm({
@@ -148,7 +147,7 @@ const AddReferralScreen = () => {
                       <FormControlLabel>
                         <FormControlLabelText>Client</FormControlLabelText>
                       </FormControlLabel>
-                      <Input className="my-1" size="md">
+                      <Input className="my-1">
                         <InputField
                           placeholder="Client"
                           {...field}
@@ -253,7 +252,7 @@ const AddReferralScreen = () => {
                           Appointment Time
                         </FormControlLabelText>
                       </FormControlLabel>
-                      <Input className="my-1" size="md">
+                      <Input className="my-1">
                         <InputField
                           placeholder="Date of Birth"
                           value={formattedDate}
@@ -290,7 +289,7 @@ const AddReferralScreen = () => {
                       Additional Notes
                     </FormControlLabelText>
                   </FormControlLabel>
-                  <Textarea size="sm" isReadOnly={false}>
+                  <Textarea isReadOnly={false}>
                     <TextareaInput
                       placeholder="Additional Notes"
                       {...field}
@@ -314,8 +313,7 @@ const AddReferralScreen = () => {
             />
             <Button
               action="primary"
-              size="sm"
-              className="w-full bg-primary-500 justify-between rounded-none"
+              className="w-full bg-primary-500 justify-between"
               onPress={form.handleSubmit(onSubmit)}
               disabled={form.formState.isSubmitting}
             >

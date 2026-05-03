@@ -48,15 +48,15 @@ const ReferralScreening: FC<ReferralScreeningProps> = ({ client }) => {
           loading={isLoading}
           renderTrigger={({ onPress }) => {
             const screening = screenings.find(
-              (screening) => screening.id === field.value
+              (screening) => screening.id === field.value,
             );
             const screeningDate = dayjs(screening?.createdAt).format(
-              "DD/MM/YYYY"
+              "DD/MM/YYYY",
             );
             const screeningScore = `${
               screening?.scoringResult?.aggregateScore
             } - ${getRiskInterpretation(
-              screening?.scoringResult?.interpretation
+              screening?.scoringResult?.interpretation,
             )}`;
             const selectedDisplayValue = screening
               ? `${screeningDate} - ${screeningScore}`
@@ -71,7 +71,7 @@ const ReferralScreening: FC<ReferralScreeningProps> = ({ client }) => {
                 <FormControlLabel>
                   <FormControlLabelText>Screening</FormControlLabelText>
                 </FormControlLabel>
-                <Input className="my-1" size="md">
+                <Input className="my-1">
                   <InputField
                     placeholder="Screening"
                     {...field}
@@ -122,17 +122,17 @@ const ReferralScreening: FC<ReferralScreeningProps> = ({ client }) => {
                   className={`px-2 py-1 rounded-md`}
                   style={{
                     color: getRiskColor(
-                      screening.scoringResult?.interpretation
+                      screening.scoringResult?.interpretation,
                     ),
                     backgroundColor: Color(
-                      getRiskColor(screening.scoringResult?.interpretation)
+                      getRiskColor(screening.scoringResult?.interpretation),
                     )
                       .alpha(0.1)
                       .toString(),
                   }}
                 >
                   {getRiskInterpretation(
-                    screening.scoringResult?.interpretation
+                    screening.scoringResult?.interpretation,
                   )}
                 </Text>
               }

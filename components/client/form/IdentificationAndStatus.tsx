@@ -12,9 +12,8 @@ import {
   FormControlLabel,
   FormControlLabelText,
 } from "@/components/ui/form-control";
-import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
-import { AlertCircleIcon, ArrowLeftIcon, Icon } from "@/components/ui/icon";
+import { AlertCircleIcon, ArrowLeftIcon } from "@/components/ui/icon";
 import { Input, InputField } from "@/components/ui/input";
 import {
   Select,

@@ -86,7 +86,7 @@ const AddAction = () => {
       },
       { label: getOutreachActionTypeDisplay("SMS_SENT"), value: "SMS_SENT" },
     ],
-    []
+    [],
   );
 
   const selectedActionType = form.watch("actionType");
@@ -131,7 +131,7 @@ const AddAction = () => {
         types: ["FACILITY_VERIFICATION"],
       },
     ],
-    []
+    [],
   );
 
   const onSubmit: SubmitHandler<OutreachActionFormData> = async (formData) => {
@@ -197,7 +197,7 @@ const AddAction = () => {
                       <FormControlLabel>
                         <FormControlLabelText>Action Date</FormControlLabelText>
                       </FormControlLabel>
-                      <Input className="my-1" size="md">
+                      <Input className="my-1">
                         <InputField
                           placeholder="Select date"
                           value={formattedDate}
@@ -232,7 +232,7 @@ const AddAction = () => {
               name="actionType"
               render={({ field, fieldState: { invalid, error } }) => {
                 const selectedPriority = actionTypes.find(
-                  (c) => c.value === field.value
+                  (c) => c.value === field.value,
                 );
                 return (
                   <FormControl
@@ -254,7 +254,7 @@ const AddAction = () => {
                         field.onChange(value as OutreachAction["actionType"]);
                       }}
                     >
-                      <SelectTrigger variant="outline" size="md">
+                      <SelectTrigger variant="outline">
                         <SelectInput
                           placeholder="Select option"
                           className="flex-1"
@@ -311,7 +311,7 @@ const AddAction = () => {
                     <FormControlLabel>
                       <FormControlLabelText>Location</FormControlLabelText>
                     </FormControlLabel>
-                    <Input className="my-1" size="md">
+                    <Input className="my-1">
                       <InputField
                         placeholder="Client home address"
                         {...field}
@@ -340,7 +340,7 @@ const AddAction = () => {
               name="outcome"
               render={({ field, fieldState: { invalid, error } }) => {
                 const selectedCategory = outcomes.find(
-                  (c) => c.value === field.value
+                  (c) => c.value === field.value,
                 );
                 return (
                   <FormControl
@@ -363,7 +363,7 @@ const AddAction = () => {
                         field.onChange(value as OutreachAction["outcome"])
                       }
                     >
-                      <SelectTrigger variant="outline" size="md">
+                      <SelectTrigger variant="outline">
                         <SelectInput
                           placeholder="Select option"
                           className="flex-1"
@@ -423,7 +423,6 @@ const AddAction = () => {
                       <FormControlLabelText>Barriers</FormControlLabelText>
                     </FormControlLabel>
                     <Textarea
-                      size="md"
                       isReadOnly={false}
                       isInvalid={false}
                       isDisabled={false}
@@ -467,7 +466,7 @@ const AddAction = () => {
                   <FormControlLabel>
                     <FormControlLabelText>Duration</FormControlLabelText>
                   </FormControlLabel>
-                  <Input className="my-1" size="md">
+                  <Input className="my-1">
                     <InputField
                       keyboardType="numeric"
                       placeholder="Time spent in minutes"
@@ -513,7 +512,7 @@ const AddAction = () => {
                           Next Planned Date
                         </FormControlLabelText>
                       </FormControlLabel>
-                      <Input className="my-1" size="md">
+                      <Input className="my-1">
                         <InputField
                           placeholder="Select Date"
                           value={formattedDate}
@@ -560,7 +559,6 @@ const AddAction = () => {
                     <FormControlLabelText>Notes</FormControlLabelText>
                   </FormControlLabel>
                   <Textarea
-                    size="md"
                     isReadOnly={false}
                     isInvalid={false}
                     isDisabled={false}

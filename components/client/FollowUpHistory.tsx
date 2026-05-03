@@ -3,7 +3,6 @@ import {
   getFollowUpCategoryDisply,
   getPriorityDisplay,
   getReferralStatusColor,
-  getRiskInterpretation,
   getStatusFromDates,
 } from "@/lib/helpers";
 import { Client } from "@/types/client";
@@ -14,6 +13,7 @@ import { ArrowRightLeft } from "lucide-react-native";
 import React, { FC } from "react";
 import ListTile from "../list-tile";
 import { ErrorState } from "../state-full-widgets";
+import { Box } from "../ui/box";
 import { Card } from "../ui/card";
 import { Heading } from "../ui/heading";
 import { HStack } from "../ui/hstack";
@@ -43,45 +43,39 @@ const FollowUpHistory: FC<FollowUpHistoryProps> = ({ client }) => {
         <Heading size="xs">Follow up History</Heading>
       </HStack>
       {followUps.length > 0 ? (
-        <VStack space="xs" className="bg-background-50 p-2 rounded-md">
+        <VStack space="sm" className="bg-background-50 p-3 rounded-lg">
           {followUps.map((followUp) => (
             <ListTile
               key={followUp.id}
-              title={`${getFollowUpCategoryDisply(followUp.category)} (${
-                dayjs(followUp.startDate).format("DD/MM/YYYY") +
-                " - " +
-                dayjs(followUp.dueDate).format("DD/MM/YYYY")
-              })`}
-              description={`Priority: ${getPriorityDisplay(
-                followUp.priority
-              )} | ${getRiskInterpretation(
-                followUp.triggerScreening.scoringResult?.interpretation
-              )}(${followUp.triggerScreening.scoringResult?.aggregateScore})`}
+              title={`${getFollowUpCategoryDisply(followUp.category)}`}
+              description={`Range: ${dayjs(followUp.startDate).format("DD MMM YYYY")} - ${dayjs(followUp.dueDate).format("DD MMM YYYY")} | Priority: ${getPriorityDisplay(followUp.priority)}`}
               leading={
-                <Icon
-                  as={ArrowRightLeft}
-                  size="xs"
-                  className="text-typography-500"
-                />
+                <Box className="p-2 bg-background-0 rounded-full">
+                  <Icon
+                    as={ArrowRightLeft}
+                    size="sm"
+                    className="text-primary-600"
+                  />
+                </Box>
               }
               trailing={
                 <Text
-                  size="2xs"
-                  className={`px-2 py-1 rounded-md`}
+                  size="xs"
+                  className="px-3 py-1 rounded-full font-bold uppercase"
                   style={{
                     color: getReferralStatusColor(
                       getStatusFromDates(
                         followUp.completedAt,
-                        followUp.canceledAt
-                      )
+                        followUp.canceledAt,
+                      ),
                     ),
                     backgroundColor: Color(
                       getReferralStatusColor(
                         getStatusFromDates(
                           followUp.completedAt,
-                          followUp.canceledAt
-                        )
-                      )
+                          followUp.canceledAt,
+                        ),
+                      ),
                     )
                       .alpha(0.1)
                       .toString(),
@@ -90,8 +84,8 @@ const FollowUpHistory: FC<FollowUpHistoryProps> = ({ client }) => {
                   {followUp.completedAt
                     ? "Completed"
                     : followUp.canceledAt
-                    ? "Cancelled"
-                    : "Ongoing"}
+                      ? "Cancelled"
+                      : "Ongoing"}
                 </Text>
               }
               onPress={() =>

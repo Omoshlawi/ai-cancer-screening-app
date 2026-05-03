@@ -85,7 +85,7 @@ const FollowUpScreen = () => {
       { label: getPriorityDisplay("MEDIUM"), value: "MEDIUM" },
       { label: getPriorityDisplay("LOW"), value: "LOW" },
     ],
-    []
+    [],
   );
 
   const categories = useMemo<
@@ -101,7 +101,7 @@ const FollowUpScreen = () => {
         value: "RE_SCREENING_RECALL",
       },
     ],
-    []
+    [],
   );
 
   const onSubmit: SubmitHandler<FollowUpFormData> = async (formData) => {
@@ -165,7 +165,7 @@ const FollowUpScreen = () => {
                     <FormControlLabel>
                       <FormControlLabelText>StartDate</FormControlLabelText>
                     </FormControlLabel>
-                    <Input className="my-1" size="md">
+                    <Input className="my-1">
                       <InputField
                         placeholder="Start date"
                         value={formattedDate}
@@ -214,7 +214,7 @@ const FollowUpScreen = () => {
                     <FormControlLabel>
                       <FormControlLabelText>Due date</FormControlLabelText>
                     </FormControlLabel>
-                    <Input className="my-1" size="md">
+                    <Input className="my-1">
                       <InputField
                         placeholder="Due date"
                         value={formattedDate}
@@ -249,7 +249,7 @@ const FollowUpScreen = () => {
             name="priority"
             render={({ field, fieldState: { invalid, error } }) => {
               const selectedPriority = priorities.find(
-                (c) => c.value === field.value
+                (c) => c.value === field.value,
               );
               return (
                 <FormControl
@@ -270,7 +270,7 @@ const FollowUpScreen = () => {
                       field.onChange(value as FollowUpFormData["priority"])
                     }
                   >
-                    <SelectTrigger variant="outline" size="md">
+                    <SelectTrigger variant="outline">
                       <SelectInput
                         placeholder="Select option"
                         className="flex-1"
@@ -315,7 +315,7 @@ const FollowUpScreen = () => {
             name="category"
             render={({ field, fieldState: { invalid, error } }) => {
               const selectedCategory = categories.find(
-                (c) => c.value === field.value
+                (c) => c.value === field.value,
               );
               return (
                 <FormControl
@@ -338,7 +338,7 @@ const FollowUpScreen = () => {
                       field.onChange(value as FollowUpFormData["priority"])
                     }
                   >
-                    <SelectTrigger variant="outline" size="md">
+                    <SelectTrigger variant="outline">
                       <SelectInput
                         placeholder="Select option"
                         className="flex-1"

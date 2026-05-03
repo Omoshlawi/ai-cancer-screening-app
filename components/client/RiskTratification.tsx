@@ -32,11 +32,11 @@ const RiskTratification: FC<RiskTratificationProps> = ({ client }) => {
     <Card size="sm" variant="elevated" className="p-2 gap-3">
       <Heading size="xs">AI Risk Tratification</Heading>
       <HStack className="justify-between items-center">
-        <Text size="2xs" className="text-typography-500">
+        <Text size="sm" className="text-typography-600 font-medium">
           Risk Level
         </Text>
         <Text
-          className="px-2  rounded-full"
+          className="px-3 py-1 rounded-full font-bold uppercase"
           style={{
             color: getRiskColor(
               client.screenings?.[0]?.scoringResult?.interpretation
@@ -49,7 +49,7 @@ const RiskTratification: FC<RiskTratificationProps> = ({ client }) => {
               .alpha(0.1)
               .toString(),
           }}
-          size="2xs"
+          size="xs"
         >
           {getRiskInterpretation(
             client.screenings?.[0]?.scoringResult?.interpretation
@@ -58,9 +58,9 @@ const RiskTratification: FC<RiskTratificationProps> = ({ client }) => {
       </HStack>
       <Progress
         value={riskPercentage}
-        size="xs"
+        size="sm"
         orientation="horizontal"
-        className="w-full "
+        className="w-full h-2"
       >
         <ProgressFilledTrack
           style={{
@@ -71,11 +71,12 @@ const RiskTratification: FC<RiskTratificationProps> = ({ client }) => {
         />
       </Progress>
       <HStack className="justify-between items-center">
-        <Text size="2xs" className="text-typography-500">
+        <Text size="sm" className="text-typography-600 font-medium">
           Risk Score
         </Text>
         <Text
-          size="2xs"
+          size="lg"
+          className="font-bold"
           style={{
             color: getRiskColor(
               client.screenings?.[0]?.scoringResult?.interpretation
@@ -85,11 +86,11 @@ const RiskTratification: FC<RiskTratificationProps> = ({ client }) => {
           {risk}
         </Text>
       </HStack>
-      <Text size="2xs" className="text-typography-500 ">
+      <Text size="xs" className="text-typography-500 italic">
         Based on demographics, clinical and symptoms data
       </Text>
       <Card
-        className="w-full flex flex-col gap-2"
+        className="w-full flex flex-col gap-3 p-4"
         style={{
           backgroundColor: Color(
             getRiskColor(client.screenings?.[0]?.scoringResult?.interpretation)
@@ -98,10 +99,10 @@ const RiskTratification: FC<RiskTratificationProps> = ({ client }) => {
             .toString(),
         }}
       >
-        <HStack space="md">
+        <HStack space="md" className="items-center">
           <Icon
             as={TriangleAlert}
-            size="2xs"
+            size="sm"
             style={{
               color: getRiskColor(
                 client.screenings?.[0]?.scoringResult?.interpretation
@@ -109,8 +110,8 @@ const RiskTratification: FC<RiskTratificationProps> = ({ client }) => {
             }}
           />
           <Text
-            size="2xs"
-            className="font-bold"
+            size="sm"
+            className="font-bold uppercase tracking-wider"
             style={{
               color: getRiskColor(
                 client.screenings?.[0]?.scoringResult?.interpretation
@@ -120,12 +121,12 @@ const RiskTratification: FC<RiskTratificationProps> = ({ client }) => {
             Current Symptoms
           </Text>
         </HStack>
-        <VStack space="sm">
+        <VStack space="sm" className="mt-1">
           {symptoms.map((symptom, index) => (
-            <HStack key={index} space="md">
+            <HStack key={index} space="md" className="items-center">
               <Icon
                 as={Check}
-                size="2xs"
+                size="xs"
                 style={{
                   color: getRiskColor(
                     client.screenings?.[0]?.scoringResult?.interpretation
@@ -133,7 +134,8 @@ const RiskTratification: FC<RiskTratificationProps> = ({ client }) => {
                 }}
               />
               <Text
-                size="2xs"
+                size="sm"
+                className="font-medium"
                 style={{
                   color: getRiskColor(
                     client.screenings?.[0]?.scoringResult?.interpretation

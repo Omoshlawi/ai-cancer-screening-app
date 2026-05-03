@@ -73,7 +73,7 @@ const ReferralFacility: FC<ReferralFacilityProps> = ({ client }) => {
               <FormControlLabel>
                 <FormControlLabelText>Referral Facility</FormControlLabelText>
               </FormControlLabel>
-              <Input className="my-1" size="md">
+              <Input className="my-1">
                 <InputField
                   placeholder="Referral Facility"
                   {...field}

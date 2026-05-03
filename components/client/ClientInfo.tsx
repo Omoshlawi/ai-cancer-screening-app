@@ -71,23 +71,27 @@ const ClientInfo: FC<ClientInfoProps> = ({ client }) => {
           <ButtonText size="xs">Edit</ButtonText>
         </Button>
       </HStack>
-      <Box className="w-full flex flex-row flex-wrap gap-2">
+      <Box className="w-full flex flex-row flex-wrap gap-2 mt-2">
         {personalInformation.map((item, i) => (
           <HStack
-            className="flex-1 min-w-[48%] rounded-none bg-background-0 w-[48%] p-2 gap-3 items-center"
+            className="flex-1 min-w-[45%] rounded-lg bg-background-50 p-3 gap-3 items-center"
             key={i}
           >
             <Box
-              className={`p-2 rounded-full`}
+              className="p-2 rounded-full"
               style={{
                 backgroundColor: Color(item.color).alpha(0.1).toString(),
               }}
             >
-              <Icon as={item.icon} size="xs" color={item.color} />
+              <Icon as={item.icon} size="sm" color={item.color} />
             </Box>
-            <VStack>
-              <Text size="2xs">{item.label}</Text>
-              <Text size="2xs">{item.value}</Text>
+            <VStack className="flex-1">
+              <Text size="xs" className="text-typography-500 uppercase font-medium">
+                {item.label}
+              </Text>
+              <Text size="sm" className="text-typography-900 font-bold" numberOfLines={1}>
+                {item.value}
+              </Text>
             </VStack>
           </HStack>
         ))}

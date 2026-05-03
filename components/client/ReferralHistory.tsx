@@ -13,6 +13,7 @@ import React, { FC } from "react";
 import ListTile from "../list-tile";
 import { ErrorState } from "../state-full-widgets";
 import { Button, ButtonText } from "../ui/button";
+import { Box } from "../ui/box";
 import { Card } from "../ui/card";
 import { Heading } from "../ui/heading";
 import { HStack } from "../ui/hstack";
@@ -56,27 +57,29 @@ const ReferralHistory: FC<ReferralHistoryProps> = ({ client }) => {
         </Button>
       </HStack>
       {referrals.length > 0 ? (
-        <VStack space="xs" className="bg-background-50 p-2 rounded-md">
+        <VStack space="sm" className="bg-background-50 p-3 rounded-lg">
           {referrals.map((referral) => (
             <ListTile
               key={referral.id}
               title={referral.healthFacility?.name}
               description={`${dayjs(referral.appointmentTime).format(
-                "DD/MM/YYYY HH:mm"
+                "DD MMM YYYY, HH:mm",
               )} | ${getRiskInterpretation(
-                referral.screening?.scoringResult?.interpretation
-              )}(${referral.screening?.scoringResult?.aggregateScore})`}
+                referral.screening?.scoringResult?.interpretation,
+              )} (${referral.screening?.scoringResult?.aggregateScore})`}
               leading={
-                <Icon as={Calendar} size="xs" className="text-typography-500" />
+                <Box className="p-2 bg-background-0 rounded-full">
+                  <Icon as={Calendar} size="sm" className="text-primary-600" />
+                </Box>
               }
               trailing={
                 <Text
-                  size="2xs"
-                  className={`px-2 py-1 rounded-md`}
+                  size="xs"
+                  className="px-3 py-1 rounded-full font-bold uppercase"
                   style={{
                     color: getReferralStatusColor(referral.status),
                     backgroundColor: Color(
-                      getReferralStatusColor(referral.status)
+                      getReferralStatusColor(referral.status),
                     )
                       .alpha(0.1)
                       .toString(),
@@ -96,7 +99,7 @@ const ReferralHistory: FC<ReferralHistoryProps> = ({ client }) => {
         </VStack>
       ) : (
         <Text size="xs" className="text-typography-500">
-          No screening history found
+          No Referral history found
         </Text>
       )}
     </Card>

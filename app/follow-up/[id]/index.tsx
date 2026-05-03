@@ -66,7 +66,7 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
       {
         variable: "Risk Score",
         value: `${getRiskInterpretation(
-          followUp.triggerScreening.scoringResult?.interpretation
+          followUp.triggerScreening.scoringResult?.interpretation,
         )}(${followUp.triggerScreening.scoringResult?.aggregateScore})`,
         show: true,
       },
@@ -85,8 +85,8 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
         value: followUp.completedAt
           ? "Completed"
           : followUp.canceledAt
-          ? "Canceled"
-          : "Ongoing",
+            ? "Canceled"
+            : "Ongoing",
         show: true,
       },
       {
@@ -131,7 +131,7 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
         variable: "Screening Result",
         value: followUp?.resolvingScreening?.scoringResult
           ? `${getRiskInterpretation(
-              followUp.resolvingScreening.scoringResult.interpretation
+              followUp.resolvingScreening.scoringResult.interpretation,
             )}(${followUp.resolvingScreening.scoringResult.aggregateScore})`
           : undefined,
         show:
@@ -216,10 +216,10 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
               {outreachActions.map((action) => (
                 <ListTile
                   key={action.id}
-                  title={`${getOutreachActionTypeDisplay(
-                    action.actionType
-                  )}`}
-                  description={dayjs(action.actionDate).format(DEFAULT_DATE_FORMAT)}
+                  title={`${getOutreachActionTypeDisplay(action.actionType)}`}
+                  description={dayjs(action.actionDate).format(
+                    DEFAULT_DATE_FORMAT,
+                  )}
                   leading={
                     <Icon
                       as={Calendar}
@@ -234,7 +234,7 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
                       style={{
                         color: getOutreachOutcomeColor(action.outcome),
                         backgroundColor: Color(
-                          getOutreachOutcomeColor(action.outcome)
+                          getOutreachOutcomeColor(action.outcome),
                         )
                           .alpha(0.1)
                           .toString(),
@@ -275,7 +275,6 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
                 {followUp.category === "REFERRAL_ADHERENCE" ? (
                   <Button
                     className={cn("bg-primary-500 justify-between")}
-                    size="sm"
                     onPress={() => {
                       router.push({
                         pathname: "/follow-up/[id]/complete",
@@ -292,7 +291,6 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
                 ) : (
                   <Button
                     className={cn("bg-primary-500 justify-between")}
-                    size="sm"
                     onPress={() => {
                       router.push({
                         pathname: "/screen-client",
@@ -313,7 +311,6 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
             {!followUp.canceledAt && (
               <Button
                 className="bg-error-500 justify-between"
-                size="sm"
                 onPress={() => {
                   router.push({
                     pathname: "/follow-up/[id]/cancel",

@@ -19,6 +19,7 @@ import dayjs from "dayjs";
 import { router } from "expo-router";
 import { ArrowRightIcon, Info } from "lucide-react-native";
 import React, { FC, useMemo } from "react";
+import { ScrollView } from "react-native";
 import VariableValue from "../VariableValue";
 
 type ScreeningResultsProps = {
@@ -95,37 +96,40 @@ const ScreeningResults: FC<ScreeningResultsProps> = ({ screening }) => {
   }, [screening]);
 
   return (
-    <VStack space="md" className="flex-1 items-center">
-      <Heading size="xs" className="text-start w-full">
+    <VStack space="md" className="flex-1 w-full">
+      <Heading size="xs" className="text-start w-full px-1">
         {SCREENING_FORM_STEPS[10]}
       </Heading>
-      <VStack space="sm">
-        {values.map((value, i) => {
-          const score = screening.scoringResult?.breakdown.find(
-            (factor) => factor.factor === value.factor,
-          )?.score;
-          return (
-            <VariableValue
-              key={i}
-              value={value.value}
-              variable={value.variable}
-              score={score}
-            />
-          );
-        })}
+      
+      <VStack className="flex-1 bg-background-50 rounded-lg overflow-hidden">
+        <ScrollView 
+          className="flex-1 px-4" 
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingVertical: 8 }}
+        >
+          {values.map((value, i) => {
+            const score = screening.scoringResult?.breakdown.find(
+              (factor) => factor.factor === value.factor,
+            )?.score;
+            return (
+              <VariableValue
+                key={i}
+                value={value.value}
+                variable={value.variable}
+                score={score}
+              />
+            );
+          })}
+        </ScrollView>
+      </VStack>
 
+      <VStack space="md" className="mt-2">
         <Divider />
 
-        <HStack space="sm" className="w-full justify-between items-center mt-4">
+        <HStack space="sm" className="w-full justify-between items-center py-2 px-1">
           <Heading size="lg">Total Score</Heading>
-          <Text
-            className={`px-2 py-1 rounded-md`}
-            style={{
-              color: getRiskColor(screening.scoringResult?.interpretation),
-            }}
-          ></Text>
           <Heading
-            size="lg"
+            size="xl"
             style={{
               color: getRiskColor(screening.scoringResult?.interpretation),
             }}
