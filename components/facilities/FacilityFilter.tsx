@@ -73,6 +73,7 @@ const FacilityFilter: FC<FacilityFilterProps> = ({
             isDisabled={false}
             isInvalid={false}
             isReadOnly={false}
+            style={isTablet ? { flex: 1 } : undefined}
           >
             <InputSlot className="pl-3">
               <InputIcon as={Search} />
