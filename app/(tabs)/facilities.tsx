@@ -8,14 +8,17 @@ import FacilitiesViewTabs, {
   FacilitiesViewTabsProps,
 } from "@/components/facilities/FacilitiesViewTabs";
 import CHPLandingScreenLayout from "@/components/layout/CHPLandingScreenLayout";
+import { EmptyState } from "@/components/state-full-widgets";
+import { Box } from "@/components/ui/box";
 import { VStack } from "@/components/ui/vstack";
+import { useResponsive } from "@/hooks/use-responsive";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useHealthFacilities } from "@/hooks/useHealthFacilities";
-import { useResponsive } from "@/hooks/use-responsive";
-import { Box } from "@/components/ui/box";
+import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 import { useState } from "react";
 
 export default function FacilitiesScreen() {
+  const { isOnline } = useNetworkStatus();
   const [activeView, setActiveView] =
     useState<FacilitiesViewTabsProps["activeView"]>("list");
   const [search, setSearch] = useState("");
@@ -47,14 +50,29 @@ export default function FacilitiesScreen() {
             onFacilityTypeChange={setFacilityType}
             totalCount={totalCount}
           />
-          {activeView === "list" && (
-            <FacilityListView search={debouncedSearch} typeId={facilityType} />
-          )}
-          {activeView === "grid" && (
-            <FacilityGridView search={debouncedSearch} typeId={facilityType} />
-          )}
-          {activeView === "map" && (
-            <FacilityMapView search={debouncedSearch} typeId={facilityType} />
+          {isOnline ? (
+            <>
+              {activeView === "list" && (
+                <FacilityListView
+                  search={debouncedSearch}
+                  typeId={facilityType}
+                />
+              )}
+              {activeView === "grid" && (
+                <FacilityGridView
+                  search={debouncedSearch}
+                  typeId={facilityType}
+                />
+              )}
+              {activeView === "map" && (
+                <FacilityMapView
+                  search={debouncedSearch}
+                  typeId={facilityType}
+                />
+              )}
+            </>
+          ) : (
+            <EmptyState message="Oops! Looks like you're offline. This feature needs a connection to work." />
           )}
         </VStack>
       </Box>

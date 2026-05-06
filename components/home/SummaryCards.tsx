@@ -1,3 +1,4 @@
+import { useResponsive } from "@/hooks/use-responsive";
 import { useClients } from "@/hooks/useClients";
 import { usePendingFollowUps } from "@/hooks/useFollowUp";
 import { useScreenings } from "@/hooks/useScreenings";
@@ -14,7 +15,6 @@ import {
 } from "lucide-react-native";
 import React, { useMemo } from "react";
 import { Pressable } from "react-native";
-import { useResponsive } from "@/hooks/use-responsive";
 import { Box } from "../ui/box";
 import { Card } from "../ui/card";
 import { Icon } from "../ui/icon";
@@ -96,13 +96,18 @@ const SummaryCards = () => {
               router.push("/pending-followups");
             } else if (card.title === "High Risk  cases") {
               router.push("/high-risk");
+            } else if (card.title === "My Clients") {
+              router.push({ pathname: "/(tabs)/clients", params: { owner: "mine" } });
             }
           }}
         >
           <Card
             size="lg"
             className="rounded-none gap-3 bg-background-0"
-            style={{ padding: isTablet ? 20 : 12, minHeight: isTablet ? 132 : 0 }}
+            style={{
+              padding: isTablet ? 20 : 12,
+              minHeight: isTablet ? 132 : 0,
+            }}
           >
             <Box className="flex-row items-center gap-2 justify-between">
               <Text className="font-bold text-2xl">{card.value}</Text>

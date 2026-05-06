@@ -33,6 +33,7 @@ type ActionSheetWrapperProps<T> = {
   onSearchTextChange?: (text: string) => void;
   loading?: boolean;
   maxHeight?: DimensionValue;
+  height?: DimensionValue;
 };
 
 const ActionSheetWrapper = <T,>({
@@ -48,6 +49,7 @@ const ActionSheetWrapper = <T,>({
   maxHeight = "80%",
   searchTags,
   renderPagination,
+  height,
 }: ActionSheetWrapperProps<T>) => {
   const [showActionsheet, setShowActionsheet] = React.useState(false);
   const handleOpen = () => setShowActionsheet(true);
@@ -110,7 +112,7 @@ const ActionSheetWrapper = <T,>({
       {renderTrigger({ onPress: handleOpen })}
       <Actionsheet isOpen={showActionsheet} onClose={handleClose}>
         <ActionsheetBackdrop />
-        <ActionsheetContent style={{ maxHeight }}>
+        <ActionsheetContent style={{ maxHeight, minHeight: height }}>
           <ActionsheetDragIndicatorWrapper>
             <ActionsheetDragIndicator />
           </ActionsheetDragIndicatorWrapper>

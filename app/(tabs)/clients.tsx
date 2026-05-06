@@ -6,13 +6,14 @@ import { Icon } from "@/components/ui/icon";
 import { VStack } from "@/components/ui/vstack";
 import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 import { useResponsive } from "@/hooks/use-responsive";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { UserPlus } from "lucide-react-native";
 import React from "react";
 
 const ClientsScreen = () => {
   const { isOnline } = useNetworkStatus();
   const { horizontalPadding, isTablet } = useResponsive();
+  const { owner } = useLocalSearchParams<{ owner?: "all" | "mine" }>();
 
   return (
     <CHPLandingScreenLayout>
@@ -32,7 +33,7 @@ const ClientsScreen = () => {
               Register New Client
             </ButtonText>
           </Button>
-          {isOnline ? <OnlineClients /> : <OfflineClients />}
+          {isOnline ? <OnlineClients initialOwner={owner ?? "all"} /> : <OfflineClients />}
         </VStack>
       </Box>
     </CHPLandingScreenLayout>

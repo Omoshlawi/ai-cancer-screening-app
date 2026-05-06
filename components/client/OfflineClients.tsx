@@ -1,3 +1,4 @@
+import { useResponsive } from "@/hooks/use-responsive";
 import { useOfflineClients } from "@/hooks/useClients";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { ClientFormData } from "@/types/client";
@@ -6,7 +7,6 @@ import { router } from "expo-router";
 import { ArrowRight, Dot, MapPin, Phone } from "lucide-react-native";
 import React, { useMemo, useState } from "react";
 import { FlatList } from "react-native";
-import { useResponsive } from "@/hooks/use-responsive";
 import { EmptyState } from "../state-full-widgets";
 import {
   Actionsheet,
@@ -80,7 +80,7 @@ const Item = (
     <Card
       size="md"
       variant="elevated"
-      style={{ padding: item.isTablet ? 20 : undefined }}
+      style={{ padding: item.isTablet ? 20 : 10 }}
     >
       <VStack space="md">
         <Heading size="sm">

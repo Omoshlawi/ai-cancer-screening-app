@@ -19,13 +19,13 @@ const ErrorState = <T extends { detail?: string; [k: string]: any }>({
       <ErrorStateSvg width={"80%"} style={{ aspectRatio: 1 }} />
 
       {(message || error) && (
-        <Text className="text-outline text-bodyMedium">
-          {error?.message ?? message}
-        </Text>
+        <Text className="">{error?.message ?? message}</Text>
       )}
       {(detail || error) && (
-        <Text className="text-outline text-bodySmall">
-          {error?.response?.data?.detail ?? error?.response?.data?.message ?? detail}
+        <Text className="">
+          {error?.response?.data?.detail ??
+            error?.response?.data?.message ??
+            detail}
         </Text>
       )}
     </Box>

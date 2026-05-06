@@ -1,7 +1,9 @@
 import { useChatbot } from "@/hooks/useChatbot";
+import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 import { Recycle, Send } from "lucide-react-native";
 import React, { useState } from "react";
 import { ScrollView, TouchableOpacity } from "react-native";
+import { EmptyState } from "../state-full-widgets";
 import { Box } from "../ui/box";
 import { Button, ButtonIcon } from "../ui/button";
 import { Card } from "../ui/card";
@@ -15,6 +17,7 @@ import ChatBubble from "./ChatBubble";
 
 const ChatBotTabPanel = () => {
   const { chat, conversations, isLoading, clearConversation } = useChatbot();
+  const { isOnline } = useNetworkStatus();
   const [message, setMessage] = useState("");
   const defaultMessages = [
     "Screening procedure",
@@ -40,69 +43,73 @@ const ChatBotTabPanel = () => {
         cancer
       </Text>
       <Card className="w-full flex flex-1">
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <VStack space="md">
-            <HStack space="md">
-              <VStack space="sm" className="flex-1">
-                <ChatBubble
-                  message="Hello, I'm your AI assistant. How can I help you today?"
-                  user="bot"
-                />
-                {conversations.length === 0 && (
-                  <Box className="flex-row gap-2 flex-wrap w-full">
-                    {defaultMessages.map((message, index) => (
-                      <TouchableOpacity
-                        key={index}
-                        activeOpacity={0.7}
-                        onPress={() => chat(message)}
-                      >
-                        <Text
-                          className="bg-primary-50 px-2 py-1 text-nowrap rounded-xs text-primary-500"
-                          size="xs"
+        {isOnline ? (
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <VStack space="md">
+              <HStack space="md">
+                <VStack space="sm" className="flex-1">
+                  <ChatBubble
+                    message="Hello, I'm your AI assistant. How can I help you today?"
+                    user="bot"
+                  />
+                  {conversations.length === 0 && (
+                    <Box className="flex-row gap-2 flex-wrap w-full">
+                      {defaultMessages.map((message, index) => (
+                        <TouchableOpacity
+                          key={index}
+                          activeOpacity={0.7}
+                          onPress={() => chat(message)}
                         >
-                          {message}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </Box>
-                )}
-              </VStack>
-            </HStack>
-            {conversations.map((c, i) => (
-              <ChatBubble message={c.message} user={c.user} key={i} />
-            ))}
-            {isLoading && (
-              <Box className="p-2 bg-background-100 rounded-full w-12">
-                <Spinner size="small" color="grey" />
-              </Box>
-            )}
-            <HStack space="md" className="w-full items-end">
-              <Textarea
-                size="sm"
-                isReadOnly={false}
-                isInvalid={false}
-                isDisabled={false}
-                className="flex-1"
-              >
-                <TextareaInput
-                  placeholder="Type your question here here..."
-                  value={message}
-                  onChangeText={setMessage}
-                />
-              </Textarea>
-              <Button
-                size="sm"
-                className="bg-primary-500 text-typography-0 rounded-full w-12 h-12"
-                onPress={() => {
-                  chat(message);
-                  setMessage("");
-                }}
-              >
-                <ButtonIcon as={Send} color="white" />
-              </Button>
-            </HStack>
-          </VStack>
-        </ScrollView>
+                          <Text
+                            className="bg-primary-50 px-2 py-1 text-nowrap rounded-xs text-primary-500"
+                            size="xs"
+                          >
+                            {message}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </Box>
+                  )}
+                </VStack>
+              </HStack>
+              {conversations.map((c, i) => (
+                <ChatBubble message={c.message} user={c.user} key={i} />
+              ))}
+              {isLoading && (
+                <Box className="p-2 bg-background-100 rounded-full w-12">
+                  <Spinner size="small" color="grey" />
+                </Box>
+              )}
+              <HStack space="md" className="w-full items-end">
+                <Textarea
+                  size="sm"
+                  isReadOnly={false}
+                  isInvalid={false}
+                  isDisabled={false}
+                  className="flex-1"
+                >
+                  <TextareaInput
+                    placeholder="Type your question here here..."
+                    value={message}
+                    onChangeText={setMessage}
+                  />
+                </Textarea>
+                <Button
+                  size="sm"
+                  className="bg-primary-500 text-typography-0 rounded-full w-12 h-12"
+                  onPress={() => {
+                    chat(message);
+                    setMessage("");
+                  }}
+                >
+                  <ButtonIcon as={Send} color="white" />
+                </Button>
+              </HStack>
+            </VStack>
+          </ScrollView>
+        ) : (
+          <EmptyState message="Oops! Looks like you're offline. This feature needs a connection to work." />
+        )}
       </Card>
     </VStack>
   );

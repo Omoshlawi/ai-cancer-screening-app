@@ -122,7 +122,7 @@ const LoginScreen = () => {
                 className="w-full"
               >
                 <FormControlLabel>
-                  <FormControlLabelText>username</FormControlLabelText>
+                  <FormControlLabelText>Username</FormControlLabelText>
                 </FormControlLabel>
                 <Input variant="outline" isInvalid={!!error?.message}>
                   <InputField
@@ -190,13 +190,16 @@ const LoginScreen = () => {
               </FormControl>
             )}
           />
-          <Box className="flex-row items-center justify-end">
+    {/*
+     <Box className="flex-row items-center justify-end">
             <Link href="/auth/forgot-password" withAnchor>
               <Text className="text-sm text-primary-500">
                 Forgot Password {"\u2192"}
               </Text>
             </Link>
           </Box>
+    */}
+         
           <Button
             onPress={form.handleSubmit(onSubmit)}
             disabled={form.formState.isSubmitting}

@@ -1,3 +1,4 @@
+import { useResponsive } from "@/hooks/use-responsive";
 import { useHealthFacilityTypes } from "@/hooks/useHealthFacilityTypes";
 import {
   ChevronDown,
@@ -7,7 +8,6 @@ import {
 } from "lucide-react-native";
 import React, { FC, useMemo, useState } from "react";
 import { TouchableOpacity } from "react-native";
-import { useResponsive } from "@/hooks/use-responsive";
 import ActionSheetWrapper from "../actions-sheet-wrapper";
 import Pagination from "../Pagination";
 import { EmptyState } from "../state-full-widgets";
@@ -73,7 +73,6 @@ const FacilityFilter: FC<FacilityFilterProps> = ({
             isDisabled={false}
             isInvalid={false}
             isReadOnly={false}
-            className="flex-1"
           >
             <InputSlot className="pl-3">
               <InputIcon as={Search} />

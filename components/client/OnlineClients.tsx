@@ -1,3 +1,4 @@
+import { useResponsive } from "@/hooks/use-responsive";
 import { useClients } from "@/hooks/useClients";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { getRiskColor, getRiskInterpretation } from "@/lib/helpers";
@@ -8,7 +9,6 @@ import { router } from "expo-router";
 import { ArrowRight, Dot, MapPin, Phone } from "lucide-react-native";
 import { useMemo, useState } from "react";
 import { FlatList } from "react-native";
-import { useResponsive } from "@/hooks/use-responsive";
 import Pagination from "../Pagination";
 import { EmptyState, ErrorState, When } from "../state-full-widgets";
 import { Box } from "../ui/box";
@@ -21,11 +21,15 @@ import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 import ClientFilter from "./ClientFilter";
 
-const OnlineClients = () => {
+const OnlineClients = ({
+  initialOwner = "all",
+}: {
+  initialOwner?: "all" | "mine";
+}) => {
   const { isTablet } = useResponsive();
   const [search, setSearch] = useState("");
   const [level, setLevel] = useState<RiskInterpretation | "">("");
-  const [owner, setOwner] = useState<"all" | "mine">("all");
+  const [owner, setOwner] = useState<"all" | "mine">(initialOwner);
   const [debouncedSearch] = useDebouncedValue(search, 500);
 
   const params = useMemo(() => {
@@ -75,7 +79,7 @@ const OnlineClients = () => {
                     <Card
                       size="md"
                       variant="elevated"
-                      style={{ padding: isTablet ? 20 : undefined }}
+                      style={{ padding: isTablet ? 20 : 10 }}
                     >
                       <VStack space="md">
                         <HStack className="justify-between items-center">

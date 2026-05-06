@@ -169,6 +169,7 @@ const ClientSearch: FC<ClientSearchProps> = ({ onNext, searchClientAsync }) => {
             searchable
             searchText={searchValue}
             onSearchTextChange={onSearchChange}
+            height={"80%"}
           />
         )}
       />

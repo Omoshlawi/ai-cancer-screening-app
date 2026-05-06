@@ -268,7 +268,8 @@ const LocationCaptureBlock = ({
       </Text>
       <Text size="sm" className="text-center text-typography-500">
         We need your current GPS coordinates before you can start screening.
-        Please allow location access to continue.
+        Please allow location access to continue.{"\n"}GPS works without
+        internet — if this takes a moment, please wait.
       </Text>
       {isLoading ? (
         <ActivityIndicator size="large" color="#0f766e" />
