@@ -1,5 +1,6 @@
 import Constants from "expo-constants";
 export const OFFLINE_CLIENTS_KEY = "offline-clients";
+export const LAST_KNOWN_LOCATION_KEY = "last-known-location";
 export const BASE_URL = "http://172.238.122.159:8080";
 // export const BASE_URL = "http://localhost:600";
 

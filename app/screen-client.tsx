@@ -27,7 +27,7 @@ import { Client } from "@/types/client";
 import { ScreenClientFormData, Screening } from "@/types/screening";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { ActivityIndicator } from "react-native";
 import { FormStepper } from "@/components/ui/form-stepper";
@@ -71,13 +71,14 @@ const ScreenClientScreen = () => {
   const seachClientAsync = useSearchClients(search);
   const toast = useToast();
   const [screening, setScreening] = useState<Screening>();
+  const [locationSkipped, setLocationSkipped] = useState(false);
   const {
     coordinates,
     isLoading: isCapturingLocation,
     error: locationError,
     retry: retryLocationCapture,
   } = useLocation();
-  const hasLocation = Boolean(coordinates);
+  const hasLocation = Boolean(coordinates) || locationSkipped;
 
   // Group 10 steps into 5 visual milestones
   const steps = [
@@ -104,6 +105,15 @@ const ScreenClientScreen = () => {
       });
     }
   }, [coordinates, form]);
+
+  const handleSkipLocation = useCallback(() => {
+    form.setValue(
+      "coordinates",
+      { latitude: 0, longitude: 0 },
+      { shouldDirty: false, shouldTouch: false, shouldValidate: true }
+    );
+    setLocationSkipped(true);
+  }, [form]);
 
   const onSubmit: SubmitHandler<ScreenClientFormData> = async (data) => {
     setSubmitting(true);
@@ -173,6 +183,7 @@ const ScreenClientScreen = () => {
                     isLoading={isCapturingLocation}
                     error={locationError}
                     onRetry={retryLocationCapture}
+                    onSkip={handleSkipLocation}
                   />
                 ) : (
                   <>
@@ -253,10 +264,12 @@ const LocationCaptureBlock = ({
   isLoading,
   error,
   onRetry,
+  onSkip,
 }: {
   isLoading: boolean;
   error: string | null;
   onRetry: () => void;
+  onSkip: () => void;
 }) => {
   return (
     <VStack
@@ -287,6 +300,15 @@ const LocationCaptureBlock = ({
             onPress={onRetry}
           >
             <ButtonText>Try Again</ButtonText>
+          </Button>
+          <Button
+            action="secondary"
+            variant="outline"
+            size="sm"
+            className="rounded-none w-full"
+            onPress={onSkip}
+          >
+            <ButtonText>Continue without GPS</ButtonText>
           </Button>
         </>
       )}
