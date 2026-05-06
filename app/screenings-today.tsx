@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
+import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 import { useScreenings } from "@/hooks/useScreenings";
 import { getRiskColor, getRiskInterpretation } from "@/lib/helpers";
 import { Screening } from "@/types/screening";
@@ -19,6 +20,7 @@ import React from "react";
 dayjs.extend(relativeTime);
 
 const ScreeningsToday = () => {
+  const { isOnline } = useNetworkStatus();
   const { screenings, error, isLoading, ...pagination } = useScreenings({
     screeningDateFrom: dayjs().startOf("day").toISOString(),
     screeningDateTo: dayjs().endOf("day").toISOString(),
@@ -60,29 +62,33 @@ const ScreeningsToday = () => {
 
   return (
     <ScreenLayout title="Today's Screenings">
-      <When
-        asyncState={{ isLoading, error, data: screenings }}
-        loading={() => <Spinner />}
-        error={(e) => <ErrorState error={e} />}
-        success={(list) => {
-          if (!list?.length)
-            return <EmptyState message="No screenings today" />;
-          return (
-            <Box className="flex-1 mt-2">
-              <Card size="sm" variant="elevated" className="p-2 gap-3">
-                <Box className="bg-background-50 p-2 rounded-md">
-                  {list.map((s) => (
-                    <Box key={s.id} className="mb-2">
-                      {renderTile(s)}
-                    </Box>
-                  ))}
-                </Box>
-              </Card>
-              <Pagination {...pagination} isLoading={isLoading} />
-            </Box>
-          );
-        }}
-      />
+      {isOnline ? (
+        <When
+          asyncState={{ isLoading, error, data: screenings }}
+          loading={() => <Spinner />}
+          error={(e) => <ErrorState error={e} />}
+          success={(list) => {
+            if (!list?.length)
+              return <EmptyState message="No screenings today" />;
+            return (
+              <Box className="flex-1 mt-2">
+                <Card size="sm" variant="elevated" className="p-2 gap-3">
+                  <Box className="bg-background-50 p-2 rounded-md">
+                    {list.map((s) => (
+                      <Box key={s.id} className="mb-2">
+                        {renderTile(s)}
+                      </Box>
+                    ))}
+                  </Box>
+                </Card>
+                <Pagination {...pagination} isLoading={isLoading} />
+              </Box>
+            );
+          }}
+        />
+      ) : (
+        <EmptyState message="Oops! Looks like you're offline. This feature needs a connection to work." />
+      )}
     </ScreenLayout>
   );
 };
