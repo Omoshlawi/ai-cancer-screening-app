@@ -1,6 +1,7 @@
 import {
   completeReferralSchema,
   referralSchema,
+  referralTestSchema,
   screenClientSchema,
 } from "@/constants/schemas";
 import z from "zod";
@@ -34,6 +35,7 @@ export type Screening = {
 
 export type ScreenClientFormData = z.infer<typeof screenClientSchema>;
 export type ReferralFormData = z.infer<typeof referralSchema>;
+export type ReferralTestFormData = z.infer<typeof referralTestSchema>;
 export type CompleteReferralFormData = z.infer<typeof completeReferralSchema>;
 export enum RiskFactor {
   AGE = "AGE",
@@ -73,6 +75,16 @@ export enum ReferralStatus {
   CANCELLED = "CANCELLED",
 }
 
+export interface ReferralTest {
+  id: string;
+  referralId: string;
+  testType: ReferralTestFormData["testType"];
+  testResult: ReferralTestFormData["testResult"];
+  actionTaken?: ReferralTestFormData["actionTaken"];
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Referral {
   id: string;
   clientId: string;
@@ -85,6 +97,7 @@ export interface Referral {
   screening?: Screening;
   healthFacility?: HealthFacility;
   status: ReferralStatus;
-  testResult?: CompleteReferralFormData["testResult"];
-  finalDiagnosis?: string;
+  visitedDate?: string | null;
+  tests?: ReferralTest[];
+  finalDiagnosis?: string | null;
 }

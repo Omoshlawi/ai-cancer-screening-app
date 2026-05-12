@@ -5,15 +5,19 @@ import { ErrorState, When } from "@/components/state-full-widgets";
 import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
+import { HStack } from "@/components/ui/hstack";
+import { EditIcon } from "@/components/ui/icon";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { useUserHasSystemAccess } from "@/hooks/use-user-has-access";
-import { useFollowUps } from "@/hooks/useFollowUp";
 import { useReferral } from "@/hooks/useReferrals";
 import {
+  getActionTakenDisplay,
+  getReferralResultDisplay,
   getReferralStatusDisplayValue,
   getRiskInterpretation,
+  getTestTypeDisplay,
 } from "@/lib/helpers";
 import { Referral } from "@/types/screening";
 import dayjs from "dayjs";
@@ -28,6 +32,9 @@ const ReferralDetailScreen = () => {
   const { hasAccess } = useUserHasSystemAccess({ followups: ["create"] });
   const { hasAccess: hasFollowupList } = useUserHasSystemAccess({
     followups: ["list"],
+  });
+  const { hasAccess: canComplete } = useUserHasSystemAccess({
+    referrals: ["complete"],
   });
   return (
     <ScreenLayout title="Referral Detail">
@@ -54,9 +61,17 @@ const ReferralDetailScreen = () => {
                     : "No clinical notes"}
                 </Text>
               </Card>
+              {canComplete &&
+                referral?.status === "COMPLETED" &&
+                !!referral.tests?.length && (
+                  <TestOutcomes referral={referral!} canEdit={canComplete} />
+                )}
               {hasFollowupList && <ReferralFollowUps referral={referral!} />}
               {referral?.status !== "COMPLETED" && hasAccess && (
                 <AddFollowUpBtn referral={referral!} />
+              )}
+              {referral?.status !== "COMPLETED" && canComplete && (
+                <CompleteReferralBtn referral={referral!} />
               )}
             </VStack>
           </ScrollView>
@@ -188,3 +203,90 @@ const AddFollowUpBtn = ({ referral }: { referral: Referral }) => {
     </Button>
   );
 };
+
+const CompleteReferralBtn = ({ referral }: { referral: Referral }) => {
+  return (
+    <Button
+      action="positive"
+      onPress={() => {
+        router.push({
+          pathname: "/referral/[id]/complete",
+          params: { id: referral.id },
+        });
+      }}
+    >
+      <ButtonText>Complete Referral</ButtonText>
+    </Button>
+  );
+};
+
+const TestOutcomes = ({
+  referral,
+  canEdit,
+}: {
+  referral: Referral;
+  canEdit: boolean;
+}) => (
+  <Card
+    size="lg"
+    variant="elevated"
+    className="gap-3 bg-background-0 rounded-none"
+  >
+    <VStack space="sm">
+      <HStack className="justify-between items-center">
+        <Heading size="sm" className="text-typography-500 font-bold">
+          Test Outcomes
+        </Heading>
+        {canEdit && (
+          <Button
+            size="sm"
+            variant="link"
+            onPress={() =>
+              router.push({
+                pathname: "/referral/[id]/complete",
+                params: { id: referral.id },
+              })
+            }
+          >
+            <ButtonIcon as={EditIcon} className="text-primary-500" />
+            <ButtonText className="text-primary-500">Edit</ButtonText>
+          </Button>
+        )}
+      </HStack>
+      {referral.visitedDate && (
+        <VariableValue
+          variable="Date Visited"
+          value={dayjs(referral.visitedDate).format("DD/MM/YYYY")}
+        />
+      )}
+      {referral.tests?.map((test, i) => (
+        <VStack
+          key={i}
+          space="xs"
+          className="border-t border-outline-100 pt-2"
+        >
+          <VariableValue
+            variable="Test Type"
+            value={getTestTypeDisplay(test.testType) ?? "N/A"}
+          />
+          <VariableValue
+            variable="Result"
+            value={getReferralResultDisplay(test.testResult) ?? "N/A"}
+          />
+          {test.actionTaken && (
+            <VariableValue
+              variable="Action Taken"
+              value={getActionTakenDisplay(test.actionTaken) ?? "N/A"}
+            />
+          )}
+        </VStack>
+      ))}
+      {referral.finalDiagnosis && (
+        <VariableValue
+          variable="Final Diagnosis"
+          value={referral.finalDiagnosis}
+        />
+      )}
+    </VStack>
+  </Card>
+);

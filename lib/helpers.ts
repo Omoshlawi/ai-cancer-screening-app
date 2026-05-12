@@ -1,7 +1,7 @@
 import { FollowUp, OutreachAction } from "@/types/follow-up";
 import {
-  CompleteReferralFormData,
   ReferralStatus,
+  ReferralTestFormData,
   RiskInterpretation,
 } from "@/types/screening";
 import { mutate } from "./api";
@@ -191,12 +191,42 @@ export const getFollowUpCanceletionReasonDisplay = (
 };
 
 export const getReferralResultDisplay = (
-  result: CompleteReferralFormData["testResult"]
+  result: ReferralTestFormData["testResult"]
 ) => {
   switch (result) {
     case "POSITIVE":
       return "Positive";
     case "NEGATIVE":
       return "Negative";
+    case "SUSPICIOUS":
+      return "Suspicious";
+    case "CYTOLOGY_POSITIVE":
+      return "Cytology Positive";
+    case "CYTOLOGY_NEGATIVE":
+      return "Cytology Negative";
+  }
+};
+
+export const getTestTypeDisplay = (
+  type: ReferralTestFormData["testType"]
+) => {
+  switch (type) {
+    case "VIA":
+      return "VIA";
+    case "PAP_SMEAR":
+      return "Pap Smear";
+    case "HPV_TEST":
+      return "HPV Test";
+  }
+};
+
+export const getActionTakenDisplay = (
+  action: NonNullable<ReferralTestFormData["actionTaken"]>
+) => {
+  switch (action) {
+    case "TREATED":
+      return "Treated";
+    case "BIOPSY":
+      return "Biopsy";
   }
 };

@@ -17,11 +17,11 @@ import {
 } from "@/components/ui/form-control";
 import { HStack } from "@/components/ui/hstack";
 import {
-  AddIcon,
   AlertCircleIcon,
   ArrowRightIcon,
   ChevronDownIcon,
   CloseIcon,
+  AddIcon,
 } from "@/components/ui/icon";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import {
@@ -41,7 +41,7 @@ import { Textarea, TextareaInput } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { completeReferralSchema } from "@/constants/schemas";
-import { useReferralApi } from "@/hooks/useReferrals";
+import { useReferral, useReferralApi } from "@/hooks/useReferrals";
 import { handleApiErrors } from "@/lib/api";
 import {
   getActionTakenDisplay,
@@ -56,7 +56,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import { Calendar } from "lucide-react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Controller,
   useFieldArray,
@@ -109,11 +109,7 @@ const ACTIONS_BY_TYPE: Record<
   HPV_TEST: [],
 };
 
-const EMPTY_TEST = {
-  testType: undefined,
-  testResult: undefined,
-  actionTaken: undefined,
-};
+const EMPTY_TEST = { testType: undefined, testResult: undefined, actionTaken: undefined };
 
 type TestEntryProps = {
   index: number;
@@ -123,13 +119,7 @@ type TestEntryProps = {
   setValue: ReturnType<typeof useForm>["setValue"];
 };
 
-const TestEntry = ({
-  index,
-  canRemove,
-  onRemove,
-  control,
-  setValue,
-}: TestEntryProps) => {
+const TestEntry = ({ index, canRemove, onRemove, control, setValue }: TestEntryProps) => {
   const testType = useWatch({
     control,
     name: `tests.${index}.testType`,
@@ -137,6 +127,7 @@ const TestEntry = ({
 
   const resultOptions = testType ? RESULTS_BY_TYPE[testType] : [];
   const actionOptions = testType ? ACTIONS_BY_TYPE[testType] : [];
+  const showAction = actionOptions.length > 0;
 
   return (
     <View className="border border-outline-200 rounded-md p-4 bg-background-0">
@@ -145,13 +136,19 @@ const TestEntry = ({
           Test {index + 1}
         </Text>
         {canRemove && (
-          <Button size="sm" variant="link" onPress={onRemove} className="p-0">
+          <Button
+            size="sm"
+            variant="link"
+            onPress={onRemove}
+            className="p-0"
+          >
             <ButtonIcon as={CloseIcon} className="text-error-500" />
           </Button>
         )}
       </HStack>
 
       <VStack space="md">
+        {/* Test Type */}
         <Controller
           control={control}
           name={`tests.${index}.testType`}
@@ -186,21 +183,14 @@ const TestEntry = ({
                         <SelectDragIndicator />
                       </SelectDragIndicatorWrapper>
                       {TEST_TYPES.map((t) => (
-                        <SelectItem
-                          key={t.value}
-                          label={t.label}
-                          value={t.value}
-                        />
+                        <SelectItem key={t.value} label={t.label} value={t.value} />
                       ))}
                     </SelectContent>
                   </SelectPortal>
                 </Select>
                 {error && (
                   <FormControlError>
-                    <FormControlErrorIcon
-                      as={AlertCircleIcon}
-                      className="text-error-500"
-                    />
+                    <FormControlErrorIcon as={AlertCircleIcon} className="text-error-500" />
                     <FormControlErrorText className="text-error-500">
                       {error.message}
                     </FormControlErrorText>
@@ -211,6 +201,7 @@ const TestEntry = ({
           }}
         />
 
+        {/* Test Result */}
         <Controller
           control={control}
           name={`tests.${index}.testResult`}
@@ -233,9 +224,7 @@ const TestEntry = ({
                 >
                   <SelectTrigger variant="outline" size="md">
                     <SelectInput
-                      placeholder={
-                        testType ? "Select result" : "Select test type first"
-                      }
+                      placeholder={testType ? "Select result" : "Select test type first"}
                       className="flex-1"
                       value={selected?.label}
                     />
@@ -248,21 +237,14 @@ const TestEntry = ({
                         <SelectDragIndicator />
                       </SelectDragIndicatorWrapper>
                       {resultOptions.map((r) => (
-                        <SelectItem
-                          key={r.value}
-                          label={r.label}
-                          value={r.value}
-                        />
+                        <SelectItem key={r.value} label={r.label} value={r.value} />
                       ))}
                     </SelectContent>
                   </SelectPortal>
                 </Select>
                 {error && (
                   <FormControlError>
-                    <FormControlErrorIcon
-                      as={AlertCircleIcon}
-                      className="text-error-500"
-                    />
+                    <FormControlErrorIcon as={AlertCircleIcon} className="text-error-500" />
                     <FormControlErrorText className="text-error-500">
                       {error.message}
                     </FormControlErrorText>
@@ -273,14 +255,13 @@ const TestEntry = ({
           }}
         />
 
-        {actionOptions.length > 0 && (
+        {/* Action Taken — only for VIA and Pap Smear */}
+        {showAction && (
           <Controller
             control={control}
             name={`tests.${index}.actionTaken`}
             render={({ field, fieldState: { invalid, error } }) => {
-              const selected = actionOptions.find(
-                (a) => a.value === field.value
-              );
+              const selected = actionOptions.find((a) => a.value === field.value);
               return (
                 <FormControl isInvalid={invalid} size="md" className="w-full">
                   <FormControlLabel>
@@ -306,21 +287,14 @@ const TestEntry = ({
                           <SelectDragIndicator />
                         </SelectDragIndicatorWrapper>
                         {actionOptions.map((a) => (
-                          <SelectItem
-                            key={a.value}
-                            label={a.label}
-                            value={a.value}
-                          />
+                          <SelectItem key={a.value} label={a.label} value={a.value} />
                         ))}
                       </SelectContent>
                     </SelectPortal>
                   </Select>
                   {error && (
                     <FormControlError>
-                      <FormControlErrorIcon
-                        as={AlertCircleIcon}
-                        className="text-error-500"
-                      />
+                      <FormControlErrorIcon as={AlertCircleIcon} className="text-error-500" />
                       <FormControlErrorText className="text-error-500">
                         {error.message}
                       </FormControlErrorText>
@@ -336,16 +310,29 @@ const TestEntry = ({
   );
 };
 
-const CompleteFollowUpScreen = () => {
-  const { referralId } = useLocalSearchParams<{ referralId: string }>();
+const CompleteReferralScreen = () => {
+  const { id } = useLocalSearchParams<{ id: string }>();
   const toast = useToast();
   const { completeReferral } = useReferralApi();
+  const { referral } = useReferral(id);
+
+  const existingTests = referral?.tests;
 
   const form = useForm({
     resolver: zodResolver(completeReferralSchema),
     defaultValues: {
-      visitedDate: dayjs().toDate(),
-      tests: [EMPTY_TEST],
+      visitedDate: referral?.visitedDate
+        ? dayjs(referral.visitedDate).toDate()
+        : dayjs().toDate(),
+      finalDiagnosis: referral?.finalDiagnosis ?? undefined,
+      tests:
+        existingTests && existingTests.length > 0
+          ? existingTests.map((t) => ({
+              testType: t.testType,
+              testResult: t.testResult,
+              actionTaken: t.actionTaken ?? undefined,
+            }))
+          : [EMPTY_TEST],
     },
   });
 
@@ -354,14 +341,32 @@ const CompleteFollowUpScreen = () => {
     name: "tests",
   });
 
+  useEffect(() => {
+    if (!referral) return;
+    form.reset({
+      visitedDate: referral.visitedDate
+        ? dayjs(referral.visitedDate).toDate()
+        : dayjs().toDate(),
+      finalDiagnosis: referral.finalDiagnosis ?? undefined,
+      tests:
+        referral.tests && referral.tests.length > 0
+          ? referral.tests.map((t) => ({
+              testType: t.testType,
+              testResult: t.testResult,
+              actionTaken: t.actionTaken ?? undefined,
+            }))
+          : [EMPTY_TEST],
+    });
+  }, [referral?.id]);
+
   const onSubmit = async (data: CompleteReferralFormData) => {
     try {
-      await completeReferral(referralId, data);
+      await completeReferral(id, data);
       toast.show({
         placement: "top",
-        render: ({ id }) => (
+        render: ({ id: toastId }) => (
           <Toaster
-            uniqueToastId={"toast-" + id}
+            uniqueToastId={"toast-" + toastId}
             variant="outline"
             title="Success"
             description="Referral successfully completed"
@@ -374,9 +379,9 @@ const CompleteFollowUpScreen = () => {
       const errors = handleApiErrors(error);
       toast.show({
         placement: "top",
-        render: ({ id }) => (
+        render: ({ id: toastId }) => (
           <Toaster
-            uniqueToastId={"toast-" + id}
+            uniqueToastId={"toast-" + toastId}
             variant="outline"
             title="Error"
             description={errors?.detail}
@@ -388,10 +393,11 @@ const CompleteFollowUpScreen = () => {
   };
 
   return (
-    <ScreenLayout title="Complete Follow up">
+    <ScreenLayout title="Complete Referral">
       <ScrollView>
         <FormControl className="p-4 w-full bg-background-50">
           <VStack space="lg">
+            {/* Date of Visit */}
             <Controller
               control={form.control}
               name="visitedDate"
@@ -416,10 +422,7 @@ const CompleteFollowUpScreen = () => {
                           placeholder="Select date"
                           value={formattedDate}
                         />
-                        <InputSlot
-                          className="absolute inset-0"
-                          onPress={onPress}
-                        />
+                        <InputSlot className="absolute inset-0" onPress={onPress} />
                         <InputSlot className="px-3" onPress={onPress}>
                           <InputIcon as={Calendar} />
                         </InputSlot>
@@ -441,6 +444,7 @@ const CompleteFollowUpScreen = () => {
               )}
             />
 
+            {/* Test entries */}
             <VStack space="md">
               {fields.map((field, index) => (
                 <TestEntry
@@ -453,18 +457,28 @@ const CompleteFollowUpScreen = () => {
                 />
               ))}
 
+              {/* Tests array-level error */}
+              {form.formState.errors.tests?.root && (
+                <FormControlError>
+                  <FormControlErrorIcon as={AlertCircleIcon} className="text-error-500" />
+                  <FormControlErrorText className="text-error-500">
+                    {(form.formState.errors.tests as any)?.message ??
+                      form.formState.errors.tests?.root?.message}
+                  </FormControlErrorText>
+                </FormControlError>
+              )}
+
               <Button
                 variant="outline"
                 onPress={() => append(EMPTY_TEST as any)}
                 className="w-full border-dashed border-outline-300"
               >
                 <ButtonIcon as={AddIcon} className="text-primary-500" />
-                <ButtonText className="text-primary-500">
-                  Add Another Test
-                </ButtonText>
+                <ButtonText className="text-primary-500">Add Another Test</ButtonText>
               </Button>
             </VStack>
 
+            {/* Final Diagnosis */}
             <Controller
               control={form.control}
               name="finalDiagnosis"
@@ -515,4 +529,4 @@ const CompleteFollowUpScreen = () => {
   );
 };
 
-export default CompleteFollowUpScreen;
+export default CompleteReferralScreen;

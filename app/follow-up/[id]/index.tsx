@@ -15,6 +15,7 @@ import { useUserHasSystemAccess } from "@/hooks/use-user-has-access";
 import { useFollowUp } from "@/hooks/useFollowUp";
 import {
   getFollowUpCategoryDisply,
+  getActionTakenDisplay,
   getOutreachActionTypeDisplay,
   getOutreachOutcomeColor,
   getOutreachOutcomeDisplay,
@@ -22,6 +23,7 @@ import {
   getReferralResultDisplay,
   getRiskInterpretation,
   getStatusFromDates,
+  getTestTypeDisplay,
 } from "@/lib/helpers";
 import { FollowUp } from "@/types/follow-up";
 import { ReferralStatus } from "@/types/screening";
@@ -119,9 +121,20 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
         show: !!followUp.completedAt && hasAccess,
       },
       {
-        variable: "Test Result",
-        value: followUp?.referral?.testResult
-          ? getReferralResultDisplay(followUp?.referral.testResult)
+        variable: "Test Results",
+        value: followUp?.referral?.tests?.length
+          ? followUp.referral.tests
+              .map((t) => {
+                const parts = [
+                  getTestTypeDisplay(t.testType),
+                  getReferralResultDisplay(t.testResult),
+                  t.actionTaken ? getActionTakenDisplay(t.actionTaken) : null,
+                ]
+                  .filter(Boolean)
+                  .join(": ");
+                return parts;
+              })
+              .join(", ")
           : undefined,
         show:
           !!followUp.completedAt &&

@@ -91,12 +91,37 @@ export const referralSchema = z.object({
   additionalNotes: z.string().optional(),
 });
 
+export const referralTestSchema = z
+  .object({
+    testType: z.enum(["VIA", "PAP_SMEAR", "HPV_TEST"]),
+    testResult: z.enum([
+      "POSITIVE",
+      "NEGATIVE",
+      "SUSPICIOUS",
+      "CYTOLOGY_POSITIVE",
+      "CYTOLOGY_NEGATIVE",
+    ]),
+    actionTaken: z.enum(["TREATED", "BIOPSY"]).optional(),
+  })
+  .superRefine((data, ctx) => {
+    const validResults: Record<string, string[]> = {
+      VIA: ["POSITIVE", "NEGATIVE", "SUSPICIOUS"],
+      PAP_SMEAR: ["CYTOLOGY_POSITIVE", "CYTOLOGY_NEGATIVE"],
+      HPV_TEST: ["POSITIVE", "NEGATIVE"],
+    };
+    if (data.testType && !validResults[data.testType].includes(data.testResult)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Invalid result for selected test type",
+        path: ["testResult"],
+      });
+    }
+  });
+
 export const completeReferralSchema = z.object({
-  followUpId: z.string().nonempty(),
-  testResult: z.enum(["POSITIVE", "NEGATIVE"]),
+  tests: z.array(referralTestSchema).min(1, "At least one test is required"),
   visitedDate: z.coerce.date(),
   finalDiagnosis: z.string().optional(),
-  outcomeNotes: z.string().optional(),
 });
 
 export const followUpSchema = z
