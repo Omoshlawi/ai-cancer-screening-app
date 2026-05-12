@@ -16,5 +16,8 @@ export interface Client {
   nationalId: string;
   maritalStatus: ClientFormData["maritalStatus"];
   level?: "low" | "medium" | "high";
-  screenings?: Pick<Screening, "id" | "createdAt" | "scoringResult">[];
+  screenings?: Pick<
+    Screening,
+    "id" | "createdAt" | "scoringResult" | "provider"
+  >[];
 }

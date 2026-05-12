@@ -7,6 +7,10 @@ import z from "zod";
 import { Client } from "./client";
 import { Coordinates, HealthFacility } from "./facilities";
 
+export type Provider = {
+  userId: string;
+};
+
 export type Screening = {
   id: string;
   clientId: string;
@@ -25,6 +29,7 @@ export type Screening = {
   client?: Client;
   scoringResult?: ScoringResult;
   coordinates?: Coordinates;
+  provider: Provider;
 };
 
 export type ScreenClientFormData = z.infer<typeof screenClientSchema>;

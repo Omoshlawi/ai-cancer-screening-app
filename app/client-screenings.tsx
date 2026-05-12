@@ -66,16 +66,9 @@ const ClientScreenings = () => {
           )}
           <Button
             action="primary"
-            onPress={() => {
-              router.push({
-                pathname: "/screen-client",
-                params: {
-                  search: phoneNumber,
-                },
-              });
-            }}
+            onPress={() => router.push("/add-client")}
           >
-            <ButtonText>Add Screening</ButtonText>
+            <ButtonText>Screen New Client</ButtonText>
           </Button>
         </VStack>
       </ScrollView>

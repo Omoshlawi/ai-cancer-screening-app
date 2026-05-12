@@ -34,7 +34,7 @@ const ClientInfo: FC<ClientInfoProps> = ({ client }) => {
       {
         icon: IdCard,
         label: "ID",
-        value: `${client?.nationalId}`,
+        value: `${client?.nationalId ?? "N/A"}`,
         color: "green",
       },
       {
@@ -50,7 +50,7 @@ const ClientInfo: FC<ClientInfoProps> = ({ client }) => {
         color: "teal",
       },
     ],
-    [client]
+    [client],
   );
   return (
     <Card size="sm" variant="elevated" className="p-2">
@@ -86,10 +86,17 @@ const ClientInfo: FC<ClientInfoProps> = ({ client }) => {
               <Icon as={item.icon} size="sm" color={item.color} />
             </Box>
             <VStack className="flex-1">
-              <Text size="xs" className="text-typography-500 uppercase font-medium">
+              <Text
+                size="xs"
+                className="text-typography-500 uppercase font-medium"
+              >
                 {item.label}
               </Text>
-              <Text size="sm" className="text-typography-900 font-bold" numberOfLines={1}>
+              <Text
+                size="sm"
+                className="text-typography-900 font-bold"
+                numberOfLines={1}
+              >
                 {item.value}
               </Text>
             </VStack>

@@ -13,7 +13,7 @@ import {
   getRiskInterpretation,
   getSmokingDisplayValue,
 } from "@/lib/helpers";
-import { RiskFactor, RiskInterpretation, Screening } from "@/types/screening";
+import { RiskFactor, Screening } from "@/types/screening";
 import Color from "color";
 import dayjs from "dayjs";
 import { router } from "expo-router";
@@ -100,10 +100,10 @@ const ScreeningResults: FC<ScreeningResultsProps> = ({ screening }) => {
       <Heading size="xs" className="text-start w-full px-1">
         {SCREENING_FORM_STEPS[10]}
       </Heading>
-      
+
       <VStack className="flex-1 bg-background-50 rounded-lg overflow-hidden">
-        <ScrollView 
-          className="flex-1 px-4" 
+        <ScrollView
+          className="flex-1 px-4"
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingVertical: 8 }}
         >
@@ -126,7 +126,10 @@ const ScreeningResults: FC<ScreeningResultsProps> = ({ screening }) => {
       <VStack space="md" className="mt-2">
         <Divider />
 
-        <HStack space="sm" className="w-full justify-between items-center py-2 px-1">
+        <HStack
+          space="sm"
+          className="w-full justify-between items-center py-2 px-1"
+        >
           <Heading size="lg">Total Score</Heading>
           <Heading
             size="xl"
@@ -164,29 +167,29 @@ const ScreeningResults: FC<ScreeningResultsProps> = ({ screening }) => {
             {getRiskInterpretation(screening.scoringResult?.interpretation)}
           </Text>
         </Card>
-        {screening.scoringResult?.interpretation ===
-          RiskInterpretation.HIGH_RISK && (
-          <Button
-            action="primary"
-            className="w-full bg-primary-500 justify-between"
-            onPress={() => {
-              router.push({
-                pathname: "/add-referral",
-                params: {
-                  client: screening.client?.id,
-                  facility: "",
-                  facilitySearch: "",
-                  screening: screening.id,
-                  search: screening.client?.phoneNumber,
-                },
-              });
-            }}
-          >
-            <ButtonText>Refer Client</ButtonText>
-            <ButtonIcon as={ArrowRightIcon} />
-          </Button>
-        )}
-        {screening.scoringResult?.interpretation ===
+        {/* {screening.scoringResult?.interpretation ===
+          RiskInterpretation.HIGH_RISK && ( */}
+        <Button
+          action="primary"
+          className="w-full bg-primary-500 justify-between"
+          onPress={() => {
+            router.push({
+              pathname: "/add-referral",
+              params: {
+                client: screening.client?.id,
+                facility: "",
+                facilitySearch: "",
+                screening: screening.id,
+                search: screening.client?.phoneNumber,
+              },
+            });
+          }}
+        >
+          <ButtonText>Refer Client</ButtonText>
+          <ButtonIcon as={ArrowRightIcon} />
+        </Button>
+        {/* )} */}
+        {/* {screening.scoringResult?.interpretation ===
           RiskInterpretation.MEDIUM_RISK && (
           <Button
             action="primary"
@@ -207,8 +210,8 @@ const ScreeningResults: FC<ScreeningResultsProps> = ({ screening }) => {
             <ButtonText>Folloup in 6 months for re screening</ButtonText>
             <ButtonIcon as={ArrowRightIcon} />
           </Button>
-        )}
-        {screening.scoringResult?.interpretation ===
+        )} */}
+        {/* {screening.scoringResult?.interpretation ===
           RiskInterpretation.LOW_RISK && (
           <Button
             action="primary"
@@ -231,7 +234,7 @@ const ScreeningResults: FC<ScreeningResultsProps> = ({ screening }) => {
             <ButtonText>Folloup in 3 to 5 years fo re screening</ButtonText>
             <ButtonIcon as={ArrowRightIcon} />
           </Button>
-        )}
+        )} */}
       </VStack>
     </VStack>
   );

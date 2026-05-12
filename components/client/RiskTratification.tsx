@@ -22,11 +22,11 @@ type RiskTratificationProps = {
 const RiskTratification: FC<RiskTratificationProps> = ({ client }) => {
   const risk = client.screenings?.[0]?.scoringResult?.aggregateScore ?? 0;
   const riskPercentage = getRiskPercentage(
-    client.screenings?.[0]?.scoringResult?.interpretation
+    client.screenings?.[0]?.scoringResult?.interpretation,
   );
   const symptoms =
     client.screenings?.[0]?.scoringResult?.breakdown.map(
-      (factor) => factor.reason
+      (factor) => factor.reason,
     ) ?? [];
   return (
     <Card size="sm" variant="elevated" className="p-2 gap-3">
@@ -39,12 +39,12 @@ const RiskTratification: FC<RiskTratificationProps> = ({ client }) => {
           className="px-3 py-1 rounded-full font-bold uppercase"
           style={{
             color: getRiskColor(
-              client.screenings?.[0]?.scoringResult?.interpretation
+              client.screenings?.[0]?.scoringResult?.interpretation,
             ),
             backgroundColor: Color(
               getRiskColor(
-                client.screenings?.[0]?.scoringResult?.interpretation
-              )
+                client.screenings?.[0]?.scoringResult?.interpretation,
+              ),
             )
               .alpha(0.1)
               .toString(),
@@ -52,7 +52,7 @@ const RiskTratification: FC<RiskTratificationProps> = ({ client }) => {
           size="xs"
         >
           {getRiskInterpretation(
-            client.screenings?.[0]?.scoringResult?.interpretation
+            client.screenings?.[0]?.scoringResult?.interpretation,
           )}
         </Text>
       </HStack>
@@ -65,7 +65,7 @@ const RiskTratification: FC<RiskTratificationProps> = ({ client }) => {
         <ProgressFilledTrack
           style={{
             backgroundColor: getRiskColor(
-              client.screenings?.[0]?.scoringResult?.interpretation
+              client.screenings?.[0]?.scoringResult?.interpretation,
             ),
           }}
         />
@@ -79,7 +79,7 @@ const RiskTratification: FC<RiskTratificationProps> = ({ client }) => {
           className="font-bold"
           style={{
             color: getRiskColor(
-              client.screenings?.[0]?.scoringResult?.interpretation
+              client.screenings?.[0]?.scoringResult?.interpretation,
             ),
           }}
         >
@@ -93,7 +93,7 @@ const RiskTratification: FC<RiskTratificationProps> = ({ client }) => {
         className="w-full flex flex-col gap-3 p-4"
         style={{
           backgroundColor: Color(
-            getRiskColor(client.screenings?.[0]?.scoringResult?.interpretation)
+            getRiskColor(client.screenings?.[0]?.scoringResult?.interpretation),
           )
             .alpha(0.1)
             .toString(),
@@ -105,7 +105,7 @@ const RiskTratification: FC<RiskTratificationProps> = ({ client }) => {
             size="sm"
             style={{
               color: getRiskColor(
-                client.screenings?.[0]?.scoringResult?.interpretation
+                client.screenings?.[0]?.scoringResult?.interpretation,
               ),
             }}
           />
@@ -114,11 +114,11 @@ const RiskTratification: FC<RiskTratificationProps> = ({ client }) => {
             className="font-bold uppercase tracking-wider"
             style={{
               color: getRiskColor(
-                client.screenings?.[0]?.scoringResult?.interpretation
+                client.screenings?.[0]?.scoringResult?.interpretation,
               ),
             }}
           >
-            Current Symptoms
+            Current characteristics
           </Text>
         </HStack>
         <VStack space="sm" className="mt-1">
@@ -129,7 +129,7 @@ const RiskTratification: FC<RiskTratificationProps> = ({ client }) => {
                 size="xs"
                 style={{
                   color: getRiskColor(
-                    client.screenings?.[0]?.scoringResult?.interpretation
+                    client.screenings?.[0]?.scoringResult?.interpretation,
                   ),
                 }}
               />
@@ -138,7 +138,7 @@ const RiskTratification: FC<RiskTratificationProps> = ({ client }) => {
                 className="font-medium"
                 style={{
                   color: getRiskColor(
-                    client.screenings?.[0]?.scoringResult?.interpretation
+                    client.screenings?.[0]?.scoringResult?.interpretation,
                   ),
                 }}
               >

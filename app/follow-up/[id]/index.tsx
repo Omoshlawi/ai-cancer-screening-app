@@ -11,6 +11,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { DEFAULT_DATE_FORMAT } from "@/constants";
+import { useUserHasSystemAccess } from "@/hooks/use-user-has-access";
 import { useFollowUp } from "@/hooks/useFollowUp";
 import {
   getFollowUpCategoryDisply,
@@ -58,6 +59,10 @@ const FollowUpDetailScreen = () => {
 export default FollowUpDetailScreen;
 
 const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
+  const { hasAccess } = useUserHasSystemAccess({ referrals: ["complete"] });
+  const { hasAccess: canCancel } = useUserHasSystemAccess({
+    referrals: ["cancel"],
+  });
   const { outreachActions } = followUp;
   const values = useMemo<
     { variable: string; value: string | number | undefined; show: boolean }[]
@@ -111,7 +116,7 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
         value:
           followUp.completedAt &&
           dayjs(followUp.completedAt).format(DEFAULT_DATE_FORMAT),
-        show: !!followUp.completedAt,
+        show: !!followUp.completedAt && hasAccess,
       },
       {
         variable: "Test Result",
@@ -119,13 +124,17 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
           ? getReferralResultDisplay(followUp?.referral.testResult)
           : undefined,
         show:
-          !!followUp.completedAt && followUp.category === "REFERRAL_ADHERENCE",
+          !!followUp.completedAt &&
+          followUp.category === "REFERRAL_ADHERENCE" &&
+          hasAccess,
       },
       {
         variable: "Final Diagnosis",
         value: followUp?.referral?.finalDiagnosis,
         show:
-          !!followUp.completedAt && followUp.category === "REFERRAL_ADHERENCE",
+          !!followUp.completedAt &&
+          followUp.category === "REFERRAL_ADHERENCE" &&
+          hasAccess,
       },
       {
         variable: "Screening Result",
@@ -141,7 +150,7 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
       {
         variable: "Outcome Notes",
         value: followUp?.outcomeNotes,
-        show: !!followUp.completedAt,
+        show: !!followUp.completedAt && hasAccess,
       },
       {
         variable: "Start Date",
@@ -160,7 +169,7 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
         show: true,
       },
     ];
-  }, [followUp, outreachActions]);
+  }, [followUp, hasAccess, outreachActions]);
   return (
     <>
       <Card
@@ -270,45 +279,46 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
             <Heading size="sm" className="text-typography-500">
               Actions
             </Heading>
-            {!followUp.completedAt && (
-              <>
-                {followUp.category === "REFERRAL_ADHERENCE" ? (
-                  <Button
-                    className={cn("bg-primary-500 justify-between")}
-                    onPress={() => {
-                      router.push({
-                        pathname: "/follow-up/[id]/complete",
-                        params: {
-                          id: followUp.id,
-                          referralId: followUp.referralId,
-                        },
-                      });
-                    }}
-                  >
-                    <ButtonText>Complete follow up</ButtonText>
-                    <ButtonIcon as={ArrowRight} />
-                  </Button>
-                ) : (
-                  <Button
-                    className={cn("bg-primary-500 justify-between")}
-                    onPress={() => {
-                      router.push({
-                        pathname: "/screen-client",
-                        params: {
-                          followUpId: followUp.id,
-                          client: followUp.clientId,
-                          search: followUp.client?.phoneNumber,
-                        },
-                      });
-                    }}
-                  >
-                    <ButtonText>Complete follow up</ButtonText>
-                    <ButtonIcon as={ArrowRight} />
-                  </Button>
-                )}
-              </>
-            )}
-            {!followUp.canceledAt && (
+            {!followUp.completedAt &&
+              followUp.category === "REFERRAL_ADHERENCE" &&
+              hasAccess && (
+                <Button
+                  className={cn("bg-primary-500 justify-between")}
+                  onPress={() => {
+                    router.push({
+                      pathname: "/follow-up/[id]/complete",
+                      params: {
+                        id: followUp.id,
+                        referralId: followUp.referralId,
+                      },
+                    });
+                  }}
+                >
+                  <ButtonText>Complete follow up</ButtonText>
+                  <ButtonIcon as={ArrowRight} />
+                </Button>
+              )}
+            {!followUp.completedAt &&
+              followUp.category === "RE_SCREENING_RECALL" && (
+                <Button
+                  className={cn("bg-primary-500 justify-between")}
+                  onPress={() => {
+                    router.push({
+                      pathname: "/screen-client",
+                      params: {
+                        followUpId: followUp.id,
+                        client: followUp.clientId,
+                        search: followUp.client?.phoneNumber,
+                      },
+                    });
+                  }}
+                >
+                  <ButtonText>Complete follow up</ButtonText>
+                  <ButtonIcon as={ArrowRight} />
+                </Button>
+              )}
+
+            {!followUp.canceledAt && canCancel && (
               <Button
                 className="bg-error-500 justify-between"
                 onPress={() => {

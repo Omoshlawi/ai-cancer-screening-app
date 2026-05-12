@@ -8,6 +8,8 @@ import { Heading } from "@/components/ui/heading";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
+import { useUserHasSystemAccess } from "@/hooks/use-user-has-access";
+import { useFollowUps } from "@/hooks/useFollowUp";
 import { useReferral } from "@/hooks/useReferrals";
 import {
   getReferralStatusDisplayValue,
@@ -23,6 +25,10 @@ import { ScrollView } from "react-native";
 const ReferralDetailScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { referral, isLoading, error } = useReferral(id);
+  const { hasAccess } = useUserHasSystemAccess({ followups: ["create"] });
+  const { hasAccess: hasFollowupList } = useUserHasSystemAccess({
+    followups: ["list"],
+  });
   return (
     <ScreenLayout title="Referral Detail">
       <When
@@ -48,24 +54,10 @@ const ReferralDetailScreen = () => {
                     : "No clinical notes"}
                 </Text>
               </Card>
-              <ReferralFollowUps referral={referral!} />
-              <Button
-                action="primary"
-                className="bg-primary-500"
-                onPress={() => {
-                  router.push({
-                    pathname: "/follow-up",
-                    params: {
-                      referralId: id,
-                      appointmentTime: referral?.appointmentTime,
-                      screeningId: referral?.screeningId,
-                    },
-                  });
-                }}
-              >
-                <ButtonIcon as={PlusIcon} />
-                <ButtonText>Add Follow Up</ButtonText>
-              </Button>
+              {hasFollowupList && <ReferralFollowUps referral={referral!} />}
+              {referral?.status !== "COMPLETED" && hasAccess && (
+                <AddFollowUpBtn referral={referral!} />
+              )}
             </VStack>
           </ScrollView>
         )}
@@ -172,5 +164,27 @@ const AppointmentDetails = ({ referral }: { referral: Referral }) => {
         })}
       </VStack>
     </Card>
+  );
+};
+
+const AddFollowUpBtn = ({ referral }: { referral: Referral }) => {
+  return (
+    <Button
+      action="primary"
+      className="bg-primary-500"
+      onPress={() => {
+        router.push({
+          pathname: "/follow-up",
+          params: {
+            referralId: referral.id,
+            appointmentTime: referral?.appointmentTime,
+            screeningId: referral?.screeningId,
+          },
+        });
+      }}
+    >
+      <ButtonIcon as={PlusIcon} />
+      <ButtonText>Add Follow Up</ButtonText>
+    </Button>
   );
 };

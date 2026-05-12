@@ -15,7 +15,9 @@ import { Menu, MenuItem, MenuItemLabel } from "@/components/ui/menu";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
+import { useUserHasSystemAccess } from "@/hooks/use-user-has-access";
 import { useClient } from "@/hooks/useClients";
+import { authClient } from "@/lib/auth-client";
 import { router, useLocalSearchParams } from "expo-router";
 import { ArrowRightLeft, MoreVertical, UserPlus } from "lucide-react-native";
 import React from "react";
@@ -24,6 +26,8 @@ import { ScrollView } from "react-native";
 const ClientDetail = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { client, isLoading, error } = useClient(id);
+  const { data: sessionData } = authClient.useSession();
+  const { hasAccess } = useUserHasSystemAccess({ followups: ["list"] });
 
   return (
     <ScreenLayout title="Client Detail">
@@ -105,12 +109,14 @@ const ClientDetail = () => {
                 </Menu>
               </HStack>
               <ClientInfo client={client!} />
-              {!!client?.screenings?.length && (
-                <RiskTratification client={client!} />
-              )}
+              {!!client?.screenings?.length &&
+                client?.screenings[0].provider?.userId ===
+                  sessionData?.user.id && (
+                  <RiskTratification client={client!} />
+                )}
               <ScreeningHistory client={client!} />
               <ReferralHistory client={client!} />
-              <FollowUpHistory client={client!} />
+              {hasAccess && <FollowUpHistory client={client!} />}
             </VStack>
           </ScrollView>
         )}
