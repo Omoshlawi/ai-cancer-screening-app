@@ -38,7 +38,6 @@ const ReferralDetailScreen = () => {
   const { hasAccess: canComplete } = useUserHasSystemAccess({
     referrals: ["complete"],
   });
-  console.log("Referral--->", JSON.stringify(referral, null, 2));
 
   return (
     <ScreenLayout title="Referral Detail">
