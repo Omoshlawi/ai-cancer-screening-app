@@ -12,6 +12,7 @@ import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { useUserHasSystemAccess } from "@/hooks/use-user-has-access";
 import { useReferral } from "@/hooks/useReferrals";
+import { authClient } from "@/lib/auth-client";
 import {
   getActionTakenDisplay,
   getReferralResultDisplay,
@@ -28,6 +29,7 @@ import { ScrollView } from "react-native";
 
 const ReferralDetailScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { data: sessionData } = authClient.useSession();
   const { referral, isLoading, error } = useReferral(id);
   const { hasAccess } = useUserHasSystemAccess({ followups: ["create"] });
   const { hasAccess: hasFollowupList } = useUserHasSystemAccess({
@@ -36,6 +38,8 @@ const ReferralDetailScreen = () => {
   const { hasAccess: canComplete } = useUserHasSystemAccess({
     referrals: ["complete"],
   });
+  console.log("Referral--->", JSON.stringify(referral, null, 2));
+
   return (
     <ScreenLayout title="Referral Detail">
       <When
@@ -67,9 +71,12 @@ const ReferralDetailScreen = () => {
                   <TestOutcomes referral={referral!} canEdit={canComplete} />
                 )}
               {hasFollowupList && <ReferralFollowUps referral={referral!} />}
-              {referral?.status !== "COMPLETED" && hasAccess && (
-                <AddFollowUpBtn referral={referral!} />
-              )}
+              {referral?.status !== "COMPLETED" &&
+                hasAccess &&
+                referral?.screening?.provider?.userId ===
+                  sessionData?.user?.id && (
+                  <AddFollowUpBtn referral={referral!} />
+                )}
               {referral?.status !== "COMPLETED" && canComplete && (
                 <CompleteReferralBtn referral={referral!} />
               )}
@@ -112,6 +119,10 @@ const ClientDetailsDetails = ({ referral }: { referral: Referral }) => {
         value: screening?.scoringResult?.interpretation
           ? getRiskInterpretation(screening?.scoringResult?.interpretation)
           : "N/A",
+      },
+      {
+        variable: "Referred By",
+        value: `${(screening?.provider as any)?.firstName} ${(screening?.provider as any)?.lastName} (${(screening?.provider as any)?.phoneNumber})`,
       },
     ];
   }, [screening]);
@@ -260,11 +271,7 @@ const TestOutcomes = ({
         />
       )}
       {referral.tests?.map((test, i) => (
-        <VStack
-          key={i}
-          space="xs"
-          className="border-t border-outline-100 pt-2"
-        >
+        <VStack key={i} space="xs" className="border-t border-outline-100 pt-2">
           <VariableValue
             variable="Test Type"
             value={getTestTypeDisplay(test.testType) ?? "N/A"}

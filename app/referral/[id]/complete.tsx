@@ -130,7 +130,7 @@ const TestEntry = ({ index, canRemove, onRemove, control, setValue }: TestEntryP
   const showAction = actionOptions.length > 0;
 
   return (
-    <View className="border border-outline-200 rounded-md p-4 bg-background-0">
+    <View className="border border-outline-200 p-4">
       <HStack className="justify-between items-center mb-3">
         <Text className="font-semibold text-typography-700">
           Test {index + 1}
