@@ -1,6 +1,8 @@
 import { useResponsive } from "@/hooks/use-responsive";
+import { useUserHasSystemAccess } from "@/hooks/use-user-has-access";
 import { useClients } from "@/hooks/useClients";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { authClient } from "@/lib/auth-client";
 import { getRiskColor, getRiskInterpretation } from "@/lib/helpers";
 import { RiskInterpretation } from "@/types/screening";
 import Color from "color";
@@ -26,9 +28,11 @@ const OnlineClients = ({
 }: {
   initialOwner?: "all" | "mine";
 }) => {
+  const { data: sessionData } = authClient.useSession();
   const { isTablet } = useResponsive();
   const [search, setSearch] = useState("");
   const [level, setLevel] = useState<RiskInterpretation | "">("");
+  const { hasAccess } = useUserHasSystemAccess({ referrals: ["complete"] });
   const [owner, setOwner] = useState<"all" | "mine">(initialOwner);
   const [debouncedSearch] = useDebouncedValue(search, 500);
 
@@ -58,7 +62,9 @@ const OnlineClients = ({
         count={pagination.totalCount}
         owner={owner}
         onOwnerChange={setOwner}
+        showLevelFilter={hasAccess}
       />
+
       <Box className="flex-1 ">
         <When
           asyncState={{ isLoading, error, data: clients }}
@@ -87,31 +93,34 @@ const OnlineClients = ({
                             {item.firstName} {item.lastName}
                           </Heading>
                           {item.screenings?.[0]?.scoringResult
-                            ?.interpretation && (
-                            <Text
-                              size="xs"
-                              className="px-2 py-1 rounded-full"
-                              style={{
-                                backgroundColor: Color(
-                                  getRiskColor(
+                            ?.interpretation &&
+                            (item.screenings?.[0]?.provider?.userId ===
+                              sessionData?.user?.id ||
+                              hasAccess) && (
+                              <Text
+                                size="xs"
+                                className="px-2 py-1 rounded-full"
+                                style={{
+                                  backgroundColor: Color(
+                                    getRiskColor(
+                                      item.screenings?.[0]?.scoringResult
+                                        ?.interpretation,
+                                    ),
+                                  )
+                                    .alpha(0.1)
+                                    .toString(),
+                                  color: getRiskColor(
                                     item.screenings?.[0]?.scoringResult
                                       ?.interpretation,
                                   ),
-                                )
-                                  .alpha(0.1)
-                                  .toString(),
-                                color: getRiskColor(
+                                }}
+                              >
+                                {getRiskInterpretation(
                                   item.screenings?.[0]?.scoringResult
                                     ?.interpretation,
-                                ),
-                              }}
-                            >
-                              {getRiskInterpretation(
-                                item.screenings?.[0]?.scoringResult
-                                  ?.interpretation,
-                              )}
-                            </Text>
-                          )}
+                                )}
+                              </Text>
+                            )}
                         </HStack>
                         <HStack className="items-center" space="lg">
                           <Text size="sm" className="text-typography-500">

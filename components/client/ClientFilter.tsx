@@ -1,5 +1,5 @@
-import { RiskInterpretation } from "@/types/screening";
 import { useResponsive } from "@/hooks/use-responsive";
+import { RiskInterpretation } from "@/types/screening";
 import { ChevronDownIcon, FilterIcon, Search } from "lucide-react-native";
 import React, { FC, useMemo } from "react";
 import { TouchableOpacity } from "react-native";
@@ -33,6 +33,7 @@ type ClientFilterProps = {
   owner?: "mine" | "all";
   onOwnerChange?: (owner: "mine" | "all") => void;
   mode?: "online" | "offline";
+  showLevelFilter?: boolean;
 };
 
 const ClientFilter: FC<ClientFilterProps> = ({
@@ -44,6 +45,7 @@ const ClientFilter: FC<ClientFilterProps> = ({
   onOwnerChange,
   owner,
   mode = "online",
+  showLevelFilter = false,
 }) => {
   const { isTablet } = useResponsive();
   const levels = useMemo<
@@ -87,7 +89,7 @@ const ClientFilter: FC<ClientFilterProps> = ({
             onChangeText={onSearchChange}
           />
         </Input>
-        {mode === "online" && (
+        {mode === "online" && showLevelFilter && (
           <>
             <HStack
               space="sm"
