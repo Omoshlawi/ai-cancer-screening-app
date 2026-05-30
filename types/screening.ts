@@ -81,6 +81,7 @@ export interface ReferralTest {
   testType: ReferralTestFormData["testType"];
   testResult: ReferralTestFormData["testResult"];
   actionTaken?: ReferralTestFormData["actionTaken"];
+  notes?: string | null;
   createdAt: string;
   updatedAt: string;
 }

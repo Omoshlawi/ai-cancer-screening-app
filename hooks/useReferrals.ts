@@ -1,4 +1,4 @@
-import { apiFetch, APIFetchResponse, constructUrl } from "@/lib/api";
+import { apiFetch, APIFetchResponse, APIListResponse, constructUrl } from "@/lib/api";
 import { invalidateCache } from "@/lib/helpers";
 import {
   CompleteReferralFormData,
@@ -6,6 +6,7 @@ import {
   ReferralFormData,
 } from "@/types/screening";
 import useSWR from "swr";
+import { useMergePaginationInfo } from "./usePagination";
 
 export const useReferrals = (params: Record<string, string> = {}) => {
   const url = constructUrl("/referrals", params);
@@ -38,6 +39,29 @@ const completeReferral = async (id: string, data: CompleteReferralFormData) => {
   });
   invalidateCache();
   return response.data;
+};
+
+export const usePendingReferralsForMyFacilities = (
+  params: Record<string, any> = {},
+) => {
+  const { onPageChange, mergedSearchParams, showPagination } =
+    useMergePaginationInfo(params);
+  const url = constructUrl(
+    "/referrals/pending-for-my-facilities",
+    mergedSearchParams,
+  );
+  const { data, error, isLoading } =
+    useSWR<APIFetchResponse<APIListResponse<Referral>>>(url);
+  const { results: referrals = [], ...rest } =
+    data?.data ?? ({} as APIListResponse<Referral>);
+  return {
+    ...rest,
+    referrals,
+    isLoading,
+    error,
+    onPageChange,
+    showPagination: showPagination(rest.totalCount),
+  };
 };
 
 export const useReferralApi = () => {

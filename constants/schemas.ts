@@ -101,7 +101,8 @@ export const referralTestSchema = z
       "CYTOLOGY_POSITIVE",
       "CYTOLOGY_NEGATIVE",
     ]),
-    actionTaken: z.enum(["TREATED", "BIOPSY"]).optional(),
+    actionTaken: z.enum(["TREATED", "BIOPSY", "REFERRED"]).optional(),
+    notes: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     const validResults: Record<string, string[]> = {
@@ -109,11 +110,46 @@ export const referralTestSchema = z
       PAP_SMEAR: ["CYTOLOGY_POSITIVE", "CYTOLOGY_NEGATIVE"],
       HPV_TEST: ["POSITIVE", "NEGATIVE"],
     };
-    if (data.testType && !validResults[data.testType].includes(data.testResult)) {
+    if (
+      data.testType &&
+      !validResults[data.testType].includes(data.testResult)
+    ) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: "custom",
         message: "Invalid result for selected test type",
         path: ["testResult"],
+      });
+    }
+
+    if (data.testType === "VIA" && data.testResult === "POSITIVE") {
+      if (
+        data.actionTaken !== undefined &&
+        data.actionTaken !== "TREATED" &&
+        data.actionTaken !== "REFERRED"
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          message: "VIA Positive only allows Treated or Referred",
+          path: ["actionTaken"],
+        });
+      }
+    }
+
+    if (data.testType === "VIA" && data.testResult === "SUSPICIOUS") {
+      if (data.actionTaken !== undefined && data.actionTaken !== "BIOPSY") {
+        ctx.addIssue({
+          code: "custom",
+          message: "VIA Suspicious only allows Biopsy",
+          path: ["actionTaken"],
+        });
+      }
+    }
+
+    if (data.actionTaken === "REFERRED" && !data.notes?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Notes are required when action is Referred",
+        path: ["notes"],
       });
     }
   });

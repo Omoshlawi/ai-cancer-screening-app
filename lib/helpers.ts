@@ -228,5 +228,7 @@ export const getActionTakenDisplay = (
       return "Treated";
     case "BIOPSY":
       return "Biopsy";
+    case "REFERRED":
+      return "Referred";
   }
 };

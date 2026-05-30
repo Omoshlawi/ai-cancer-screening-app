@@ -57,12 +57,7 @@ import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import { Calendar } from "lucide-react-native";
 import React from "react";
-import {
-  Controller,
-  useFieldArray,
-  useForm,
-  useWatch,
-} from "react-hook-form";
+import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { ScrollView, View } from "react-native";
 
 const TEST_TYPES: { label: string; value: ReferralTestFormData["testType"] }[] =
@@ -135,8 +130,21 @@ const TestEntry = ({
     name: `tests.${index}.testType`,
   }) as ReferralTestFormData["testType"] | undefined;
 
+  const testResult = useWatch({
+    control,
+    name: `tests.${index}.testResult`,
+  }) as ReferralTestFormData["testResult"] | undefined;
+
   const resultOptions = testType ? RESULTS_BY_TYPE[testType] : [];
   const actionOptions = testType ? ACTIONS_BY_TYPE[testType] : [];
+  const NEGATIVE_RESULTS: ReferralTestFormData["testResult"][] = [
+    "NEGATIVE",
+    "CYTOLOGY_NEGATIVE",
+  ];
+  const showAction =
+    actionOptions.length > 0 &&
+    !!testResult &&
+    !NEGATIVE_RESULTS.includes(testResult);
 
   return (
     <View className="border border-outline-200 rounded-md p-4 bg-background-0">
@@ -229,7 +237,10 @@ const TestEntry = ({
                 <Select
                   className="w-full"
                   selectedValue={field.value}
-                  onValueChange={(value) => field.onChange(value)}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    setValue(`tests.${index}.actionTaken`, undefined as any);
+                  }}
                 >
                   <SelectTrigger variant="outline" size="md">
                     <SelectInput
@@ -273,13 +284,13 @@ const TestEntry = ({
           }}
         />
 
-        {actionOptions.length > 0 && (
+        {showAction && (
           <Controller
             control={control}
             name={`tests.${index}.actionTaken`}
             render={({ field, fieldState: { invalid, error } }) => {
               const selected = actionOptions.find(
-                (a) => a.value === field.value
+                (a) => a.value === field.value,
               );
               return (
                 <FormControl isInvalid={invalid} size="md" className="w-full">

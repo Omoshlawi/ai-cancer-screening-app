@@ -17,11 +17,11 @@ import {
 } from "@/components/ui/form-control";
 import { HStack } from "@/components/ui/hstack";
 import {
+  AddIcon,
   AlertCircleIcon,
   ArrowRightIcon,
   ChevronDownIcon,
   CloseIcon,
-  AddIcon,
 } from "@/components/ui/icon";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import {
@@ -57,12 +57,7 @@ import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import { Calendar } from "lucide-react-native";
 import React, { useEffect } from "react";
-import {
-  Controller,
-  useFieldArray,
-  useForm,
-  useWatch,
-} from "react-hook-form";
+import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { ScrollView, View } from "react-native";
 
 const TEST_TYPES: { label: string; value: ReferralTestFormData["testType"] }[] =
@@ -97,19 +92,36 @@ const RESULTS_BY_TYPE: Record<
   ],
 };
 
-const ACTIONS_BY_TYPE: Record<
-  ReferralTestFormData["testType"],
-  { label: string; value: NonNullable<ReferralTestFormData["actionTaken"]> }[]
-> = {
-  VIA: [
-    { label: getActionTakenDisplay("TREATED")!, value: "TREATED" },
-    { label: getActionTakenDisplay("BIOPSY")!, value: "BIOPSY" },
-  ],
-  PAP_SMEAR: [{ label: getActionTakenDisplay("BIOPSY")!, value: "BIOPSY" }],
-  HPV_TEST: [],
+type ActionOption = {
+  label: string;
+  value: NonNullable<ReferralTestFormData["actionTaken"]>;
 };
 
-const EMPTY_TEST = { testType: undefined, testResult: undefined, actionTaken: undefined };
+const ACTIONS_BY_TYPE_AND_RESULT: Record<
+  string,
+  Partial<Record<string, ActionOption[]>>
+> = {
+  VIA: {
+    POSITIVE: [
+      { label: getActionTakenDisplay("TREATED")!, value: "TREATED" },
+      { label: getActionTakenDisplay("REFERRED")!, value: "REFERRED" },
+    ],
+    SUSPICIOUS: [{ label: getActionTakenDisplay("BIOPSY")!, value: "BIOPSY" }],
+  },
+  PAP_SMEAR: {
+    CYTOLOGY_POSITIVE: [
+      { label: getActionTakenDisplay("BIOPSY")!, value: "BIOPSY" },
+    ],
+  },
+  HPV_TEST: {},
+};
+
+const EMPTY_TEST = {
+  testType: undefined,
+  testResult: undefined,
+  actionTaken: undefined,
+  notes: undefined,
+};
 
 type TestEntryProps = {
   index: number;
@@ -119,15 +131,35 @@ type TestEntryProps = {
   setValue: ReturnType<typeof useForm>["setValue"];
 };
 
-const TestEntry = ({ index, canRemove, onRemove, control, setValue }: TestEntryProps) => {
+const TestEntry = ({
+  index,
+  canRemove,
+  onRemove,
+  control,
+  setValue,
+}: TestEntryProps) => {
   const testType = useWatch({
     control,
     name: `tests.${index}.testType`,
   }) as ReferralTestFormData["testType"] | undefined;
 
+  const testResult = useWatch({
+    control,
+    name: `tests.${index}.testResult`,
+  }) as ReferralTestFormData["testResult"] | undefined;
+
+  const actionTaken = useWatch({
+    control,
+    name: `tests.${index}.actionTaken`,
+  }) as ReferralTestFormData["actionTaken"] | undefined;
+
   const resultOptions = testType ? RESULTS_BY_TYPE[testType] : [];
-  const actionOptions = testType ? ACTIONS_BY_TYPE[testType] : [];
+  const actionOptions =
+    testType && testResult
+      ? (ACTIONS_BY_TYPE_AND_RESULT[testType]?.[testResult] ?? [])
+      : [];
   const showAction = actionOptions.length > 0;
+  const showNotes = actionTaken === "REFERRED";
 
   return (
     <View className="border border-outline-200 p-4">
@@ -136,12 +168,7 @@ const TestEntry = ({ index, canRemove, onRemove, control, setValue }: TestEntryP
           Test {index + 1}
         </Text>
         {canRemove && (
-          <Button
-            size="sm"
-            variant="link"
-            onPress={onRemove}
-            className="p-0"
-          >
+          <Button size="sm" variant="link" onPress={onRemove} className="p-0">
             <ButtonIcon as={CloseIcon} className="text-error-500" />
           </Button>
         )}
@@ -166,6 +193,7 @@ const TestEntry = ({ index, canRemove, onRemove, control, setValue }: TestEntryP
                     field.onChange(value);
                     setValue(`tests.${index}.testResult`, undefined as any);
                     setValue(`tests.${index}.actionTaken`, undefined as any);
+                    setValue(`tests.${index}.notes`, undefined as any);
                   }}
                 >
                   <SelectTrigger variant="outline" size="md">
@@ -183,14 +211,21 @@ const TestEntry = ({ index, canRemove, onRemove, control, setValue }: TestEntryP
                         <SelectDragIndicator />
                       </SelectDragIndicatorWrapper>
                       {TEST_TYPES.map((t) => (
-                        <SelectItem key={t.value} label={t.label} value={t.value} />
+                        <SelectItem
+                          key={t.value}
+                          label={t.label}
+                          value={t.value}
+                        />
                       ))}
                     </SelectContent>
                   </SelectPortal>
                 </Select>
                 {error && (
                   <FormControlError>
-                    <FormControlErrorIcon as={AlertCircleIcon} className="text-error-500" />
+                    <FormControlErrorIcon
+                      as={AlertCircleIcon}
+                      className="text-error-500"
+                    />
                     <FormControlErrorText className="text-error-500">
                       {error.message}
                     </FormControlErrorText>
@@ -220,11 +255,17 @@ const TestEntry = ({ index, canRemove, onRemove, control, setValue }: TestEntryP
                 <Select
                   className="w-full"
                   selectedValue={field.value}
-                  onValueChange={(value) => field.onChange(value)}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    setValue(`tests.${index}.actionTaken`, undefined as any);
+                    setValue(`tests.${index}.notes`, undefined as any);
+                  }}
                 >
                   <SelectTrigger variant="outline" size="md">
                     <SelectInput
-                      placeholder={testType ? "Select result" : "Select test type first"}
+                      placeholder={
+                        testType ? "Select result" : "Select test type first"
+                      }
                       className="flex-1"
                       value={selected?.label}
                     />
@@ -237,14 +278,21 @@ const TestEntry = ({ index, canRemove, onRemove, control, setValue }: TestEntryP
                         <SelectDragIndicator />
                       </SelectDragIndicatorWrapper>
                       {resultOptions.map((r) => (
-                        <SelectItem key={r.value} label={r.label} value={r.value} />
+                        <SelectItem
+                          key={r.value}
+                          label={r.label}
+                          value={r.value}
+                        />
                       ))}
                     </SelectContent>
                   </SelectPortal>
                 </Select>
                 {error && (
                   <FormControlError>
-                    <FormControlErrorIcon as={AlertCircleIcon} className="text-error-500" />
+                    <FormControlErrorIcon
+                      as={AlertCircleIcon}
+                      className="text-error-500"
+                    />
                     <FormControlErrorText className="text-error-500">
                       {error.message}
                     </FormControlErrorText>
@@ -255,13 +303,15 @@ const TestEntry = ({ index, canRemove, onRemove, control, setValue }: TestEntryP
           }}
         />
 
-        {/* Action Taken — only for VIA and Pap Smear */}
+        {/* Action Taken — driven by test type + result */}
         {showAction && (
           <Controller
             control={control}
             name={`tests.${index}.actionTaken`}
             render={({ field, fieldState: { invalid, error } }) => {
-              const selected = actionOptions.find((a) => a.value === field.value);
+              const selected = actionOptions.find(
+                (a) => a.value === field.value,
+              );
               return (
                 <FormControl isInvalid={invalid} size="md" className="w-full">
                   <FormControlLabel>
@@ -270,7 +320,10 @@ const TestEntry = ({ index, canRemove, onRemove, control, setValue }: TestEntryP
                   <Select
                     className="w-full"
                     selectedValue={field.value}
-                    onValueChange={(value) => field.onChange(value)}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      setValue(`tests.${index}.notes`, undefined as any);
+                    }}
                   >
                     <SelectTrigger variant="outline" size="md">
                       <SelectInput
@@ -287,14 +340,21 @@ const TestEntry = ({ index, canRemove, onRemove, control, setValue }: TestEntryP
                           <SelectDragIndicator />
                         </SelectDragIndicatorWrapper>
                         {actionOptions.map((a) => (
-                          <SelectItem key={a.value} label={a.label} value={a.value} />
+                          <SelectItem
+                            key={a.value}
+                            label={a.label}
+                            value={a.value}
+                          />
                         ))}
                       </SelectContent>
                     </SelectPortal>
                   </Select>
                   {error && (
                     <FormControlError>
-                      <FormControlErrorIcon as={AlertCircleIcon} className="text-error-500" />
+                      <FormControlErrorIcon
+                        as={AlertCircleIcon}
+                        className="text-error-500"
+                      />
                       <FormControlErrorText className="text-error-500">
                         {error.message}
                       </FormControlErrorText>
@@ -303,6 +363,42 @@ const TestEntry = ({ index, canRemove, onRemove, control, setValue }: TestEntryP
                 </FormControl>
               );
             }}
+          />
+        )}
+
+        {/* Referral Notes — required when action is REFERRED */}
+        {showNotes && (
+          <Controller
+            control={control}
+            name={`tests.${index}.notes`}
+            render={({ field, fieldState: { invalid, error } }) => (
+              <FormControl isInvalid={invalid} size="md" className="w-full">
+                <FormControlLabel>
+                  <FormControlLabelText>
+                    Referral Notes{" "}
+                    <Text className="text-error-500">*</Text>
+                  </FormControlLabelText>
+                </FormControlLabel>
+                <Textarea size="md">
+                  <TextareaInput
+                    placeholder="Provide referral notes..."
+                    value={field.value ?? ""}
+                    onChangeText={field.onChange}
+                  />
+                </Textarea>
+                {error && (
+                  <FormControlError>
+                    <FormControlErrorIcon
+                      as={AlertCircleIcon}
+                      className="text-error-500"
+                    />
+                    <FormControlErrorText className="text-error-500">
+                      {error.message}
+                    </FormControlErrorText>
+                  </FormControlError>
+                )}
+              </FormControl>
+            )}
           />
         )}
       </VStack>
@@ -331,6 +427,7 @@ const CompleteReferralScreen = () => {
               testType: t.testType,
               testResult: t.testResult,
               actionTaken: t.actionTaken ?? undefined,
+              notes: t.notes ?? undefined,
             }))
           : [EMPTY_TEST],
     },
@@ -354,6 +451,7 @@ const CompleteReferralScreen = () => {
               testType: t.testType,
               testResult: t.testResult,
               actionTaken: t.actionTaken ?? undefined,
+              notes: t.notes ?? undefined,
             }))
           : [EMPTY_TEST],
     });
@@ -422,7 +520,10 @@ const CompleteReferralScreen = () => {
                           placeholder="Select date"
                           value={formattedDate}
                         />
-                        <InputSlot className="absolute inset-0" onPress={onPress} />
+                        <InputSlot
+                          className="absolute inset-0"
+                          onPress={onPress}
+                        />
                         <InputSlot className="px-3" onPress={onPress}>
                           <InputIcon as={Calendar} />
                         </InputSlot>
@@ -460,7 +561,10 @@ const CompleteReferralScreen = () => {
               {/* Tests array-level error */}
               {form.formState.errors.tests?.root && (
                 <FormControlError>
-                  <FormControlErrorIcon as={AlertCircleIcon} className="text-error-500" />
+                  <FormControlErrorIcon
+                    as={AlertCircleIcon}
+                    className="text-error-500"
+                  />
                   <FormControlErrorText className="text-error-500">
                     {(form.formState.errors.tests as any)?.message ??
                       form.formState.errors.tests?.root?.message}
@@ -474,7 +578,9 @@ const CompleteReferralScreen = () => {
                 className="w-full border-dashed border-outline-300"
               >
                 <ButtonIcon as={AddIcon} className="text-primary-500" />
-                <ButtonText className="text-primary-500">Add Another Test</ButtonText>
+                <ButtonText className="text-primary-500">
+                  Add Another Test
+                </ButtonText>
               </Button>
             </VStack>
 

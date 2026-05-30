@@ -1,7 +1,8 @@
 import { router } from "expo-router";
-import { UserCircle } from "lucide-react-native";
+import { Bell, UserCircle } from "lucide-react-native";
 import React, { FC } from "react";
 import { useResponsive } from "@/hooks/use-responsive";
+import { useUserHasSystemAccess } from "@/hooks/use-user-has-access";
 import Logo from "../Logo";
 import { Box } from "../ui/box";
 import { Button } from "../ui/button";
@@ -17,6 +18,9 @@ const CHPLandingScreenLayout: FC<CHPLandingScreenLayoutProps> = ({
   children,
 }) => {
   const { contentMaxWidth, horizontalPadding, isTablet } = useResponsive();
+  const { hasAccess: isHCW } = useUserHasSystemAccess({
+    referrals: ["complete"],
+  });
 
   return (
     <SafeAreaScreen mode="padded">
@@ -38,13 +42,15 @@ const CHPLandingScreenLayout: FC<CHPLandingScreenLayoutProps> = ({
             mode="name"
           />
           <HStack space="xl" className="items-center">
-            {/* <Button
-            action="default"
-            onPress={() => router.push("/notifications")}
-            className="p-0 m-0"
-          >
-            <Icon as={Bell} size={"xl"} />
-          </Button> */}
+            {isHCW && (
+              <Button
+                action="default"
+                onPress={() => router.push("/notifications")}
+                className="p-0 m-0"
+              >
+                <Icon as={Bell} size={"xl"} />
+              </Button>
+            )}
 
             <Button
               action="default"
